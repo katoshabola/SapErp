@@ -3506,6 +3506,83 @@ namespace TokenBasedAPI.Controllers
         }
 
 
+        ////  [Authorize(Roles = "SuperAdmin, Admin, User")]
+        //[HttpPost]
+        [HttpGet]
+        [Route("api/SAP/{DBName}/GetBusinessPartnersPaginated/{Page}/{RequestLimit}")]
+        public HttpResponseMessage GetBusinessPartnersPaginated(string DBName,int Page, int RequestLimit)
+        {
+            List<BusinessPartner_Master> customers = new List<BusinessPartner_Master>();
+            //if (string.IsNullOrEmpty(dateFrom))
+            //    dateFrom = "1900-01-01";
+            //if (string.IsNullOrEmpty(dateTo))
+            //    dateTo = DateTimeOffset.Now.ToString("yyyy-MM-dd");
+            int offset = 0;
+            if (Page < 2)
+            {
+                offset = 0;
+            }
+            else
+                offset = Page * RequestLimit;
+
+            if (DbServerType == "SAPHANA")
+            {
+                //querystring = "select case WHEN T1.\"OnHand\"  >= '" + Sanitize(Quantity) + "' THEN  'Y' ELSE 'N' END AS \"QuantityOk\" from \"OITM\" T0   INNER JOIN \"OITW\"  T1  ON T0.\"ItemCode\" = T1.\"ItemCode\" INNER JOIN \"OWHS\" T2 ON T2.\"WhsCode\" = T1.\"WhsCode\" WHERE  T0.\"ItemCode\" = '" + Sanitize(ItemCode) + "' and T2.\"WhsCode\" = '" + Sanitize(WarehouseCode) + "'";
+                querystring = querystring = "select  T0.\"CardCode\", T0.\"CardName\", T0.\"Balance\", T0.\"CreditLine\", T0.\"DebtLine\", T0.\"Currency\" from  \"" + Sanitize(DBName) + "\" + \".OCRD\" T0  WHERE  T0.\"frozenFor\"='N'";
+
+            }
+            else
+            {
+                querystring = "select T0.CardCode, T0.CardName,CardType, T0.Balance, T0.Currency ,T0.GroupCode, T0.Phone1, T0.Phone2, T0.Cellular, T0.VatIdUnCmp, T0.E_Mail, T0.Fax ,T0.frozenFor from  " + Sanitize(DBName) + ".[dbo]." + "ocrd t0 (nolock)  WHERE  T0.frozenFor ='N'" + $" ORDER BY T0.CardCode desc OFFSET {offset} ROWS FETCH NEXT {RequestLimit} ROWS ONLY;"; ;
+            }
+
+            DataTable dt = GetData(DBName, querystring);
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+
+                BusinessPartner_Master customer = new BusinessPartner_Master
+                {
+
+                    CardCode = Convert.ToString(dt.Rows[i]["CardCode"])
+                    ,
+                    CardName = Convert.ToString(dt.Rows[i]["CardName"])
+                    ,
+                    CardType = Convert.ToString(dt.Rows[i]["CardType"])
+                        ,
+                    Balance = Convert.ToDouble(dt.Rows[i]["Balance"])
+                    ,
+                    Currency = Convert.ToString(dt.Rows[i]["Currency"])
+                    ,
+                    GroupCode = Convert.ToString(dt.Rows[i]["GroupCode"])
+                    ,
+                    Telephone1 = Convert.ToString(dt.Rows[i]["Phone1"])
+                    ,
+                    Telephone2 = Convert.ToString(dt.Rows[i]["Phone2"])
+                    ,
+                    MobilePhone = Convert.ToString(dt.Rows[i]["Cellular"])
+                   ,
+                    Pin = Convert.ToString(dt.Rows[i]["VatIdUnCmp"])
+                    ,
+                    Email = Convert.ToString(dt.Rows[i]["E_Mail"])
+                    ,
+                    Fax = Convert.ToString(dt.Rows[i]["Fax"])
+                    ,
+                    FrozenFor = Convert.ToString(dt.Rows[i]["frozenFor"])
+                    ,
+
+                    Bill_To_Address = GetContact(DBName, Convert.ToString(dt.Rows[i]["CardCode"]))
+                };
+                customers.Add(customer);
+            }
+
+
+            //  var json = new JavaScriptSerializer().Serialize(customers);
+            var json = JsonConvert.SerializeObject(customers, Newtonsoft.Json.Formatting.Indented);
+            var response = Request.CreateResponse(HttpStatusCode.OK);
+            response.Content = new StringContent(json, Encoding.UTF8, "application/json");
+            return response;
+        }
+
         //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         [HttpPost]
         [Route("api/SAP/{DBName}/DeleteBusinessPartner/{SAPUserName}/{SAPPassword}")]
