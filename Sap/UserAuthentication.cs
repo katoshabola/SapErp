@@ -4,20 +4,24 @@ using System.Collections.Specialized;
 using System.Configuration;
 using System.Linq;
 using System.Web;
+using TokenBasedAPI.Controllers;
 
 namespace TokenBasedAPI
 {
     public class UserAuthentication : IDisposable
     {
+
         public string ValidateUser(string username, string password)
         {
 
             NameValueCollection section = (NameValueCollection)ConfigurationManager.GetSection("appSettings");
-            string TokenUserName = section["TokenUserName"];
-            string TokenPassword = section["TokenPassword"];
+            string UserName = section["UserName"];
+            string Password = section["Password"];
 
-            string Name = username == TokenUserName ? "Valid" : "InValid";
-            string Pass = password == TokenPassword ? "Valid" : "InValid";
+            string Name = username == UserName ? "Valid" : "InValid";
+            string Pass = password == Password ? "Valid" : "InValid";
+
+
 
             if (Name == "Valid" && Pass == "Valid")
                 return "true";
@@ -28,5 +32,11 @@ namespace TokenBasedAPI
         {
             //Dispose();
         }
+        //public void SAPDBName(string DBName)
+        //{
+        //    string test = DBName;
+        //    TestController.AddUpdateAppSettings("CompanyDB", DBName);
+        //}
+
     }
 }

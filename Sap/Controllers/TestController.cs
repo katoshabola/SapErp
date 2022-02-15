@@ -12,13 +12,14 @@ using System.Collections.Generic;
 using SAPbobsCOM;
 using System.Threading.Tasks;
 using System.Collections.Specialized;
-using System.Data.Odbc;
+using System.Data.SqlClient;
 using System.Text.RegularExpressions;
 using System.Security.Cryptography;
 using System.IO;
 using System.Collections.ObjectModel;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Xml;
 /// <summary>
 namespace TokenBasedAPI.Controllers
 {
@@ -47,7 +48,7 @@ namespace TokenBasedAPI.Controllers
         Recordset QueryObjectDocEntry = null;
 
 
-        [Authorize(Roles = "SuperAdmin, Admin, User")]
+      // //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         //[HttpPost]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetCurrencies")]
@@ -60,7 +61,7 @@ namespace TokenBasedAPI.Controllers
                             .Where(c => c.Type == ClaimTypes.Role)
                             .Select(c => c.Value);
                 string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString  + @"Database=" + DBName.Trim() + ";" ;
-                using (OdbcConnection con = new OdbcConnection(constr))
+                using (SqlConnection con = new SqlConnection(constr))
                 {
 
                    
@@ -74,9 +75,9 @@ namespace TokenBasedAPI.Controllers
                          querystring = "select * FROM   "  + Sanitize(DBName) + ".[dbo]." + "OCRN  ";
 
                        }
-                    using (OdbcCommand cmd = new OdbcCommand(querystring))
+                    using (SqlCommand cmd = new SqlCommand(querystring))
                     {
-                        using (OdbcDataAdapter sda = new OdbcDataAdapter())
+                        using (SqlDataAdapter sda = new SqlDataAdapter())
                         {
                             cmd.Connection = con;
                             sda.SelectCommand = cmd;
@@ -106,7 +107,7 @@ namespace TokenBasedAPI.Controllers
         }
 
 
-        [Authorize(Roles = "SuperAdmin, Admin, User")]
+       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         //[HttpPost]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetMarketingDocumentOwner")]
@@ -119,7 +120,7 @@ namespace TokenBasedAPI.Controllers
                             .Where(c => c.Type == ClaimTypes.Role)
                             .Select(c => c.Value);
                 string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
-                using (OdbcConnection con = new OdbcConnection(constr))
+                using (SqlConnection con = new SqlConnection(constr))
                 {
 
 
@@ -133,9 +134,9 @@ namespace TokenBasedAPI.Controllers
                         querystring = "select * FROM   " + Sanitize(DBName) + ".[dbo]." + "OHEM  ";
 
                     }
-                    using (OdbcCommand cmd = new OdbcCommand(querystring))
+                    using (SqlCommand cmd = new SqlCommand(querystring))
                     {
-                        using (OdbcDataAdapter sda = new OdbcDataAdapter())
+                        using (SqlDataAdapter sda = new SqlDataAdapter())
                         {
                             cmd.Connection = con;
                             sda.SelectCommand = cmd;
@@ -165,7 +166,7 @@ namespace TokenBasedAPI.Controllers
         }
 
 
-        [Authorize(Roles = "SuperAdmin, Admin, User")]
+       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         //[HttpPost]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetMarketingDocumentSalesPerson")]
@@ -178,7 +179,7 @@ namespace TokenBasedAPI.Controllers
                             .Where(c => c.Type == ClaimTypes.Role)
                             .Select(c => c.Value);
                 string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
-                using (OdbcConnection con = new OdbcConnection(constr))
+                using (SqlConnection con = new SqlConnection(constr))
                 {
 
 
@@ -192,9 +193,9 @@ namespace TokenBasedAPI.Controllers
                         querystring = "select * FROM   " + Sanitize(DBName) + ".[dbo]." + "OSLP  ";
 
                     }
-                    using (OdbcCommand cmd = new OdbcCommand(querystring))
+                    using (SqlCommand cmd = new SqlCommand(querystring))
                     {
-                        using (OdbcDataAdapter sda = new OdbcDataAdapter())
+                        using (SqlDataAdapter sda = new SqlDataAdapter())
                         {
                             cmd.Connection = con;
                             sda.SelectCommand = cmd;
@@ -222,7 +223,7 @@ namespace TokenBasedAPI.Controllers
             }
 
         }
-        [Authorize(Roles = "SuperAdmin, Admin, User")]
+       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         //[HttpPost]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetBusinessPartnersGroupCode")]
@@ -235,7 +236,7 @@ namespace TokenBasedAPI.Controllers
                             .Where(c => c.Type == ClaimTypes.Role)
                             .Select(c => c.Value);
                 string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
-                using (OdbcConnection con = new OdbcConnection(constr))
+                using (SqlConnection con = new SqlConnection(constr))
                 {
 
 
@@ -249,9 +250,9 @@ namespace TokenBasedAPI.Controllers
                         querystring = "select T1.CardType,T0.*  FROM   " + Sanitize(DBName) + ".[dbo]." + "OCRG T0  INNER JOIN " + Sanitize(DBName) + ".[dbo]." + "OCRD T1 ON T0.GroupCode = T0.GroupCode ";
 
                     }
-                    using (OdbcCommand cmd = new OdbcCommand(querystring))
+                    using (SqlCommand cmd = new SqlCommand(querystring))
                     {
-                        using (OdbcDataAdapter sda = new OdbcDataAdapter())
+                        using (SqlDataAdapter sda = new SqlDataAdapter())
                         {
                             cmd.Connection = con;
                             sda.SelectCommand = cmd;
@@ -281,7 +282,7 @@ namespace TokenBasedAPI.Controllers
         }
 
 
-        [Authorize(Roles = "SuperAdmin, Admin, User")]
+       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         //[HttpPost]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetBusinessPartnerPaymentTerms")]
@@ -294,7 +295,7 @@ namespace TokenBasedAPI.Controllers
                             .Where(c => c.Type == ClaimTypes.Role)
                             .Select(c => c.Value);
                 string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
-                using (OdbcConnection con = new OdbcConnection(constr))
+                using (SqlConnection con = new SqlConnection(constr))
                 {
 
 
@@ -308,9 +309,9 @@ namespace TokenBasedAPI.Controllers
                         querystring = "select * FROM   " + Sanitize(DBName) + ".[dbo]." + "OCTG  ";
 
                     }
-                    using (OdbcCommand cmd = new OdbcCommand(querystring))
+                    using (SqlCommand cmd = new SqlCommand(querystring))
                     {
-                        using (OdbcDataAdapter sda = new OdbcDataAdapter())
+                        using (SqlDataAdapter sda = new SqlDataAdapter())
                         {
                             cmd.Connection = con;
                             sda.SelectCommand = cmd;
@@ -350,7 +351,7 @@ namespace TokenBasedAPI.Controllers
                             .Where(c => c.Type == ClaimTypes.Role)
                             .Select(c => c.Value);
                 string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
-                using (OdbcConnection con = new OdbcConnection(constr))
+                using (SqlConnection con = new SqlConnection(constr))
                 {
 
 
@@ -364,9 +365,9 @@ namespace TokenBasedAPI.Controllers
                         querystring = "select * FROM   " + Sanitize(DBName) + ".[dbo]." + "DSC1  ";
 
                     }
-                    using (OdbcCommand cmd = new OdbcCommand(querystring))
+                    using (SqlCommand cmd = new SqlCommand(querystring))
                     {
-                        using (OdbcDataAdapter sda = new OdbcDataAdapter())
+                        using (SqlDataAdapter sda = new SqlDataAdapter())
                         {
                             cmd.Connection = con;
                             sda.SelectCommand = cmd;
@@ -394,7 +395,7 @@ namespace TokenBasedAPI.Controllers
             }
 
         }
-        [Authorize(Roles = "SuperAdmin, Admin, User")]
+       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         [HttpGet]
         [Route("api/SAP/GetSAPCompanies")]
         public HttpResponseMessage GetSAPCompanies()
@@ -406,27 +407,27 @@ namespace TokenBasedAPI.Controllers
                             .Where(c => c.Type == ClaimTypes.Role)
                             .Select(c => c.Value);
                 string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString  + @"Database=" + DBName.Trim() + ";" ;
-                using (OdbcConnection con = new OdbcConnection(constr))
+                var con = new SqlConnection(constr);
                 {
 
-                    DBName = "[SBO-COMMON]";
+                    var DBNameString = "[SBO-COMMON]";
                     if (DbServerType == "SAPHANA")
                         {
-                         querystring = "select CompDbNam FROM   \""  + Sanitize(DBName.Replace("[","").Replace("]", "")) + "\" + \".SRGC\"  ";
+                         querystring = "select CompDbNam FROM   \""  + Sanitize(DBNameString.Replace("[","").Replace("]", "")) + "\" + \".SRGC\"  ";
 
                          }
                     else
                         {
-                         querystring = "select * FROM   "  + Sanitize(DBName) + ".[dbo]." + "SRGC  ";
+                         querystring = "select * FROM   "  + Sanitize(DBNameString) + ".[dbo]." + "SRGC  ";
 
                        }
-                    using (OdbcCommand cmd = new OdbcCommand(querystring))
+                    var cmd = new SqlCommand(querystring, con);
                     {
-                        using (OdbcDataAdapter sda = new OdbcDataAdapter())
+                        SqlDataAdapter sda = new SqlDataAdapter(cmd);
                         {
-                            cmd.Connection = con;
-                            sda.SelectCommand = cmd;
-                            using (DataTable dt = new DataTable())
+                            //cmd.Connection = con;
+                            //sda.SelectCommand = cmd;
+                            DataTable dt = new DataTable();
                             {
                                 dt.TableName = "Dataset";
                                 sda.Fill(dt);
@@ -444,7 +445,7 @@ namespace TokenBasedAPI.Controllers
             catch (Exception ex)
             {
 
-                HttpResponseMessage exeption_response = null;
+                HttpResponseMessage exeption_response = new HttpResponseMessage();
                 exeption_response.Content = new StringContent(ex.Message, Encoding.UTF8, "application/json");
                 return exeption_response;
             }
@@ -452,23 +453,20 @@ namespace TokenBasedAPI.Controllers
         }
 
 
-        [Authorize(Roles = "SuperAdmin, Admin, User")]
+
+       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetIncomingPayments")]
-       public HttpResponseMessage GetIncomingPayments(string DBName)
+        public HttpResponseMessage GetIncomingPayments(string DBName)
         {
-            //try
-            //{
+            try
+            {
                 var identity = (ClaimsIdentity)User.Identity;
                 var roles = identity.Claims
                             .Where(c => c.Type == ClaimTypes.Role)
                             .Select(c => c.Value);
-            string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
-         
-           // string constr = (ConfigurationManager.ConnectionStrings["constr"].ConnectionString);
-            //string constr = (DecryptString(encrypt_decrypt_key, "ics4rk5x7PdAhKGpSaI9EQ7QnVLudfbvP4/KbNqyZkPkdNy7+oxOCjueMpEDCpVjzFqWuH/kencobsf/QAIJOef+fFD+VLplL8ba96ECFeLmJaeg8hyK+ginTQRH5LTf"));
-           // string constr = @"Driver ={ SQL Server}; Server = DESKTOP - NL6OLU8; Database = SBODEMOGB; Uid = sap; Pwd = sekonda1; MultipleActiveResultSets = True;";
-            using (OdbcConnection con = new OdbcConnection(constr))
+                string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
+                using (SqlConnection con = new SqlConnection(constr))
                 {
 
 
@@ -488,12 +486,153 @@ namespace TokenBasedAPI.Controllers
                             " T0.TrsfrSumSy, T0.NoDocSumSy, T0.DocTotalSy, T0.StornoRate, T0.UpdateDate, T0.CreateDate, T0.TaxDate, T0.Series, " +
                             "T0.BankCode, T0.BankAcct, T0.VatGroup, T0.VatSum, T0.VatSumFC, T0.VatSumSy, T0.FinncPriod, T0.VatPrcnt, T0.Dcount," +
                             " T0.DcntSum, T0.DcntSumFC, T0.WtCode, T0.WtSum, T0.WtSumFrgn, T0.WtSumSys, T0.Proforma, T0.BpAct, T0.BcgSum, " +
-                            "T0.BcgSumFC, T0.BcgSumSy, T0.PayToCode, T0.IsPaytoBnk, T0.PBnkCnt, T0.PBnkCode, T0.PBnkAccnt FROM "  + Sanitize(DBName) + ".[dbo]."+ "ORCT T0 ";
+                            "T0.BcgSumFC, T0.BcgSumSy, T0.PayToCode, T0.IsPaytoBnk, T0.PBnkCnt, T0.PBnkCode, T0.PBnkAccnt FROM " + Sanitize(DBName) + ".[dbo]." + "ORCT T0 ";
 
                     }
-                    using (OdbcCommand cmd = new OdbcCommand(querystring))
+                    using (SqlCommand cmd = new SqlCommand(querystring))
                     {
-                        using (OdbcDataAdapter sda = new OdbcDataAdapter())
+                        using (SqlDataAdapter sda = new SqlDataAdapter())
+                        {
+                            cmd.Connection = con;
+                            sda.SelectCommand = cmd;
+                            using (DataTable dt = new DataTable())
+                            {
+                                dt.TableName = "Payments";
+                                sda.Fill(dt);
+                                //return dt;
+                                string results = DataTableToJSONWithStringBuilder(dt);
+                                var response = Request.CreateResponse(HttpStatusCode.OK);
+                                response.Content = new StringContent(results, Encoding.UTF8, "application/json");
+                                return response;
+                                // return Request.CreateResponse(HttpStatusCode.Created, customers);
+                            }
+                        }
+                    }
+
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                HttpResponseMessage exeption_response = null;
+                exeption_response.Content = new StringContent(ex.Message, Encoding.UTF8, "application/json");
+                return exeption_response;
+            }
+
+        }
+
+
+
+       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
+        [HttpGet]
+        [Route("api/SAP/{DBName}/GetOutgoingPayments")]
+        public HttpResponseMessage GetOutgoingPayments(string DBName)
+        {
+            try
+            {
+                var identity = (ClaimsIdentity)User.Identity;
+                var roles = identity.Claims
+                            .Where(c => c.Type == ClaimTypes.Role)
+                            .Select(c => c.Value);
+                string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
+
+                   using (SqlConnection con = new SqlConnection(constr))
+                {
+
+
+                    if (DbServerType == "SAPHANA")
+                    {
+                        querystring = "select * FROM  " + "\"" + Sanitize(DBName) + "\"." + "\"OVPM\"  ";
+
+                    }
+                    else
+                    {
+                        querystring = "SELECT T0.DocEntry,T0.DocNum, T0.DocType,T0.Canceled, T0.Handwrtten, T0.Printed, T0.DocDate," +
+                            " T0.DocDueDate, T0.CardCode, T0.CardName, T0.DdctPrcnt, T0.DdctSum, T0.DdctSumFC, T0.CashAcct, " +
+                            "T0.CashSum, T0.CashSumFC, T0.CreditSum, T0.CredSumFC, T0.CheckAcct, T0.CheckSum, T0.CheckSumFC, T0.TrsfrAcct, " +
+                            "T0.TrsfrSum, T0.TrsfrSumFC, T0.TrsfrDate, T0.TrsfrRef, T0.PayNoDoc, T0.NoDocSum, T0.NoDocSumFC, T0.DocCurr," +
+                            " T0.DocRate, T0.SysRate, T0.DocTotal, T0.DocTotalFC, T0.Ref1, T0.Ref2, T0.CounterRef, T0.Comments, T0.JrnlMemo," +
+                            " T0.TransId, T0.DocTime, T0.ShowAtCard, T0.CntctCode, T0.DdctSumSy, T0.CashSumSy, T0.CredSumSy, T0.CheckSumSy," +
+                            " T0.TrsfrSumSy, T0.NoDocSumSy, T0.DocTotalSy, T0.StornoRate, T0.UpdateDate, T0.CreateDate, T0.TaxDate, T0.Series, " +
+                            "T0.BankCode, T0.BankAcct, T0.VatGroup, T0.VatSum, T0.VatSumFC, T0.VatSumSy, T0.FinncPriod, T0.VatPrcnt, T0.Dcount," +
+                            " T0.DcntSum, T0.DcntSumFC, T0.WtCode, T0.WtSum, T0.WtSumFrgn, T0.WtSumSys, T0.Proforma, T0.BpAct, T0.BcgSum, " +
+                            "T0.BcgSumFC, T0.BcgSumSy, T0.PayToCode, T0.IsPaytoBnk, T0.PBnkCnt, T0.PBnkCode, T0.PBnkAccnt FROM " + Sanitize(DBName) + ".[dbo]." + "OVPM T0 ";
+
+                    }
+                    using (SqlCommand cmd = new SqlCommand(querystring))
+                    {
+                        using (SqlDataAdapter sda = new SqlDataAdapter())
+                        {
+                            cmd.Connection = con;
+                            sda.SelectCommand = cmd;
+                            using (DataTable dt = new DataTable())
+                            {
+                                dt.TableName = "Payments";
+                                sda.Fill(dt);
+                                //return dt;
+                                string results = DataTableToJSONWithStringBuilder(dt);
+                                var response = Request.CreateResponse(HttpStatusCode.OK);
+                                response.Content = new StringContent(results, Encoding.UTF8, "application/json");
+                                return response;
+                                // return Request.CreateResponse(HttpStatusCode.Created, customers);
+                            }
+                        }
+                    }
+
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                HttpResponseMessage exeption_response = null;
+                exeption_response.Content = new StringContent(ex.Message, Encoding.UTF8, "application/json");
+                return exeption_response;
+            }
+
+        }
+
+
+       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
+        [HttpGet]
+        [Route("api/SAP/{DBName}/GetIncomingPaymentsPaginated/{CardCode}/{Page}/{RequestLimit}")]
+       public HttpResponseMessage GetIncomingPaymentsPaginated(string DBName, string CardCode, string Page, string RequestLimit)
+        {
+            try
+            {
+                var identity = (ClaimsIdentity)User.Identity;
+                var roles = identity.Claims
+                            .Where(c => c.Type == ClaimTypes.Role)
+                            .Select(c => c.Value);
+            string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
+                using (SqlConnection con = new SqlConnection(constr))
+                {
+
+
+                    if (DbServerType == "SAPHANA")
+                    {
+                        querystring = "select * FROM  " + "\"" + Sanitize(DBName) + "\"." + "\"ORCT\"  ";
+
+                    }
+                    else
+                    {
+                        querystring = "SELECT T0.DocEntry,T0.DocNum, T0.DocType,T0.Canceled, T0.Handwrtten, T0.Printed, T0.DocDate," +
+                            " T0.DocDueDate, T0.CardCode, T0.CardName, T0.DdctPrcnt, T0.DdctSum, T0.DdctSumFC, T0.CashAcct, " +
+                            "T0.CashSum, T0.CashSumFC, T0.CreditSum, T0.CredSumFC, T0.CheckAcct, T0.CheckSum, T0.CheckSumFC, T0.TrsfrAcct, " +
+                            "T0.TrsfrSum, T0.TrsfrSumFC, T0.TrsfrDate, T0.TrsfrRef, T0.PayNoDoc, T0.NoDocSum, T0.NoDocSumFC, T0.DocCurr," +
+                            " T0.DocRate, T0.SysRate, T0.DocTotal, T0.DocTotalFC, T0.Ref1, T0.Ref2, T0.CounterRef, T0.Comments, T0.JrnlMemo," +
+                            " T0.TransId, T0.DocTime, T0.ShowAtCard, T0.CntctCode, T0.DdctSumSy, T0.CashSumSy, T0.CredSumSy, T0.CheckSumSy," +
+                            " T0.TrsfrSumSy, T0.NoDocSumSy, T0.DocTotalSy, T0.StornoRate, T0.UpdateDate, T0.CreateDate, T0.TaxDate, T0.Series, " +
+                            "T0.BankCode, T0.BankAcct, T0.VatGroup, T0.VatSum, T0.VatSumFC, T0.VatSumSy, T0.FinncPriod, T0.VatPrcnt, T0.Dcount," +
+                            " T0.DcntSum, T0.DcntSumFC, T0.WtCode, T0.WtSum, T0.WtSumFrgn, T0.WtSumSys, T0.Proforma, T0.BpAct, T0.BcgSum, " +
+                            "T0.BcgSumFC, T0.BcgSumSy, T0.PayToCode, T0.IsPaytoBnk, T0.PBnkCnt, T0.PBnkCode, T0.PBnkAccnt FROM "  + Sanitize(DBName) + ".[dbo]."+ "ORCT T0 " +
+                             " WHERE   T0.CardCode = '" + Sanitize(CardCode) + "' ORDER BY T0.CardCode asc OFFSET " + Sanitize(Page) + "  ROWS FETCH NEXT " + Sanitize(RequestLimit) + " ROWS ONLY ";
+
+                    }
+                    using (SqlCommand cmd = new SqlCommand(querystring))
+                    {
+                        using (SqlDataAdapter sda = new SqlDataAdapter())
                         {
                             cmd.Connection = con;
                             sda.SelectCommand = cmd;
@@ -513,36 +652,33 @@ namespace TokenBasedAPI.Controllers
 
 
                 }
-            //}
-            //catch (Exception ex)
-            //{
+            }
+            catch (Exception ex)
+            {
 
-            //    HttpResponseMessage exeption_response = null;
-            //    exeption_response.Content = new StringContent(ex.Message, Encoding.UTF8, "application/json");
-            //    return exeption_response;
-            //}
+                HttpResponseMessage exeption_response = null;
+                exeption_response.Content = new StringContent(ex.Message, Encoding.UTF8, "application/json");
+                return exeption_response;
+            }
 
         }
 
 
-
-        [Authorize(Roles = "SuperAdmin, Admin, User")]
+        
+       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         [HttpGet]
-        [Route("api/SAP/{DBName}/GetOutgoingPayments")]
-        public HttpResponseMessage GetOutgoingPayments(string DBName)
+        [Route("api/SAP/{DBName}/GetOutgoingPaymentsPaginated/{CardCode}/{Page}/{RequestLimit}")]
+        public HttpResponseMessage GetOutgoingPaymentsPaginated(string DBName, string CardCode, string Page, string RequestLimit)
         {
-            //try
-            //{
-            var identity = (ClaimsIdentity)User.Identity;
+            try
+            {
+                var identity = (ClaimsIdentity)User.Identity;
             var roles = identity.Claims
                         .Where(c => c.Type == ClaimTypes.Role)
                         .Select(c => c.Value);
             string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
 
-            // string constr = (ConfigurationManager.ConnectionStrings["constr"].ConnectionString);
-            //string constr = (DecryptString(encrypt_decrypt_key, "ics4rk5x7PdAhKGpSaI9EQ7QnVLudfbvP4/KbNqyZkPkdNy7+oxOCjueMpEDCpVjzFqWuH/kencobsf/QAIJOef+fFD+VLplL8ba96ECFeLmJaeg8hyK+ginTQRH5LTf"));
-            // string constr = @"Driver ={ SQL Server}; Server = DESKTOP - NL6OLU8; Database = SBODEMOGB; Uid = sap; Pwd = sekonda1; MultipleActiveResultSets = True;";
-            using (OdbcConnection con = new OdbcConnection(constr))
+            using (SqlConnection con = new SqlConnection(constr))
             {
 
 
@@ -562,12 +698,13 @@ namespace TokenBasedAPI.Controllers
                         " T0.TrsfrSumSy, T0.NoDocSumSy, T0.DocTotalSy, T0.StornoRate, T0.UpdateDate, T0.CreateDate, T0.TaxDate, T0.Series, " +
                         "T0.BankCode, T0.BankAcct, T0.VatGroup, T0.VatSum, T0.VatSumFC, T0.VatSumSy, T0.FinncPriod, T0.VatPrcnt, T0.Dcount," +
                         " T0.DcntSum, T0.DcntSumFC, T0.WtCode, T0.WtSum, T0.WtSumFrgn, T0.WtSumSys, T0.Proforma, T0.BpAct, T0.BcgSum, " +
-                        "T0.BcgSumFC, T0.BcgSumSy, T0.PayToCode, T0.IsPaytoBnk, T0.PBnkCnt, T0.PBnkCode, T0.PBnkAccnt FROM " + Sanitize(DBName) + ".[dbo]." + "OVPM T0 ";
+                        "T0.BcgSumFC, T0.BcgSumSy, T0.PayToCode, T0.IsPaytoBnk, T0.PBnkCnt, T0.PBnkCode, T0.PBnkAccnt FROM " + Sanitize(DBName) + ".[dbo]." + "OVPM T0 " +
+                        " WHERE   T0.CardCode = '" + Sanitize(CardCode) + "' ORDER BY T0.CardCode asc OFFSET " + Sanitize(Page) + "  ROWS FETCH NEXT " + Sanitize(RequestLimit) + " ROWS ONLY ";
 
-                }
-                using (OdbcCommand cmd = new OdbcCommand(querystring))
+                    }
+                    using (SqlCommand cmd = new SqlCommand(querystring))
                 {
-                    using (OdbcDataAdapter sda = new OdbcDataAdapter())
+                    using (SqlDataAdapter sda = new SqlDataAdapter())
                     {
                         cmd.Connection = con;
                         sda.SelectCommand = cmd;
@@ -587,19 +724,158 @@ namespace TokenBasedAPI.Controllers
 
 
             }
-            //}
-            //catch (Exception ex)
-            //{
+            }
+            catch (Exception ex)
+            {
 
-            //    HttpResponseMessage exeption_response = null;
-            //    exeption_response.Content = new StringContent(ex.Message, Encoding.UTF8, "application/json");
-            //    return exeption_response;
-            //}
+                HttpResponseMessage exeption_response = null;
+                exeption_response.Content = new StringContent(ex.Message, Encoding.UTF8, "application/json");
+                return exeption_response;
+            }
+
+        }
+
+        [HttpGet]
+        [Route("api/SAP/{DBName}/GetIncomingPaymentsPaginated/{Page}/{RequestLimit}")]
+        public HttpResponseMessage GetIncomingPaymentsPaginated(string DBName, string Page, string RequestLimit)
+        {
+            try
+            {
+                var identity = (ClaimsIdentity)User.Identity;
+                var roles = identity.Claims
+                            .Where(c => c.Type == ClaimTypes.Role)
+                            .Select(c => c.Value);
+                string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
+                using (SqlConnection con = new SqlConnection(constr))
+                {
+
+
+                    if (DbServerType == "SAPHANA")
+                    {
+                        querystring = "select * FROM  " + "\"" + Sanitize(DBName) + "\"." + "\"ORCT\"  ";
+
+                    }
+                    else
+                    {
+                        querystring = "SELECT T0.DocEntry,T0.DocNum, T0.DocType,T0.Canceled, T0.Handwrtten, T0.Printed, T0.DocDate," +
+                            " T0.DocDueDate, T0.CardCode, T0.CardName, T0.DdctPrcnt, T0.DdctSum, T0.DdctSumFC, T0.CashAcct, " +
+                            "T0.CashSum, T0.CashSumFC, T0.CreditSum, T0.CredSumFC, T0.CheckAcct, T0.CheckSum, T0.CheckSumFC, T0.TrsfrAcct, " +
+                            "T0.TrsfrSum, T0.TrsfrSumFC, T0.TrsfrDate, T0.TrsfrRef, T0.PayNoDoc, T0.NoDocSum, T0.NoDocSumFC, T0.DocCurr," +
+                            " T0.DocRate, T0.SysRate, T0.DocTotal, T0.DocTotalFC, T0.Ref1, T0.Ref2, T0.CounterRef, T0.Comments, T0.JrnlMemo," +
+                            " T0.TransId, T0.DocTime, T0.ShowAtCard, T0.CntctCode, T0.DdctSumSy, T0.CashSumSy, T0.CredSumSy, T0.CheckSumSy," +
+                            " T0.TrsfrSumSy, T0.NoDocSumSy, T0.DocTotalSy, T0.StornoRate, T0.UpdateDate, T0.CreateDate, T0.TaxDate, T0.Series, " +
+                            "T0.BankCode, T0.BankAcct, T0.VatGroup, T0.VatSum, T0.VatSumFC, T0.VatSumSy, T0.FinncPriod, T0.VatPrcnt, T0.Dcount," +
+                            " T0.DcntSum, T0.DcntSumFC, T0.WtCode, T0.WtSum, T0.WtSumFrgn, T0.WtSumSys, T0.Proforma, T0.BpAct, T0.BcgSum, " +
+                            "T0.BcgSumFC, T0.BcgSumSy, T0.PayToCode, T0.IsPaytoBnk, T0.PBnkCnt, T0.PBnkCode, T0.PBnkAccnt FROM " + Sanitize(DBName) + ".[dbo]." + "ORCT T0 " +
+                             " ORDER BY T0.CardCode asc OFFSET " + Sanitize(Page) + "  ROWS FETCH NEXT " + Sanitize(RequestLimit) + " ROWS ONLY ";
+
+                    }
+                    using (SqlCommand cmd = new SqlCommand(querystring))
+                    {
+                        using (SqlDataAdapter sda = new SqlDataAdapter())
+                        {
+                            cmd.Connection = con;
+                            sda.SelectCommand = cmd;
+                            using (DataTable dt = new DataTable())
+                            {
+                                dt.TableName = "Payments";
+                                sda.Fill(dt);
+                                //return dt;
+                                string results = DataTableToJSONWithStringBuilder(dt);
+                                var response = Request.CreateResponse(HttpStatusCode.OK);
+                                response.Content = new StringContent(results, Encoding.UTF8, "application/json");
+                                return response;
+                                // return Request.CreateResponse(HttpStatusCode.Created, customers);
+                            }
+                        }
+                    }
+
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                HttpResponseMessage exeption_response = null;
+                exeption_response.Content = new StringContent(ex.Message, Encoding.UTF8, "application/json");
+                return exeption_response;
+            }
 
         }
 
 
-        [Authorize(Roles = "SuperAdmin, Admin, User")]
+
+        //  [Authorize(Roles = "SuperAdmin, Admin, User")]
+        [HttpGet]
+        [Route("api/SAP/{DBName}/GetOutgoingPaymentsPaginated/{Page}/{RequestLimit}")]
+        public HttpResponseMessage GetOutgoingPaymentsPaginated(string DBName, string Page, string RequestLimit)
+        {
+            try
+            {
+                var identity = (ClaimsIdentity)User.Identity;
+                var roles = identity.Claims
+                            .Where(c => c.Type == ClaimTypes.Role)
+                            .Select(c => c.Value);
+                string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
+
+                using (SqlConnection con = new SqlConnection(constr))
+                {
+
+
+                    if (DbServerType == "SAPHANA")
+                    {
+                        querystring = "select * FROM  " + "\"" + Sanitize(DBName) + "\"." + "\"OVPM\"  ";
+
+                    }
+                    else
+                    {
+                        querystring = "SELECT T0.DocEntry,T0.DocNum, T0.DocType,T0.Canceled, T0.Handwrtten, T0.Printed, T0.DocDate," +
+                            " T0.DocDueDate, T0.CardCode, T0.CardName, T0.DdctPrcnt, T0.DdctSum, T0.DdctSumFC, T0.CashAcct, " +
+                            "T0.CashSum, T0.CashSumFC, T0.CreditSum, T0.CredSumFC, T0.CheckAcct, T0.CheckSum, T0.CheckSumFC, T0.TrsfrAcct, " +
+                            "T0.TrsfrSum, T0.TrsfrSumFC, T0.TrsfrDate, T0.TrsfrRef, T0.PayNoDoc, T0.NoDocSum, T0.NoDocSumFC, T0.DocCurr," +
+                            " T0.DocRate, T0.SysRate, T0.DocTotal, T0.DocTotalFC, T0.Ref1, T0.Ref2, T0.CounterRef, T0.Comments, T0.JrnlMemo," +
+                            " T0.TransId, T0.DocTime, T0.ShowAtCard, T0.CntctCode, T0.DdctSumSy, T0.CashSumSy, T0.CredSumSy, T0.CheckSumSy," +
+                            " T0.TrsfrSumSy, T0.NoDocSumSy, T0.DocTotalSy, T0.StornoRate, T0.UpdateDate, T0.CreateDate, T0.TaxDate, T0.Series, " +
+                            "T0.BankCode, T0.BankAcct, T0.VatGroup, T0.VatSum, T0.VatSumFC, T0.VatSumSy, T0.FinncPriod, T0.VatPrcnt, T0.Dcount," +
+                            " T0.DcntSum, T0.DcntSumFC, T0.WtCode, T0.WtSum, T0.WtSumFrgn, T0.WtSumSys, T0.Proforma, T0.BpAct, T0.BcgSum, " +
+                            "T0.BcgSumFC, T0.BcgSumSy, T0.PayToCode, T0.IsPaytoBnk, T0.PBnkCnt, T0.PBnkCode, T0.PBnkAccnt FROM " + Sanitize(DBName) + ".[dbo]." + "OVPM T0 " +
+                            " ORDER BY T0.CardCode asc OFFSET " + Sanitize(Page) + "  ROWS FETCH NEXT " + Sanitize(RequestLimit) + " ROWS ONLY ";
+
+                    }
+                    using (SqlCommand cmd = new SqlCommand(querystring))
+                    {
+                        using (SqlDataAdapter sda = new SqlDataAdapter())
+                        {
+                            cmd.Connection = con;
+                            sda.SelectCommand = cmd;
+                            using (DataTable dt = new DataTable())
+                            {
+                                dt.TableName = "Payments";
+                                sda.Fill(dt);
+                                //return dt;
+                                string results = DataTableToJSONWithStringBuilder(dt);
+                                var response = Request.CreateResponse(HttpStatusCode.OK);
+                                response.Content = new StringContent(results, Encoding.UTF8, "application/json");
+                                return response;
+                                // return Request.CreateResponse(HttpStatusCode.Created, customers);
+                            }
+                        }
+                    }
+
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                HttpResponseMessage exeption_response = null;
+                exeption_response.Content = new StringContent(ex.Message, Encoding.UTF8, "application/json");
+                return exeption_response;
+            }
+
+        }
+
+        //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         //[HttpPost]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetCompanyDetails")]
@@ -617,7 +893,7 @@ namespace TokenBasedAPI.Controllers
             // string constr = (ConfigurationManager.ConnectionStrings["constr"].ConnectionString);
             //string constr = (DecryptString(encrypt_decrypt_key, "ics4rk5x7PdAhKGpSaI9EQ7QnVLudfbvP4/KbNqyZkPkdNy7+oxOCjueMpEDCpVjzFqWuH/kencobsf/QAIJOef+fFD+VLplL8ba96ECFeLmJaeg8hyK+ginTQRH5LTf"));
             // string constr = @"Driver ={ SQL Server}; Server = DESKTOP - NL6OLU8; Database = SBODEMOGB; Uid = sap; Pwd = sekonda1; MultipleActiveResultSets = True;";
-            using (OdbcConnection con = new OdbcConnection(constr))
+            using (SqlConnection con = new SqlConnection(constr))
             {
 
 
@@ -632,9 +908,9 @@ namespace TokenBasedAPI.Controllers
                        
 
                 }
-                using (OdbcCommand cmd = new OdbcCommand(querystring))
+                using (SqlCommand cmd = new SqlCommand(querystring))
                 {
-                    using (OdbcDataAdapter sda = new OdbcDataAdapter())
+                    using (SqlDataAdapter sda = new SqlDataAdapter())
                     {
                         cmd.Connection = con;
                         sda.SelectCommand = cmd;
@@ -681,7 +957,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                     .Where(c => c.Type == ClaimTypes.Role)
                     .Select(c => c.Value);
         string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString  + @"Database=" + DBName.Trim() + ";" ;
-        using (OdbcConnection con = new OdbcConnection(constr))
+        using (SqlConnection con = new SqlConnection(constr))
         {
 
 
@@ -706,9 +982,9 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                             " WHERE  DocDate  BETWEEN '" + Sanitize(FromDocDate) + "' and  '" + Sanitize(ToDocDate) + "'";
 
                     }
-            using (OdbcCommand cmd = new OdbcCommand(querystring))
+            using (SqlCommand cmd = new SqlCommand(querystring))
             {
-                using (OdbcDataAdapter sda = new OdbcDataAdapter())
+                using (SqlDataAdapter sda = new SqlDataAdapter())
                 {
                     cmd.Connection = con;
                     sda.SelectCommand = cmd;
@@ -737,7 +1013,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
 
 }
 
-        [Authorize(Roles = "SuperAdmin, Admin, User")]
+       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetOutgoingPaymentsByDate/{FromDocDate}/{ToDocDate}")]
         public HttpResponseMessage GetOutgoingPaymentsByDate(string DBName, string FromDocDate, string ToDocDate)
@@ -749,7 +1025,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                             .Where(c => c.Type == ClaimTypes.Role)
                             .Select(c => c.Value);
                 string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
-                using (OdbcConnection con = new OdbcConnection(constr))
+                using (SqlConnection con = new SqlConnection(constr))
                 {
 
 
@@ -774,9 +1050,9 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                             " WHERE  DocDate  BETWEEN '" + Sanitize(FromDocDate) + "' and  '" + Sanitize(ToDocDate) + "'";
 
                     }
-                    using (OdbcCommand cmd = new OdbcCommand(querystring))
+                    using (SqlCommand cmd = new SqlCommand(querystring))
                     {
-                        using (OdbcDataAdapter sda = new OdbcDataAdapter())
+                        using (SqlDataAdapter sda = new SqlDataAdapter())
                         {
                             cmd.Connection = con;
                             sda.SelectCommand = cmd;
@@ -805,7 +1081,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
 
         }
 
-        [Authorize(Roles = "SuperAdmin, Admin, User")]
+       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetIncomingPaymentsByDocEntry/{DocEntry}")]
         public HttpResponseMessage GetIncomingPaymentsByDocEntry(string DBName, string DocEntry)
@@ -817,7 +1093,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                             .Where(c => c.Type == ClaimTypes.Role)
                             .Select(c => c.Value);
                 string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
-                using (OdbcConnection con = new OdbcConnection(constr))
+                using (SqlConnection con = new SqlConnection(constr))
                 {
 
 
@@ -842,9 +1118,9 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                             " WHERE  T0.DocEntry = '" + Sanitize(DocEntry) + "'";
 
                     }
-                    using (OdbcCommand cmd = new OdbcCommand(querystring))
+                    using (SqlCommand cmd = new SqlCommand(querystring))
                     {
-                        using (OdbcDataAdapter sda = new OdbcDataAdapter())
+                        using (SqlDataAdapter sda = new SqlDataAdapter())
                         {
                             cmd.Connection = con;
                             sda.SelectCommand = cmd;
@@ -875,7 +1151,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
         }
 
 
-        [Authorize(Roles = "SuperAdmin, Admin, User")]
+       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetOutgoingPaymentsByDocEntry/{DocEntry}")]
         public HttpResponseMessage GetOutgoingPaymentsByDocEntry(string DBName, string DocEntry)
@@ -887,7 +1163,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                             .Where(c => c.Type == ClaimTypes.Role)
                             .Select(c => c.Value);
                 string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
-                using (OdbcConnection con = new OdbcConnection(constr))
+                using (SqlConnection con = new SqlConnection(constr))
                 {
 
 
@@ -912,9 +1188,9 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                             " WHERE  T0.DocEntry = '" + Sanitize(DocEntry) + "'";
 
                     }
-                    using (OdbcCommand cmd = new OdbcCommand(querystring))
+                    using (SqlCommand cmd = new SqlCommand(querystring))
                     {
-                        using (OdbcDataAdapter sda = new OdbcDataAdapter())
+                        using (SqlDataAdapter sda = new SqlDataAdapter())
                         {
                             cmd.Connection = con;
                             sda.SelectCommand = cmd;
@@ -926,7 +1202,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                                 var response = Request.CreateResponse(HttpStatusCode.OK);
                                 response.Content = new StringContent(results, Encoding.UTF8, "application/json");
                                 return response;
-                               }
+                            }
                         }
                     }
                 }
@@ -940,7 +1216,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
             }
 
         }
-        [Authorize(Roles = "SuperAdmin, Admin, User")]
+       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         //[HttpPost]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetAccounts")]
@@ -951,7 +1227,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                         .Where(c => c.Type == ClaimTypes.Role)
                         .Select(c => c.Value);
             string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString  + @"Database=" + DBName.Trim() + ";" ;
-            using (OdbcConnection con = new OdbcConnection(constr))
+            using (SqlConnection con = new SqlConnection(constr))
             {
 
                 if (DbServerType == "SAPHANA")
@@ -963,9 +1239,9 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                     querystring = "select T0.AcctCode, T0.AcctName,T0.Postable from  " + Sanitize(DBName) + ".[dbo]." + "oact T0(nolock)";
 
                 }
-                using (OdbcCommand cmd = new OdbcCommand(querystring))
+                using (SqlCommand cmd = new SqlCommand(querystring))
                 {
-                    using (OdbcDataAdapter sda = new OdbcDataAdapter())
+                    using (SqlDataAdapter sda = new SqlDataAdapter())
                     {
                         cmd.Connection = con;
                         cmd.CommandTimeout = 4000000;
@@ -985,7 +1261,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
             }
         }
 
-        [Authorize(Roles = "SuperAdmin, Admin, User")]
+       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         //[HttpPost]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetTaxes")]
@@ -996,7 +1272,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                         .Where(c => c.Type == ClaimTypes.Role)
                         .Select(c => c.Value);
             string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString  + @"Database=" + DBName.Trim() + ";" ;
-            using (OdbcConnection con = new OdbcConnection(constr))
+            using (SqlConnection con = new SqlConnection(constr))
             {
 
 
@@ -1010,9 +1286,9 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
 
                 }
 
-                using (OdbcCommand cmd = new OdbcCommand(querystring))
+                using (SqlCommand cmd = new SqlCommand(querystring))
                 {
-                    using (OdbcDataAdapter sda = new OdbcDataAdapter())
+                    using (SqlDataAdapter sda = new SqlDataAdapter())
                     {
                         cmd.Connection = con;
                         sda.SelectCommand = cmd;
@@ -1031,7 +1307,54 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
             }
         }
 
-        [Authorize(Roles = "SuperAdmin, Admin, User")]
+
+       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
+        //[HttpPost]
+        [HttpGet]
+        [Route("api/SAP/{DBName}/GetWitholdingTaxes")]
+        public HttpResponseMessage GetWitholdingTaxes(string DBName)
+        {
+            var identity = (ClaimsIdentity)User.Identity;
+            var roles = identity.Claims
+                        .Where(c => c.Type == ClaimTypes.Role)
+                        .Select(c => c.Value);
+            string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
+            using (SqlConnection con = new SqlConnection(constr))
+            {
+
+
+                if (DbServerType == "SAPHANA")
+                {
+                    querystring = "select T0.* from  \"" + Sanitize(DBName) + "\" + \".OWHT\" T0  ";
+                }
+                else
+                {
+                    querystring = "select T0.* from  " + Sanitize(DBName) + ".[dbo]." + "OWHT t0 (nolock) ";
+
+                }
+
+                using (SqlCommand cmd = new SqlCommand(querystring))
+                {
+                    using (SqlDataAdapter sda = new SqlDataAdapter())
+                    {
+                        cmd.Connection = con;
+                        sda.SelectCommand = cmd;
+                        using (DataTable dt = new DataTable())
+                        {
+                            dt.TableName = "Dataset";
+                            sda.Fill(dt);
+                            //return dt;
+                            string results = DataTableToJSONWithStringBuilder(dt);
+                            var response = Request.CreateResponse(HttpStatusCode.OK);
+                            response.Content = new StringContent(results, Encoding.UTF8, "application/json");
+                            return response;
+                        }
+                    }
+                }
+            }
+        }
+
+       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         //[HttpPost]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetWarehouses")]
@@ -1042,7 +1365,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                         .Where(c => c.Type == ClaimTypes.Role)
                         .Select(c => c.Value);
             string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString  + @"Database=" + DBName.Trim() + ";" ;
-            using (OdbcConnection con = new OdbcConnection(constr))
+            using (SqlConnection con = new SqlConnection(constr))
             {
 
                 if (DbServerType == "SAPHANA")
@@ -1058,9 +1381,9 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
 
 
 
-                using (OdbcCommand cmd = new OdbcCommand(querystring))
+                using (SqlCommand cmd = new SqlCommand(querystring))
                 {
-                    using (OdbcDataAdapter sda = new OdbcDataAdapter())
+                    using (SqlDataAdapter sda = new SqlDataAdapter())
                     {
                         cmd.Connection = con;
                         sda.SelectCommand = cmd;
@@ -1079,7 +1402,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
             }
         }
 
-        [Authorize(Roles = "SuperAdmin, Admin, User")]
+       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         //[HttpPost]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetPriceslist")]
@@ -1090,7 +1413,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                         .Where(c => c.Type == ClaimTypes.Role)
                         .Select(c => c.Value);
             string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString  + @"Database=" + DBName.Trim() + ";" ;
-            using (OdbcConnection con = new OdbcConnection(constr))
+            using (SqlConnection con = new SqlConnection(constr))
             {
 
                 if (DbServerType == "SAPHANA")
@@ -1103,9 +1426,9 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
 
                 }
 
-                using (OdbcCommand cmd = new OdbcCommand(querystring))
+                using (SqlCommand cmd = new SqlCommand(querystring))
                 {
-                    using (OdbcDataAdapter sda = new OdbcDataAdapter())
+                    using (SqlDataAdapter sda = new SqlDataAdapter())
                     {
                         cmd.Connection = con;
                         sda.SelectCommand = cmd;
@@ -1124,7 +1447,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
             }
         }
 
-        [Authorize(Roles = "SuperAdmin, Admin, User")]
+       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         //[HttpPost]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetItems")]
@@ -1135,22 +1458,22 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                         .Where(c => c.Type == ClaimTypes.Role)
                         .Select(c => c.Value);
             string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString  + @"Database=" + DBName.Trim() + ";" ;
-            using (OdbcConnection con = new OdbcConnection(constr))
+            using (SqlConnection con = new SqlConnection(constr))
             {
 
                 if (DbServerType == "SAPHANA")
                 {
-                    querystring = "SELECT T0.*,T1.\"Price\",T1.\"PriceList\" FROM   \""  + Sanitize(DBName) + "\" + \".OITM\" T0  INNER JOIN   \""  + Sanitize(DBName) + "\" + \".ITM1\" T1 ON T0.\"ItemCode\" = T1.\"ItemCode\" where T0.\"SellItem\" = 'Y' AND T1.\"Price\" > 0 AND ManSerNum ='N' and  ManBtchNum='N' AND  T0.\"frozenFor\"='N')";
+                    querystring = "SELECT T0.*,T1.\"Price\",T1.\"PriceList\" FROM   \""  + Sanitize(DBName) + "\" + \".OITM\" T0 " ;
 
                 }
                 else
                 {
-                    querystring = "SELECT T0.*,T1.Price,T1.PriceList FROM   "  + Sanitize(DBName) + ".[dbo]." + "OITM T0(nolock) INNER JOIN   "  + Sanitize(DBName) + ".[dbo]." + "ITM1 T1 ON T0.ItemCode = T1.ItemCode where T0.SellItem ='Y' AND  T1.Price >0 AND ManSerNum ='N' AND frozenFor='N'";
+                    querystring = "SELECT T0.ItemCode, T0.ItemName, T0.ItemType,T1.Price,T1.PriceList FROM   "  + Sanitize(DBName) + ".[dbo]." + "OITM T0(nolock) INNER JOIN   "  + Sanitize(DBName) + ".[dbo]." + "ITM1 T1 ON T0.ItemCode = T1.ItemCode ";
 
                 }
-                using (OdbcCommand cmd = new OdbcCommand(querystring))
+                using (SqlCommand cmd = new SqlCommand(querystring))
                 {
-                    using (OdbcDataAdapter sda = new OdbcDataAdapter())
+                    using (SqlDataAdapter sda = new SqlDataAdapter())
                     {
                         cmd.Connection = con;
                         cmd.CommandTimeout = 4000000;
@@ -1171,7 +1494,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
         }
 
 
-        [Authorize(Roles = "SuperAdmin, Admin, User")]
+       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         //[HttpPost]
         [HttpGet]
         [Route("api/SAP/{DBName}/IsDBConnected")]
@@ -1182,7 +1505,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
             //dynamic message_ = null;
             string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString  + @"Database=" + DBName.Trim() + ";" ;
 
-            using (OdbcConnection con = new OdbcConnection(constr))
+            using (SqlConnection con = new SqlConnection(constr))
             {
                 con.Open();
 
@@ -1219,7 +1542,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
             return response;
         }
 
-        [Authorize(Roles = "SuperAdmin, Admin, User")]
+       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         //[HttpPost]
         [HttpGet]
        // [Route("api/SAP/{DBName}/CheckGetPostStatus")]
@@ -1234,7 +1557,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
 
             string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString  + @"Database=" + DBName.Trim() + ";" ;
 
-            using (OdbcConnection con = new OdbcConnection(constr))
+            using (SqlConnection con = new SqlConnection(constr))
             {
                 con.Open();
 
@@ -1284,7 +1607,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
 
         }
 
-        [Authorize(Roles = "SuperAdmin, Admin, User")]
+       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         //[HttpPost]
         [HttpGet]
 
@@ -1342,7 +1665,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
             return response;
         }
 
-        static string AddUpdateAppSettings(string key, string value)
+        public static string AddUpdateAppSettings(string key, string value)
         {
             string message = "";
             try
@@ -1483,7 +1806,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
         }
 
 
-        [Authorize(Roles = "SuperAdmin, Admin, User")]
+       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         [HttpPost]
         [Route("api/SAP/UpdateWebConfig/{type}/{key}/{value}")]
         public HttpResponseMessage UpdateWebConfig(string type,string key , string value)
@@ -1519,7 +1842,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
             return response;
         }
 
-        [Authorize(Roles = "SuperAdmin, Admin, User")]
+       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         //[HttpPost]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetAvailableQuantity/{ItemCode}/{WarehouseCode}/{Quantity}")]
@@ -1550,11 +1873,11 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
             string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
 
             //string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString  + @"Database=" + DBName.Trim() + ";" ;
-            using (OdbcConnection con = new OdbcConnection(constr))
+            using (SqlConnection con = new SqlConnection(constr))
             {
-                using (OdbcCommand cmd = new OdbcCommand(querystring))
+                using (SqlCommand cmd = new SqlCommand(querystring))
                 {
-                    using (OdbcDataAdapter sda = new OdbcDataAdapter())
+                    using (SqlDataAdapter sda = new SqlDataAdapter())
                     {
                         cmd.Connection = con;
                         sda.SelectCommand = cmd;
@@ -1576,7 +1899,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
 
 
 
-        [Authorize(Roles = "SuperAdmin, Admin, User")]
+       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         //[HttpPost]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetAvailableQuantityBatch/{ItemCode}/{WarehouseCode}/{Quantity}")]
@@ -1624,11 +1947,11 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
             string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
 
             //string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString  + @"Database=" + DBName.Trim() + ";" ;
-            using (OdbcConnection con = new OdbcConnection(constr))
+            using (SqlConnection con = new SqlConnection(constr))
             {
-                using (OdbcCommand cmd = new OdbcCommand(querystring))
+                using (SqlCommand cmd = new SqlCommand(querystring))
                 {
-                    using (OdbcDataAdapter sda = new OdbcDataAdapter())
+                    using (SqlDataAdapter sda = new SqlDataAdapter())
                     {
                         cmd.Connection = con;
                         sda.SelectCommand = cmd;
@@ -1649,7 +1972,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
         }
 
 
-        [Authorize(Roles = "SuperAdmin, Admin, User")]
+       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         //[HttpPost]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetItemBatchesAndQuantities/{ItemCode}/{WarehouseCode}")]
@@ -1693,11 +2016,11 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
             string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
 
             //string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString  + @"Database=" + DBName.Trim() + ";" ;
-            using (OdbcConnection con = new OdbcConnection(constr))
+            using (SqlConnection con = new SqlConnection(constr))
             {
-                using (OdbcCommand cmd = new OdbcCommand(querystring))
+                using (SqlCommand cmd = new SqlCommand(querystring))
                 {
-                    using (OdbcDataAdapter sda = new OdbcDataAdapter())
+                    using (SqlDataAdapter sda = new SqlDataAdapter())
                     {
                         cmd.Connection = con;
                         sda.SelectCommand = cmd;
@@ -1717,7 +2040,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
             }
         }
 
-        [Authorize(Roles = "SuperAdmin, Admin, User")]
+       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         //[HttpPost]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetItemPrice/{ItemCode}/{CardCode}")]
@@ -1743,11 +2066,11 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                         .Where(c => c.Type == ClaimTypes.Role)
                         .Select(c => c.Value);
             string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString  + @"Database=" + DBName.Trim() + ";" ;
-            using (OdbcConnection con = new OdbcConnection(constr))
+            using (SqlConnection con = new SqlConnection(constr))
             {
-                using (OdbcCommand cmd = new OdbcCommand(querystring))
+                using (SqlCommand cmd = new SqlCommand(querystring))
                 {
-                    using (OdbcDataAdapter sda = new OdbcDataAdapter())
+                    using (SqlDataAdapter sda = new SqlDataAdapter())
                     {
                         cmd.Connection = con;
                         sda.SelectCommand = cmd;
@@ -1871,6 +2194,16 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
 
         }
 
+        public class MarketingDocument_Details
+        {
+            public int RecordCount { get; set; }
+            public int RecordLimit { get; set; }
+            public int CurrentPage { get; set; }
+
+            public int NumberofPages { get; set; }
+
+        }
+
         public class MarketingDocumentHeader
         {
             public string CardCode { get; set; }
@@ -1892,15 +2225,12 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
             public string Remarks { get; set; }
             public List<MarketingDocument_Rows> MarketingDocument_Rows { get; set; }
             public List<Payment_Rows> Payment_Rows { get; set; }
+         
         }
 
-
-
-
-        [Authorize(Roles = "SuperAdmin, Admin, User")]
         [HttpGet]
-        [Route("api/SAP/{DBName}/GetMarketingDocuments/{ObjectType}")]
-        public HttpResponseMessage GetMarketingDocuments(string DBName, string ObjectType)
+        [Route("api/SAP/{DBName}/GetMarketingDocumentsByCardCode/{ObjectType}/{CardCode}/{Page}/{RequestLimit}/")]
+        public HttpResponseMessage GetMarketingDocumentsByCardCode(string DBName, string ObjectType, string CardCode ,string Page, string RequestLimit)
 
 
         {
@@ -1990,7 +2320,9 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
             {
                 querystring = "select ISNULL(T0.DocEntry,'')'DocEntry',ISNULL(T0.DocNum,'') 'DocNum',ISNULL(T0.DocCur,'') 'DocCur',ISNULL(T0.CardCode,'') 'CardCode', ISNULL(T0.CardName,'') 'CardName'," +
                    " ISNULL( T0.DocDate,'') 'DocDate', ISNULL( T0.DocDueDate,'') 'DocDueDate', ISNULL( T0.TaxDate,'') 'TaxDate',ISNULL(T0.DocType,'') 'DocType', ISNULL(T0.CANCELED,'') 'CANCELED', ISNULL(T0.DocStatus ,'') 'DocStatus'," +
-                   " ISNULL(T0.DocTotal,0)'DocTotal', ISNULL(T0.VatSum,0)'VatSum',ISNULL(T0.DiscSum,0) 'DiscSum' ,ISNULL( T0.Comments,'') 'Comments' from  " + Sanitize(DBName) + ".[dbo]." + HeaderTable + " t0 (nolock) ";
+                   " ISNULL(T0.DocTotal,0)'DocTotal', ISNULL(T0.VatSum,0)'VatSum',ISNULL(T0.DiscSum,0) 'DiscSum' ,ISNULL( T0.Comments,'') 'Comments' from  " + Sanitize(DBName) + ".[dbo]." + HeaderTable + " t0 (nolock) " +
+                   " WHERE   CardCode = '" + Sanitize(CardCode) + "' ORDER BY CardCode asc OFFSET " + Sanitize(Page) + "  ROWS FETCH NEXT " + Sanitize(RequestLimit) + " ROWS ONLY ";
+
                 // querystring = "select  T0.DocEntry,T0.DocNum,T0.CardCode, T0.CardName, T0.DocDate, T0.DocType, T0.CANCELED, T0.DocStatus, ISNULL(T0.DocTotal,0), T0.VatSum ,ISNULL(T0.DiscSum,0) from  "  + Sanitize(DBName) + ".[dbo]." + "OINV t0 (nolock) ";
 
 
@@ -2089,7 +2421,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                         Remarks = Convert.ToString(dt.Rows[i]["Comments"])
                        ,
                         MarketingDocument_Rows = GetMarketingDocumentRows(DBName, HeaderTable, RowsTable, Convert.ToString(dt.Rows[i]["DocEntry"])),
-                       // Payment_Rows = GetPayment_Rows(DBName, HeaderTable, RowsTable, Convert.ToString(dt.Rows[i]["DocEntry"]))
+                        // Payment_Rows = GetPayment_Rows(DBName, HeaderTable, RowsTable, Convert.ToString(dt.Rows[i]["DocEntry"]))
 
                     };
                     invoices.Add(document);
@@ -2097,19 +2429,257 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                 }
 
             }
+            querystring = "select count(T0.DocEntry)/  " + RequestLimit + " as NumberofPages FROM  " + Sanitize(DBName) + ".[dbo]." + HeaderTable + " t0(nolock)";
+            DataTable records = GetData(DBName, querystring);
+            var json = DataTableToJSONWithStringBuilder(records);
+            string record_details = "{\"RequestLimit\": \"" + RequestLimit + "\",\"CurrentPage\": \"" + Page + "\"," + json.Replace("[{", "").Replace("]", "");
 
-    var json = JsonConvert.SerializeObject(invoices, Newtonsoft.Json.Formatting.Indented);
-    // return Request.CreateResponse(HttpStatusCode.Created, json);
 
-    var response = Request.CreateResponse(HttpStatusCode.OK);
-    response.Content = new StringContent(json, Encoding.UTF8, "application/json");
-    return response;
-}
+            string jObject1 = JsonConvert.SerializeObject(invoices, Newtonsoft.Json.Formatting.Indented);
+            // string final_data =  jObject1 + record_details;
+            var json_final = JsonConvert.SerializeObject(new[] { "MarketingDocument",JsonConvert.DeserializeObject(jObject1),
+                                            "Record Details",JsonConvert.DeserializeObject(record_details) });
 
-        [Authorize(Roles = "SuperAdmin, Admin, User")]
+
+            //  var result = new JObject();
+
+            // jObject1.Merge(jObject2);
+            //var json1 = JsonConvert.SerializeObject(record_details, Newtonsoft.Json.Formatting.Indented);
+            // var json_ = JsonConvert.SerializeObject("{"Success":"test"}", Newtonsoft.Json.Formatting.Indented);
+
+            var response = Request.CreateResponse(HttpStatusCode.OK);
+            response.Content = new StringContent(json_final, Encoding.UTF8, "application/json");
+            return response;
+        }
+
+        [HttpGet]
+        [Route("api/SAP/{DBName}/GetMarketingDocumentsPaginated/{ObjectType}/{Page}/{RequestLimit}")]
+        public HttpResponseMessage GetMarketingDocumentsPaginated(string DBName, string ObjectType ,string Page ,string RequestLimit)
+
+
+        {
+            string HeaderTable = "";
+            string RowsTable = "";
+            if (ObjectType == "SALESQOUTATION")
+            {
+                HeaderTable = "OQUT";
+                RowsTable = "QUT1";
+            }
+            else if (ObjectType == "SALESORDER")
+            {
+
+                HeaderTable = "ORDR";
+                RowsTable = "RDR1";
+            }
+            else if (ObjectType == "SALESCREDITNOTE")
+            {
+
+
+                HeaderTable = "ORIN";
+                RowsTable = "RIN1";
+            }
+            else if (ObjectType == "SALESINVOICE")
+            {
+
+                HeaderTable = "OINV";
+                RowsTable = "INV1";
+
+            }
+            else if (ObjectType == "PURCHASEREQUEST")
+            {
+
+                HeaderTable = "OPRQ";
+                RowsTable = "PRQ1";
+
+            }
+            else if (ObjectType == "PURCHASEQOUTATION")
+            {
+
+                HeaderTable = "OPQT";
+                RowsTable = "PQT1";
+            }
+            else if (ObjectType == "PURCHASEORDER")
+            {
+
+                HeaderTable = "OPOR";
+                RowsTable = "POR1";
+            }
+            else if (ObjectType == "PURCHASECREDITNOTE")
+            {
+
+
+                HeaderTable = "ORPC";
+                RowsTable = "RPC1";
+            }
+            else if (ObjectType == "GRPO")
+            {
+
+                HeaderTable = "OPDN";
+                RowsTable = "PDN1";
+            }
+            else if (ObjectType == "GOODSRETURN")
+            {
+
+
+                HeaderTable = "ORPD";
+                RowsTable = "RPD1";
+            }
+            else if (ObjectType == "PURCHASEINVOICE")
+            {
+
+                HeaderTable = "OPCH";
+                RowsTable = "PCH1";
+            }
+
+            List<MarketingDocumentHeader> invoices = new List<MarketingDocumentHeader>();
+
+
+            if (DbServerType == "SAPHANA")
+            {
+                //querystring = "select case WHEN T1.\"OnHand\"  >= '" + Sanitize(Quantity) + "' THEN  'Y' ELSE 'N' END AS \"QuantityOk\" from \"OITM\" T0   INNER JOIN \"OITW\"  T1  ON T0.\"ItemCode\" = T1.\"ItemCode\" INNER JOIN \"OWHS\" T2 ON T2.\"WhsCode\" = T1.\"WhsCode\" WHERE  T0.\"ItemCode\" = '" + Sanitize(ItemCode) + "' and T2.\"WhsCode\" = '" + Sanitize(WarehouseCode) + "'";
+                querystring = "select T0.\"DocEntry\",T0.\"DocNum\",T0.\"CardCode\", T0.\"CardName\", T0.\"DocDate\", T0.\"DocType\", T0.\"CANCELED\", T0.\"DocStatus\", T0.\"DocTotal\", T0.\"VatSum\" from  \"" + Sanitize(DBName) + "\" + \".OINV\" T0 ";
+
+            }
+            else
+            {
+                querystring = "select ISNULL(T0.DocEntry,'')'DocEntry',ISNULL(T0.DocNum,'') 'DocNum',ISNULL(T0.DocCur,'') 'DocCur',ISNULL(T0.CardCode,'') 'CardCode', ISNULL(T0.CardName,'') 'CardName'," +
+                   " ISNULL( T0.DocDate,'') 'DocDate', ISNULL( T0.DocDueDate,'') 'DocDueDate', ISNULL( T0.TaxDate,'') 'TaxDate',ISNULL(T0.DocType,'') 'DocType', ISNULL(T0.CANCELED,'') 'CANCELED', ISNULL(T0.DocStatus ,'') 'DocStatus'," +
+                   " ISNULL(T0.DocTotal,0)'DocTotal', ISNULL(T0.VatSum,0)'VatSum',ISNULL(T0.DiscSum,0) 'DiscSum' ,ISNULL( T0.Comments,'') 'Comments' from  " + Sanitize(DBName) + ".[dbo]." + HeaderTable + " t0 (nolock) " +
+                   " ORDER BY CardCode asc OFFSET " +  Sanitize(Page) +  "  ROWS FETCH NEXT " + Sanitize(RequestLimit) + " ROWS ONLY ";
+
+                // querystring = "select  T0.DocEntry,T0.DocNum,T0.CardCode, T0.CardName, T0.DocDate, T0.DocType, T0.CANCELED, T0.DocStatus, ISNULL(T0.DocTotal,0), T0.VatSum ,ISNULL(T0.DiscSum,0) from  "  + Sanitize(DBName) + ".[dbo]." + "OINV t0 (nolock) ";
+
+
+            }
+            DataTable dt = GetData(DBName, querystring);
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                if ((ObjectType.EndsWith("INVOICE")))
+                {
+
+                    MarketingDocumentHeader document = new MarketingDocumentHeader
+                    {
+
+
+                        DocEntry = Convert.ToString(dt.Rows[i]["DocEntry"])
+                ,
+                        DocNum = Convert.ToString(dt.Rows[i]["DocNum"])
+                ,
+                        DocCur = Convert.ToString(dt.Rows[i]["DocCur"])
+                ,
+                        CardCode = Convert.ToString(dt.Rows[i]["CardCode"])
+                ,
+                        CardName = Convert.ToString(dt.Rows[i]["CardName"])
+                ,
+                        DocDate = Convert.ToString(dt.Rows[i]["DocDate"])
+
+                ,
+                        MarketingDocument = ObjectType,
+                        DocDueDate = Convert.ToString(dt.Rows[i]["DocDueDate"])
+
+                ,
+                        TaxDate = Convert.ToString(dt.Rows[i]["TaxDate"])
+
+                ,
+                        DocType = Convert.ToString(dt.Rows[i]["DocType"])
+                ,
+                        CANCELED = Convert.ToString(dt.Rows[i]["CANCELED"])
+                ,
+                        DocStatus = Convert.ToString(dt.Rows[i]["DocStatus"])
+                ,
+                        DocTotal = Convert.ToString(dt.Rows[i]["DocTotal"])
+                ,
+                        VatSum = Convert.ToString(dt.Rows[i]["VatSum"])
+                ,
+                        DocDiscount = Convert.ToString(dt.Rows[i]["DiscSum"])
+                ,
+                        Remarks = Convert.ToString(dt.Rows[i]["Comments"])
+                ,
+                        MarketingDocument_Rows = GetMarketingDocumentRows(DBName, HeaderTable, RowsTable, Convert.ToString(dt.Rows[i]["DocEntry"])),
+                        Payment_Rows = GetPayment_Rows(DBName, HeaderTable, RowsTable, Convert.ToString(dt.Rows[i]["DocEntry"]))
+
+                    };
+                    invoices.Add(document);
+                }
+
+
+
+                else
+                {
+                    MarketingDocumentHeader document = new MarketingDocumentHeader
+                    {
+
+
+                        DocEntry = Convert.ToString(dt.Rows[i]["DocEntry"])
+                       ,
+                        DocNum = Convert.ToString(dt.Rows[i]["DocNum"])
+                       ,
+                        DocCur = Convert.ToString(dt.Rows[i]["DocCur"])
+                       ,
+                        CardCode = Convert.ToString(dt.Rows[i]["CardCode"])
+                       ,
+                        CardName = Convert.ToString(dt.Rows[i]["CardName"])
+                       ,
+                        DocDate = Convert.ToString(dt.Rows[i]["DocDate"])
+
+                       ,
+                        MarketingDocument = ObjectType,
+                        DocDueDate = Convert.ToString(dt.Rows[i]["DocDueDate"])
+
+                       ,
+                        TaxDate = Convert.ToString(dt.Rows[i]["TaxDate"])
+
+                       ,
+                        DocType = Convert.ToString(dt.Rows[i]["DocType"])
+                       ,
+                        CANCELED = Convert.ToString(dt.Rows[i]["CANCELED"])
+                       ,
+                        DocStatus = Convert.ToString(dt.Rows[i]["DocStatus"])
+                       ,
+                        DocTotal = Convert.ToString(dt.Rows[i]["DocTotal"])
+                       ,
+                        VatSum = Convert.ToString(dt.Rows[i]["VatSum"])
+                       ,
+                        DocDiscount = Convert.ToString(dt.Rows[i]["DiscSum"])
+                       ,
+                        Remarks = Convert.ToString(dt.Rows[i]["Comments"])
+                       ,
+                        MarketingDocument_Rows = GetMarketingDocumentRows(DBName, HeaderTable, RowsTable, Convert.ToString(dt.Rows[i]["DocEntry"])),
+                        // Payment_Rows = GetPayment_Rows(DBName, HeaderTable, RowsTable, Convert.ToString(dt.Rows[i]["DocEntry"]))
+
+                    };
+                    invoices.Add(document);
+
+                }
+
+            }
+            querystring = "select count(T0.DocEntry)/  "+ RequestLimit +" as NumberofPages FROM  " + Sanitize(DBName) + ".[dbo]." + HeaderTable + " t0(nolock)";
+            DataTable records = GetData(DBName, querystring);
+            var json=DataTableToJSONWithStringBuilder(records);
+            string record_details = "{\"RequestLimit\": \"" + RequestLimit + "\",\"CurrentPage\": \"" + Page + "\"}" + json.Replace("[{", "").Replace("]", "");
+
+            
+            string jObject1 =    JsonConvert.SerializeObject(invoices, Newtonsoft.Json.Formatting.Indented);
+           // string final_data =  jObject1 + record_details;
+            var json_final = JsonConvert.SerializeObject(new[] { "MarketingDocument",JsonConvert.DeserializeObject(jObject1),
+                                            "Record Details",JsonConvert.DeserializeObject(record_details) });
+
+          //  var result = new JObject();
+
+           // jObject1.Merge(jObject2);
+            //var json1 = JsonConvert.SerializeObject(record_details, Newtonsoft.Json.Formatting.Indented);
+           // var json_ = JsonConvert.SerializeObject("{"Success":"test"}", Newtonsoft.Json.Formatting.Indented);
+
+            var response = Request.CreateResponse(HttpStatusCode.OK);
+            response.Content = new StringContent(json_final, Encoding.UTF8, "application/json");
+            return response;
+        }
+       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
+      
+       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetMarketingDocumentByDate/{ObjectType}/{FromDocDate}/{ToDocDate}")]
-        public HttpResponseMessage GetMarketingDocument(string DBName, string ObjectType,string FromDocDate, string ToDocDate)
+        public HttpResponseMessage GetMarketingDocumentByDate(string DBName, string ObjectType,string FromDocDate, string ToDocDate)
 
 
         {
@@ -2251,6 +2821,8 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                 };
                 invoices.Add(document);
             }
+          
+            
 
             var json = JsonConvert.SerializeObject(invoices, Newtonsoft.Json.Formatting.Indented);
             // return Request.CreateResponse(HttpStatusCode.Created, json);
@@ -2261,12 +2833,12 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
         }
 
 
+      
 
-       
 
 
-       
-        [Authorize(Roles = "SuperAdmin, Admin, User")]
+
+       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         //[HttpPost]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetMarketingDocByDocEntry/{ObjectType}/{DocEntry}")]
@@ -2366,10 +2938,11 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
             }
 
             DataTable dt = GetData(DBName, querystring);
+            MarketingDocumentHeader invoice = null;
             for (int i = 0; i < dt.Rows.Count; i++)
             {
 
-                MarketingDocumentHeader invoice = new MarketingDocumentHeader
+                invoice = new MarketingDocumentHeader
                 {
 
                     DocEntry = Convert.ToString(dt.Rows[i]["DocEntry"])
@@ -2409,16 +2982,19 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                     MarketingDocument_Rows = GetMarketingDocumentRows( DBName ,HeaderTable,RowsTable, Convert.ToString(dt.Rows[i]["DocEntry"])),
                     Payment_Rows = GetPayment_Rows(DBName, HeaderTable, RowsTable, Convert.ToString(dt.Rows[i]["DocEntry"]))
                 };
-                invoices.Add(invoice);
+                break;
             }
-           
-            var json = JsonConvert.SerializeObject(invoices, Newtonsoft.Json.Formatting.Indented);
+            if (invoice ==null)
+            {
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+            }
+            var json = JsonConvert.SerializeObject(invoice, Newtonsoft.Json.Formatting.Indented);
             var response = Request.CreateResponse(HttpStatusCode.OK);
             response.Content = new StringContent(json, Encoding.UTF8, "application/json");
             return response;
         }
 
-        [Authorize(Roles = "SuperAdmin, Admin, User")]
+       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         //[HttpPost]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetInvoicesById/{DocEntry}")]
@@ -2656,7 +3232,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
             public string Active { get; set; }
             // T1.[Name], T1.[Title], T1.[Position], T1.[Address], T1.[Tel1], T1.[Cellolar], T1.[E_MailL], T1.[Active]
         }
-        [Authorize(Roles = "SuperAdmin, Admin, User")]
+        ////  [Authorize(Roles = "SuperAdmin, Admin, User")]
         //[HttpPost]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetBusinessPartners")]
@@ -2724,7 +3300,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
         }
 
 
-        [Authorize(Roles = "SuperAdmin, Admin, User")]
+       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         [HttpPost]
         [Route("api/SAP/{DBName}/DeleteBusinessPartner/{SAPUserName}/{SAPPassword}")]
         //public HttpResponseMessage Post([FromBody]string value)
@@ -2810,12 +3386,12 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
 
 
         }
-        [Authorize(Roles = "SuperAdmin, Admin, User")]
+       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         [HttpPost]
-        [Route("api/SAP/{DBName}/CreateBusinessPartner/{SAPUserName}/{SAPPassword}")]
+        [Route("api/SAP/{DBName}/CreateBusinessPartner/")]
         //public HttpResponseMessage Post([FromBody]string value)
         //{
-        public async Task<HttpResponseMessage> CreateBusinessPartner(HttpRequestMessage request ,string DBName, string SAPUserName, string SAPPassword)
+        public async Task<HttpResponseMessage> CreateBusinessPartner(HttpRequestMessage request ,string DBName)
         {
             try
             {
@@ -2864,11 +3440,14 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
 
                 //string BrokerCode, BrokerName, BrokerGroupCode;
                 //BrokerCode = (string)json.SelectToken("Accounting").SelectToken("BrokerCode");
-                //BrokerName = (string)json.SelectToken("Accounting").SelectToken("BrokerName");
+                //BrokerName = (stri;ng)json.SelectToken("Accounting").SelectToken("BrokerName");
                 //BrokerGroupCode = (string)json.SelectToken("Accounting").SelectToken("BrokerGroupCode");
+                string SAPUserName = userName;
+                string SAPPassword = section["Password"];
 
                 Connect_To_SAP connect = new Connect_To_SAP();
                 oCompany = connect.ConnectSAPDB(DBName, SAPUserName, SAPPassword);
+                //oCompany = connect.ConnectSAPDB(DBName, SAPUserName, SAPPassword);
                 SAPbobsCOM.BusinessPartners sboBP = (SAPbobsCOM.BusinessPartners)oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oBusinessPartners);
                 bool check_card_code = CheckIfExists(DBName,CardCode, CardType);
                 if (check_card_code == false && Action == "ADD")
@@ -3135,7 +3714,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                 else
                 {
 
-                    message = "{\"Message\": {\"MessageType\": \"Error\",\"Description\": \"Business Partner  does not Exists \",\"Business Partner Number\": \"" + CardCode + "\" ,\"Document Type\": \"Business Partner\"}}";
+                    message = "{\"Message\": {\"MessageType\": \"Error\",\"Description\": \"Business Partner  Already nt Exists \",\"Business Partner Number\": \"" + CardCode + "\" ,\"Document Type\": \"Business Partner\"}}";
                     message_ = JsonConvert.DeserializeObject(message);
                 }
                 var json_response = JsonConvert.SerializeObject(message_, Newtonsoft.Json.Formatting.Indented);
@@ -3159,7 +3738,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
 
         }
 
-        [Authorize(Roles = "SuperAdmin, Admin, User")]
+       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         [HttpPost]
         [Route("api/SAP/{DBName}/ReverseDocument/{SAPUserName}/{SAPPassword}")]
         //public HttpResponseMessage Post([FromBody]string value)
@@ -3357,7 +3936,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
        
 
 
-        [Authorize(Roles = "SuperAdmin, Admin, User")]
+       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         [HttpPost]
         [Route("api/SAP/{DBName}/CancelDocument/{SAPUserName}/{SAPPassword}")]
         //public HttpResponseMessage Post([FromBody]string value)
@@ -3563,7 +4142,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
 
 
 
-             [Authorize(Roles = "SuperAdmin, Admin, User")]
+            //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         [HttpPost]
         [Route("api/SAP/{DBName}/SetExchangeRate/{SAPUserName}/{SAPPassword}")]
         //public HttpResponseMessage Post([FromBody]string value)
@@ -3633,7 +4212,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
 
         }
 
-        [Authorize(Roles = "SuperAdmin, Admin, User")]
+       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         [HttpPost]
         [Route("api/SAP/{DBName}/CreateInvoice/{SAPUserName}/{SAPPassword}")]
         //public HttpResponseMessage Post([FromBody]string value)
@@ -3836,12 +4415,12 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
 
         }
 
-        [Authorize(Roles = "SuperAdmin, Admin, User")]
+       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         [HttpPost]
-        [Route("api/SAP/{DBName}/CreateMarketingDocument/{SAPUserName}/{SAPPassword}")]
+        [Route("api/SAP/{DBName}/CreateMarketingDocument/")]
         //public HttpResponseMessage Post([FromBody]string value)
         //{
-        public async Task<HttpResponseMessage> CreateMarketingDocument(HttpRequestMessage request, string DBName, string SAPUserName, string SAPPassword)
+        public async Task<HttpResponseMessage> CreateMarketingDocument(HttpRequestMessage request, string DBName)
         {
             try
             {
@@ -3877,9 +4456,9 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
             string WVAT = "";
             string TaxbleAmnt = "";
             string WTAmnt  = "";
-              AddUpdateAppSettings("CompanyDB", DBName);
-            AddUpdateAppSettings("manager", SAPUserName);
-            AddUpdateAppSettings("Password", SAPPassword);
+            //  AddUpdateAppSettings("CompanyDB", DBName);
+            //AddUpdateAppSettings("manager", SAPUserName);
+            //AddUpdateAppSettings("Password", SAPPassword);
 
             DocDate = (string)json.SelectToken("Header").SelectToken("DocDate");
             PostingDate = (string)json.SelectToken("Header").SelectToken("PostingDate");
@@ -3902,9 +4481,13 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
             Rounding = (string)json.SelectToken("Header").SelectToken("Rounding");
             Reference = (string)json.SelectToken("Header").SelectToken("Reference");
             Remarks = (string)json.SelectToken("Header").SelectToken("Remarks");
-            oCompany = new Connect_To_SAP().ConnectSAPDB(DBName, SAPUserName, SAPPassword);
-            
-            string Table = "";
+                string SAPUserName = userName;
+                string SAPPassword = section["Password"];
+
+                Connect_To_SAP connect = new Connect_To_SAP();
+                oCompany = connect.ConnectSAPDB(DBName, SAPUserName, SAPPassword);
+
+                string Table = "";
 
             SAPbobsCOM.Documents oDoc = null;
 
@@ -4305,15 +4888,15 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                {
 
                 oCompany.GetLastError(out nErr, out erMsg);
-                    if (string.IsNullOrEmpty(erMsg))
-                    {
+                    //if (string.IsNullOrEmpty(erMsg))
+                    //{
 
-                        erMsg = "Missing or wrong Customer Code/or Tax Code or Missing  Item Code or Batch Number";
-                    }
-                    else
-                    {
+                    //    erMsg = "Missing or wrong Customer Code/or Tax Code or Missing  Item Code or Batch Number";
+                    //}
+                    //else
+                    //{
                         erMsg = Sanitize_Errors(erMsg);
-                    }
+                    //}
 
 
                     //.Replace(dbqt, "");
@@ -4385,7 +4968,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
 
 
 
-        [Authorize(Roles = "SuperAdmin, Admin, User")]
+       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         [HttpPost]
         [Route("api/SAP/{DBName}/CreatePurchaseDocuments/{SAPUserName}/{SAPPassword}")]
         //public HttpResponseMessage Post([FromBody]string value)
@@ -4677,13 +5260,13 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
             }
         }
 
-        [Authorize(Roles = "SuperAdmin, Admin, User")]
+       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         [HttpPost]
-        [Route("api/SAP/{DBName}/CreatePayment/{SAPUserName}/{SAPPassword}")]
+        [Route("api/SAP/{DBName}/CreatePayment/")]
 
         //public HttpResponseMessage Post([FromBody]string value)
         //{
-        public async Task<HttpResponseMessage> CreatePayment(HttpRequestMessage request, string DBName, string SAPUserName, string SAPPassword)
+        public async Task<HttpResponseMessage> CreatePayment(HttpRequestMessage request, string DBName)
         {
             try
             {
@@ -4721,6 +5304,9 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
 
 
                 SAPbobsCOM.Payments oPayment = null;
+
+                string SAPUserName = userName;
+                string SAPPassword = section["Password"];
 
                 Connect_To_SAP connect = new Connect_To_SAP();
                 oCompany = connect.ConnectSAPDB(DBName, SAPUserName, SAPPassword);
@@ -5720,7 +6306,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
         }
 
 
-        [Authorize(Roles = "SuperAdmin, Admin, User")]
+       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         //[HttpPost]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetBusinessPartnerByCode/{CardCode}")]
@@ -5744,10 +6330,11 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                 }
 
                 DataTable dt = GetData(DBName, querystring);
+                BusinessPartner_Master customer = null;
                 for (int i = 0; i < dt.Rows.Count; i++)
                 {
 
-                    BusinessPartner_Master customer = new BusinessPartner_Master
+                    customer = new BusinessPartner_Master
                     {
 
                         CardCode = Convert.ToString(dt.Rows[i]["CardCode"])
@@ -5779,10 +6366,13 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
 
                         Bill_To_Address = GetContact(DBName,Convert.ToString(dt.Rows[i]["CardCode"]))
                     };
-                    customers.Add(customer);
+                    break;
                 }
-
-                var json = JsonConvert.SerializeObject(customers, Newtonsoft.Json.Formatting.Indented);
+                if (customer == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound);
+                }
+                var json = JsonConvert.SerializeObject(customer, Newtonsoft.Json.Formatting.Indented);
                 var response = Request.CreateResponse(HttpStatusCode.OK);
                 response.Content = new StringContent(json, Encoding.UTF8, "application/json");
                 return response;
@@ -5794,6 +6384,80 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                 exeption_response.Content = new StringContent(ex.Message, Encoding.UTF8, "application/json");
                 return exeption_response;
             }
+        }
+        [HttpGet]
+        [Route("api/SAP/{DBName}/GetBusinessPartnerByCode1/{CardCode}")]
+        public HttpResponseMessage GetBusinessPartnerByCode1(string DBName, string CardCode)
+        {
+            SAPbobsCOM.BusinessPartners oBP;
+            //string forward_slash = "\"";
+            string ApplicationPath = AppDomain.CurrentDomain.BaseDirectory;
+            
+            ApplicationPath = ApplicationPath + @"\" + CardCode + ".xml";
+            //"+ ".xml";
+            Connect_To_SAP connect = new Connect_To_SAP();
+
+            oCompany = connect.ConnectSAPDB(DBName, userName, section["Password"]);
+            oBP = (SAPbobsCOM.BusinessPartners)oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oBusinessPartners);
+
+            oBP.GetByKey(CardCode);
+            if (File.Exists(ApplicationPath))
+            {
+                File.Delete(ApplicationPath);
+                oBP.SaveXML(ApplicationPath);
+            }
+            else
+            {
+                oBP.SaveXML(ApplicationPath);
+            }
+
+
+            XmlDocument doc = new XmlDocument();
+            doc.Load(ApplicationPath);
+            string jsonText = JsonConvert.SerializeXmlNode(doc);
+            jsonText.Replace(@"\", "");
+            var json = JsonConvert.SerializeObject(jsonText, Newtonsoft.Json.Formatting.Indented);
+            var response = Request.CreateResponse(HttpStatusCode.OK);
+            response.Content = new StringContent(json, Encoding.UTF8, "application/json");
+            return response;
+        }
+
+        [HttpGet]
+        [Route("api/SAP/{DBName}/GetInvoiceByDocEntry/{DocEntry}")]
+        public HttpResponseMessage GetInvoiceByDocEntry(string DBName, int DocEntry)
+        {
+
+           // string forward_slash = "\"";
+            string ApplicationPath = AppDomain.CurrentDomain.BaseDirectory;
+            //System.IO.Directory.GetParent(System.Windows.Forms.Application.StartupPath).ToString() ;
+            ApplicationPath = ApplicationPath + @"\" + DocEntry + ".xml";
+            //"+ ".xml";
+            Connect_To_SAP connect = new Connect_To_SAP();
+            oCompany = connect.ConnectSAPDB(DBName, userName, section["Password"]);
+            SAPbobsCOM.Documents oDoc = null;
+
+
+            oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oInvoices);
+            oDoc.GetByKey(DocEntry);
+            if (File.Exists(ApplicationPath))
+            {
+                File.Delete(ApplicationPath);
+                oDoc.SaveXML(ApplicationPath);
+            }
+            else
+            {
+                oDoc.SaveXML(ApplicationPath);
+            }
+
+
+            XmlDocument doc = new XmlDocument();
+            doc.Load(ApplicationPath);
+            string jsonText = JsonConvert.SerializeXmlNode(doc);
+            // jsonText = jsonText
+            var json = JsonConvert.SerializeObject(jsonText, Newtonsoft.Json.Formatting.Indented);
+            var response = Request.CreateResponse(HttpStatusCode.OK);
+            response.Content = new StringContent(json, Encoding.UTF8, "application /json");
+            return response;
         }
 
         public List<BillToAddress> GetContact(string DBName, string customerId)
@@ -5863,10 +6527,13 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                     query = "";
                 }
 
-                OdbcCommand cmd = new OdbcCommand(query);
-                using (OdbcConnection con = new OdbcConnection(conString))
+                //SAPbobsCOM.Recordset oRecordSet = (SAPbobsCOM.Recordset)oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
+                //oRecordSet.DoQuery(query);
+
+                SqlCommand cmd = new SqlCommand(query);
+                using (SqlConnection con = new SqlConnection(conString))
                 {
-                    using (OdbcDataAdapter sda = new OdbcDataAdapter())
+                    using (SqlDataAdapter sda = new SqlDataAdapter())
                     {
                         cmd.Connection = con;
                         cmd.CommandTimeout = 4000000;
