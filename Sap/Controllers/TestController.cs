@@ -48,7 +48,7 @@ namespace TokenBasedAPI.Controllers
         Recordset QueryObjectDocEntry = null;
 
 
-      // //  [Authorize(Roles = "SuperAdmin, Admin, User")]
+        // //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         //[HttpPost]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetCurrencies")]
@@ -60,21 +60,21 @@ namespace TokenBasedAPI.Controllers
                 var roles = identity.Claims
                             .Where(c => c.Type == ClaimTypes.Role)
                             .Select(c => c.Value);
-                string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString  + @"Database=" + DBName.Trim() + ";" ;
+                string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
                 using (SqlConnection con = new SqlConnection(constr))
                 {
 
-                   
+
                     if (DbServerType == "SAPHANA")
-                        {
-                         querystring = "select * FROM   \""  + Sanitize(DBName) + "\" + \".OCRN\"  ";
+                    {
+                        querystring = "select * FROM   \"" + Sanitize(DBName) + "\" + \".OCRN\"  ";
 
-                         }
+                    }
                     else
-                        {
-                         querystring = "select * FROM   "  + Sanitize(DBName) + ".[dbo]." + "OCRN  ";
+                    {
+                        querystring = "select * FROM   " + Sanitize(DBName) + ".[dbo]." + "OCRN  ";
 
-                       }
+                    }
                     using (SqlCommand cmd = new SqlCommand(querystring))
                     {
                         using (SqlDataAdapter sda = new SqlDataAdapter())
@@ -86,8 +86,8 @@ namespace TokenBasedAPI.Controllers
                                 dt.TableName = "Dataset";
                                 sda.Fill(dt);
                                 //return dt;
-                                 string results = DataTableToJSONWithStringBuilder(dt);
-                                  var response = Request.CreateResponse(HttpStatusCode.OK);
+                                string results = DataTableToJSONWithStringBuilder(dt);
+                                var response = Request.CreateResponse(HttpStatusCode.OK);
                                 response.Content = new StringContent(results, Encoding.UTF8, "application/json");
                                 return response;
                                 // return Request.CreateResponse(HttpStatusCode.Created, customers);
@@ -107,7 +107,7 @@ namespace TokenBasedAPI.Controllers
         }
 
 
-       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
+        //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         //[HttpPost]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetMarketingDocumentOwner")]
@@ -166,7 +166,7 @@ namespace TokenBasedAPI.Controllers
         }
 
 
-       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
+        //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         //[HttpPost]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetMarketingDocumentSalesPerson")]
@@ -223,7 +223,7 @@ namespace TokenBasedAPI.Controllers
             }
 
         }
-       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
+        //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         //[HttpPost]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetBusinessPartnersGroupCode")]
@@ -282,7 +282,7 @@ namespace TokenBasedAPI.Controllers
         }
 
 
-       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
+        //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         //[HttpPost]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetBusinessPartnerPaymentTerms")]
@@ -395,7 +395,7 @@ namespace TokenBasedAPI.Controllers
             }
 
         }
-       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
+        //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         [HttpGet]
         [Route("api/SAP/GetSAPCompanies")]
         public HttpResponseMessage GetSAPCompanies()
@@ -406,21 +406,21 @@ namespace TokenBasedAPI.Controllers
                 var roles = identity.Claims
                             .Where(c => c.Type == ClaimTypes.Role)
                             .Select(c => c.Value);
-                string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString  + @"Database=" + DBName.Trim() + ";" ;
+                string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
                 var con = new SqlConnection(constr);
                 {
 
                     var DBNameString = "[SBO-COMMON]";
                     if (DbServerType == "SAPHANA")
-                        {
-                         querystring = "select CompDbNam FROM   \""  + Sanitize(DBNameString.Replace("[","").Replace("]", "")) + "\" + \".SRGC\"  ";
+                    {
+                        querystring = "select CompDbNam FROM   \"" + Sanitize(DBNameString.Replace("[", "").Replace("]", "")) + "\" + \".SRGC\"  ";
 
-                         }
+                    }
                     else
-                        {
-                         querystring = "select * FROM   "  + Sanitize(DBNameString) + ".[dbo]." + "SRGC  ";
+                    {
+                        querystring = "select * FROM   " + Sanitize(DBNameString) + ".[dbo]." + "SRGC  ";
 
-                       }
+                    }
                     var cmd = new SqlCommand(querystring, con);
                     {
                         SqlDataAdapter sda = new SqlDataAdapter(cmd);
@@ -432,8 +432,8 @@ namespace TokenBasedAPI.Controllers
                                 dt.TableName = "Dataset";
                                 sda.Fill(dt);
                                 //return dt;
-                                 string results = DataTableToJSONWithStringBuilder(dt);
-                                  var response = Request.CreateResponse(HttpStatusCode.OK);
+                                string results = DataTableToJSONWithStringBuilder(dt);
+                                var response = Request.CreateResponse(HttpStatusCode.OK);
                                 response.Content = new StringContent(results, Encoding.UTF8, "application/json");
                                 return response;
                                 // return Request.CreateResponse(HttpStatusCode.Created, customers);
@@ -454,7 +454,7 @@ namespace TokenBasedAPI.Controllers
 
 
 
-       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
+        //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetIncomingPayments")]
         public HttpResponseMessage GetIncomingPayments(string DBName)
@@ -524,7 +524,7 @@ namespace TokenBasedAPI.Controllers
 
 
 
-       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
+        //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetOutgoingPayments")]
         public HttpResponseMessage GetOutgoingPayments(string DBName)
@@ -537,7 +537,7 @@ namespace TokenBasedAPI.Controllers
                             .Select(c => c.Value);
                 string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
 
-                   using (SqlConnection con = new SqlConnection(constr))
+                using (SqlConnection con = new SqlConnection(constr))
                 {
 
 
@@ -594,10 +594,10 @@ namespace TokenBasedAPI.Controllers
         }
 
 
-       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
+        //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetIncomingPaymentsPaginated/{CardCode}/{Page}/{RequestLimit}")]
-       public HttpResponseMessage GetIncomingPaymentsPaginated(string DBName, string CardCode, string Page, string RequestLimit)
+        public HttpResponseMessage GetIncomingPaymentsPaginated(string DBName, string CardCode, string Page, string RequestLimit)
         {
             try
             {
@@ -605,7 +605,7 @@ namespace TokenBasedAPI.Controllers
                 var roles = identity.Claims
                             .Where(c => c.Type == ClaimTypes.Role)
                             .Select(c => c.Value);
-            string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
+                string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
                 using (SqlConnection con = new SqlConnection(constr))
                 {
 
@@ -626,7 +626,7 @@ namespace TokenBasedAPI.Controllers
                             " T0.TrsfrSumSy, T0.NoDocSumSy, T0.DocTotalSy, T0.StornoRate, T0.UpdateDate, T0.CreateDate, T0.TaxDate, T0.Series, " +
                             "T0.BankCode, T0.BankAcct, T0.VatGroup, T0.VatSum, T0.VatSumFC, T0.VatSumSy, T0.FinncPriod, T0.VatPrcnt, T0.Dcount," +
                             " T0.DcntSum, T0.DcntSumFC, T0.WtCode, T0.WtSum, T0.WtSumFrgn, T0.WtSumSys, T0.Proforma, T0.BpAct, T0.BcgSum, " +
-                            "T0.BcgSumFC, T0.BcgSumSy, T0.PayToCode, T0.IsPaytoBnk, T0.PBnkCnt, T0.PBnkCode, T0.PBnkAccnt FROM "  + Sanitize(DBName) + ".[dbo]."+ "ORCT T0 " +
+                            "T0.BcgSumFC, T0.BcgSumSy, T0.PayToCode, T0.IsPaytoBnk, T0.PBnkCnt, T0.PBnkCode, T0.PBnkAccnt FROM " + Sanitize(DBName) + ".[dbo]." + "ORCT T0 " +
                              " WHERE   T0.CardCode = '" + Sanitize(CardCode) + "' ORDER BY T0.CardCode asc OFFSET " + Sanitize(Page) + "  ROWS FETCH NEXT " + Sanitize(RequestLimit) + " ROWS ONLY ";
 
                     }
@@ -641,8 +641,8 @@ namespace TokenBasedAPI.Controllers
                                 dt.TableName = "Payments";
                                 sda.Fill(dt);
                                 //return dt;
-                                 string results = DataTableToJSONWithStringBuilder(dt);
-                                                               var response = Request.CreateResponse(HttpStatusCode.OK);
+                                string results = DataTableToJSONWithStringBuilder(dt);
+                                var response = Request.CreateResponse(HttpStatusCode.OK);
                                 response.Content = new StringContent(results, Encoding.UTF8, "application/json");
                                 return response;
                                 // return Request.CreateResponse(HttpStatusCode.Created, customers);
@@ -664,8 +664,8 @@ namespace TokenBasedAPI.Controllers
         }
 
 
-        
-       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
+
+        //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetOutgoingPaymentsPaginated/{CardCode}/{Page}/{RequestLimit}")]
         public HttpResponseMessage GetOutgoingPaymentsPaginated(string DBName, string CardCode, string Page, string RequestLimit)
@@ -673,57 +673,57 @@ namespace TokenBasedAPI.Controllers
             try
             {
                 var identity = (ClaimsIdentity)User.Identity;
-            var roles = identity.Claims
-                        .Where(c => c.Type == ClaimTypes.Role)
-                        .Select(c => c.Value);
-            string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
+                var roles = identity.Claims
+                            .Where(c => c.Type == ClaimTypes.Role)
+                            .Select(c => c.Value);
+                string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
 
-            using (SqlConnection con = new SqlConnection(constr))
-            {
-
-
-                if (DbServerType == "SAPHANA")
+                using (SqlConnection con = new SqlConnection(constr))
                 {
-                    querystring = "select * FROM  " + "\"" + Sanitize(DBName) + "\"." + "\"OVPM\"  ";
 
-                }
-                else
-                {
-                    querystring = "SELECT T0.DocEntry,T0.DocNum, T0.DocType,T0.Canceled, T0.Handwrtten, T0.Printed, T0.DocDate," +
-                        " T0.DocDueDate, T0.CardCode, T0.CardName, T0.DdctPrcnt, T0.DdctSum, T0.DdctSumFC, T0.CashAcct, " +
-                        "T0.CashSum, T0.CashSumFC, T0.CreditSum, T0.CredSumFC, T0.CheckAcct, T0.CheckSum, T0.CheckSumFC, T0.TrsfrAcct, " +
-                        "T0.TrsfrSum, T0.TrsfrSumFC, T0.TrsfrDate, T0.TrsfrRef, T0.PayNoDoc, T0.NoDocSum, T0.NoDocSumFC, T0.DocCurr," +
-                        " T0.DocRate, T0.SysRate, T0.DocTotal, T0.DocTotalFC, T0.Ref1, T0.Ref2, T0.CounterRef, T0.Comments, T0.JrnlMemo," +
-                        " T0.TransId, T0.DocTime, T0.ShowAtCard, T0.CntctCode, T0.DdctSumSy, T0.CashSumSy, T0.CredSumSy, T0.CheckSumSy," +
-                        " T0.TrsfrSumSy, T0.NoDocSumSy, T0.DocTotalSy, T0.StornoRate, T0.UpdateDate, T0.CreateDate, T0.TaxDate, T0.Series, " +
-                        "T0.BankCode, T0.BankAcct, T0.VatGroup, T0.VatSum, T0.VatSumFC, T0.VatSumSy, T0.FinncPriod, T0.VatPrcnt, T0.Dcount," +
-                        " T0.DcntSum, T0.DcntSumFC, T0.WtCode, T0.WtSum, T0.WtSumFrgn, T0.WtSumSys, T0.Proforma, T0.BpAct, T0.BcgSum, " +
-                        "T0.BcgSumFC, T0.BcgSumSy, T0.PayToCode, T0.IsPaytoBnk, T0.PBnkCnt, T0.PBnkCode, T0.PBnkAccnt FROM " + Sanitize(DBName) + ".[dbo]." + "OVPM T0 " +
-                        " WHERE   T0.CardCode = '" + Sanitize(CardCode) + "' ORDER BY T0.CardCode asc OFFSET " + Sanitize(Page) + "  ROWS FETCH NEXT " + Sanitize(RequestLimit) + " ROWS ONLY ";
+
+                    if (DbServerType == "SAPHANA")
+                    {
+                        querystring = "select * FROM  " + "\"" + Sanitize(DBName) + "\"." + "\"OVPM\"  ";
+
+                    }
+                    else
+                    {
+                        querystring = "SELECT T0.DocEntry,T0.DocNum, T0.DocType,T0.Canceled, T0.Handwrtten, T0.Printed, T0.DocDate," +
+                            " T0.DocDueDate, T0.CardCode, T0.CardName, T0.DdctPrcnt, T0.DdctSum, T0.DdctSumFC, T0.CashAcct, " +
+                            "T0.CashSum, T0.CashSumFC, T0.CreditSum, T0.CredSumFC, T0.CheckAcct, T0.CheckSum, T0.CheckSumFC, T0.TrsfrAcct, " +
+                            "T0.TrsfrSum, T0.TrsfrSumFC, T0.TrsfrDate, T0.TrsfrRef, T0.PayNoDoc, T0.NoDocSum, T0.NoDocSumFC, T0.DocCurr," +
+                            " T0.DocRate, T0.SysRate, T0.DocTotal, T0.DocTotalFC, T0.Ref1, T0.Ref2, T0.CounterRef, T0.Comments, T0.JrnlMemo," +
+                            " T0.TransId, T0.DocTime, T0.ShowAtCard, T0.CntctCode, T0.DdctSumSy, T0.CashSumSy, T0.CredSumSy, T0.CheckSumSy," +
+                            " T0.TrsfrSumSy, T0.NoDocSumSy, T0.DocTotalSy, T0.StornoRate, T0.UpdateDate, T0.CreateDate, T0.TaxDate, T0.Series, " +
+                            "T0.BankCode, T0.BankAcct, T0.VatGroup, T0.VatSum, T0.VatSumFC, T0.VatSumSy, T0.FinncPriod, T0.VatPrcnt, T0.Dcount," +
+                            " T0.DcntSum, T0.DcntSumFC, T0.WtCode, T0.WtSum, T0.WtSumFrgn, T0.WtSumSys, T0.Proforma, T0.BpAct, T0.BcgSum, " +
+                            "T0.BcgSumFC, T0.BcgSumSy, T0.PayToCode, T0.IsPaytoBnk, T0.PBnkCnt, T0.PBnkCode, T0.PBnkAccnt FROM " + Sanitize(DBName) + ".[dbo]." + "OVPM T0 " +
+                            " WHERE   T0.CardCode = '" + Sanitize(CardCode) + "' ORDER BY T0.CardCode asc OFFSET " + Sanitize(Page) + "  ROWS FETCH NEXT " + Sanitize(RequestLimit) + " ROWS ONLY ";
 
                     }
                     using (SqlCommand cmd = new SqlCommand(querystring))
-                {
-                    using (SqlDataAdapter sda = new SqlDataAdapter())
                     {
-                        cmd.Connection = con;
-                        sda.SelectCommand = cmd;
-                        using (DataTable dt = new DataTable())
+                        using (SqlDataAdapter sda = new SqlDataAdapter())
                         {
-                            dt.TableName = "Payments";
-                            sda.Fill(dt);
-                            //return dt;
-                             string results = DataTableToJSONWithStringBuilder(dt);
-                            var response = Request.CreateResponse(HttpStatusCode.OK);
-                            response.Content = new StringContent(results, Encoding.UTF8, "application/json");
-                            return response;
-                            // return Request.CreateResponse(HttpStatusCode.Created, customers);
+                            cmd.Connection = con;
+                            sda.SelectCommand = cmd;
+                            using (DataTable dt = new DataTable())
+                            {
+                                dt.TableName = "Payments";
+                                sda.Fill(dt);
+                                //return dt;
+                                string results = DataTableToJSONWithStringBuilder(dt);
+                                var response = Request.CreateResponse(HttpStatusCode.OK);
+                                response.Content = new StringContent(results, Encoding.UTF8, "application/json");
+                                return response;
+                                // return Request.CreateResponse(HttpStatusCode.Created, customers);
+                            }
                         }
                     }
+
+
                 }
-
-
-            }
             }
             catch (Exception ex)
             {
@@ -905,7 +905,7 @@ namespace TokenBasedAPI.Controllers
                 else
                 {
                     querystring = "SELECT T0.CompnyName, T0.CompnyAddr, T0.Country, T0.Phone1, T0.Phone2, T0.E_Mail, T0.MainCurncy, T0.SysCurrncy, T0.TaxIdNum FROM " + Sanitize(DBName) + ".[dbo]." + "OADM T0";
-                       
+
 
                 }
                 using (SqlCommand cmd = new SqlCommand(querystring))
@@ -919,7 +919,7 @@ namespace TokenBasedAPI.Controllers
                             dt.TableName = "Payments";
                             sda.Fill(dt);
                             //return dt;
-                             string results = DataTableToJSONWithStringBuilder(dt);
+                            string results = DataTableToJSONWithStringBuilder(dt);
                             var response = Request.CreateResponse(HttpStatusCode.OK);
                             response.Content = new StringContent(results, Encoding.UTF8, "application/json");
                             return response;
@@ -945,75 +945,75 @@ namespace TokenBasedAPI.Controllers
 
 
 
-[Authorize(Roles = "SuperAdmin, Admin, User")]
-[HttpGet]
-[Route("api/SAP/{DBName}/GetIncomingPaymentsByDate/{FromDocDate}/{ToDocDate}")]
-public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromDocDate ,string ToDocDate)
-{
-    try
-    {
-        var identity = (ClaimsIdentity)User.Identity;
-        var roles = identity.Claims
-                    .Where(c => c.Type == ClaimTypes.Role)
-                    .Select(c => c.Value);
-        string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString  + @"Database=" + DBName.Trim() + ";" ;
-        using (SqlConnection con = new SqlConnection(constr))
+        [Authorize(Roles = "SuperAdmin, Admin, User")]
+        [HttpGet]
+        [Route("api/SAP/{DBName}/GetIncomingPaymentsByDate/{FromDocDate}/{ToDocDate}")]
+        public HttpResponseMessage GetIncomingPaymentsByDate(string DBName, string FromDocDate, string ToDocDate)
         {
-
-
-            if (DbServerType == "SAPHANA")
+            try
             {
-                querystring = "select * FROM   \""  + Sanitize(DBName) + "\" + \".ORCT\"  " +
-                             " WHERE  \"DocDate\" BETWEEN '" + Sanitize(FromDocDate) + "' and  '" + Sanitize(ToDocDate) + "'";
-
-                    }
-            else
-            {
-                querystring = "select  T0.DocEntry,T0.DocNum, T0.DocType,T0.Canceled, T0.Handwrtten, T0.Printed, T0.DocDate," +
-                            " T0.DocDueDate, T0.CardCode, T0.CardName, T0.DdctPrcnt, T0.DdctSum, T0.DdctSumFC, T0.CashAcct, " +
-                            "T0.CashSum, T0.CashSumFC, T0.CreditSum, T0.CredSumFC, T0.CheckAcct, T0.CheckSum, T0.CheckSumFC, T0.TrsfrAcct, " +
-                            "T0.TrsfrSum, T0.TrsfrSumFC, T0.TrsfrDate, T0.TrsfrRef, T0.PayNoDoc, T0.NoDocSum, T0.NoDocSumFC, T0.DocCurr," +
-                            " T0.DocRate, T0.SysRate, T0.DocTotal, T0.DocTotalFC, T0.Ref1, T0.Ref2, T0.CounterRef, T0.Comments, T0.JrnlMemo," +
-                            " T0.TransId, T0.DocTime, T0.ShowAtCard, T0.CntctCode, T0.DdctSumSy, T0.CashSumSy, T0.CredSumSy, T0.CheckSumSy," +
-                            " T0.TrsfrSumSy, T0.NoDocSumSy, T0.DocTotalSy, T0.StornoRate, T0.UpdateDate, T0.CreateDate, T0.TaxDate, T0.Series, " +
-                            "T0.BankCode, T0.BankAcct, T0.VatGroup, T0.VatSum, T0.VatSumFC, T0.VatSumSy, T0.FinncPriod, T0.VatPrcnt, T0.Dcount," +
-                            " T0.DcntSum, T0.DcntSumFC, T0.WtCode, T0.WtSum, T0.WtSumFrgn, T0.WtSumSys, T0.Proforma, T0.BpAct, T0.BcgSum, " +
-                            "T0.BcgSumFC, T0.BcgSumSy, T0.PayToCode, T0.IsPaytoBnk, T0.PBnkCnt, T0.PBnkCode, T0.PBnkAccnt FROM " + Sanitize(DBName) + ".[dbo]." + "ORCT T0 " +
-                            " WHERE  DocDate  BETWEEN '" + Sanitize(FromDocDate) + "' and  '" + Sanitize(ToDocDate) + "'";
-
-                    }
-            using (SqlCommand cmd = new SqlCommand(querystring))
-            {
-                using (SqlDataAdapter sda = new SqlDataAdapter())
+                var identity = (ClaimsIdentity)User.Identity;
+                var roles = identity.Claims
+                            .Where(c => c.Type == ClaimTypes.Role)
+                            .Select(c => c.Value);
+                string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
+                using (SqlConnection con = new SqlConnection(constr))
                 {
-                    cmd.Connection = con;
-                    sda.SelectCommand = cmd;
-                    using (DataTable dt = new DataTable())
+
+
+                    if (DbServerType == "SAPHANA")
                     {
-                        dt.TableName = "Payments";
-                        sda.Fill(dt);
-                        //return dt;
-                         string results = DataTableToJSONWithStringBuilder(dt);
-                        var response = Request.CreateResponse(HttpStatusCode.OK);
-                        response.Content = new StringContent(results, Encoding.UTF8, "application/json");
-                        return response;
-                        // return Request.CreateResponse(HttpStatusCode.Created, customers);
+                        querystring = "select * FROM   \"" + Sanitize(DBName) + "\" + \".ORCT\"  " +
+                                     " WHERE  \"DocDate\" BETWEEN '" + Sanitize(FromDocDate) + "' and  '" + Sanitize(ToDocDate) + "'";
+
+                    }
+                    else
+                    {
+                        querystring = "select  T0.DocEntry,T0.DocNum, T0.DocType,T0.Canceled, T0.Handwrtten, T0.Printed, T0.DocDate," +
+                                    " T0.DocDueDate, T0.CardCode, T0.CardName, T0.DdctPrcnt, T0.DdctSum, T0.DdctSumFC, T0.CashAcct, " +
+                                    "T0.CashSum, T0.CashSumFC, T0.CreditSum, T0.CredSumFC, T0.CheckAcct, T0.CheckSum, T0.CheckSumFC, T0.TrsfrAcct, " +
+                                    "T0.TrsfrSum, T0.TrsfrSumFC, T0.TrsfrDate, T0.TrsfrRef, T0.PayNoDoc, T0.NoDocSum, T0.NoDocSumFC, T0.DocCurr," +
+                                    " T0.DocRate, T0.SysRate, T0.DocTotal, T0.DocTotalFC, T0.Ref1, T0.Ref2, T0.CounterRef, T0.Comments, T0.JrnlMemo," +
+                                    " T0.TransId, T0.DocTime, T0.ShowAtCard, T0.CntctCode, T0.DdctSumSy, T0.CashSumSy, T0.CredSumSy, T0.CheckSumSy," +
+                                    " T0.TrsfrSumSy, T0.NoDocSumSy, T0.DocTotalSy, T0.StornoRate, T0.UpdateDate, T0.CreateDate, T0.TaxDate, T0.Series, " +
+                                    "T0.BankCode, T0.BankAcct, T0.VatGroup, T0.VatSum, T0.VatSumFC, T0.VatSumSy, T0.FinncPriod, T0.VatPrcnt, T0.Dcount," +
+                                    " T0.DcntSum, T0.DcntSumFC, T0.WtCode, T0.WtSum, T0.WtSumFrgn, T0.WtSumSys, T0.Proforma, T0.BpAct, T0.BcgSum, " +
+                                    "T0.BcgSumFC, T0.BcgSumSy, T0.PayToCode, T0.IsPaytoBnk, T0.PBnkCnt, T0.PBnkCode, T0.PBnkAccnt FROM " + Sanitize(DBName) + ".[dbo]." + "ORCT T0 " +
+                                    " WHERE  DocDate  BETWEEN '" + Sanitize(FromDocDate) + "' and  '" + Sanitize(ToDocDate) + "'";
+
+                    }
+                    using (SqlCommand cmd = new SqlCommand(querystring))
+                    {
+                        using (SqlDataAdapter sda = new SqlDataAdapter())
+                        {
+                            cmd.Connection = con;
+                            sda.SelectCommand = cmd;
+                            using (DataTable dt = new DataTable())
+                            {
+                                dt.TableName = "Payments";
+                                sda.Fill(dt);
+                                //return dt;
+                                string results = DataTableToJSONWithStringBuilder(dt);
+                                var response = Request.CreateResponse(HttpStatusCode.OK);
+                                response.Content = new StringContent(results, Encoding.UTF8, "application/json");
+                                return response;
+                                // return Request.CreateResponse(HttpStatusCode.Created, customers);
+                            }
+                        }
                     }
                 }
             }
+            catch (Exception ex)
+            {
+
+                HttpResponseMessage exeption_response = null;
+                exeption_response.Content = new StringContent(ex.Message, Encoding.UTF8, "application/json");
+                return exeption_response;
+            }
+
         }
-    }
-    catch (Exception ex)
-    {
 
-        HttpResponseMessage exeption_response = null;
-        exeption_response.Content = new StringContent(ex.Message, Encoding.UTF8, "application/json");
-        return exeption_response;
-    }
-
-}
-
-       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
+        //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetOutgoingPaymentsByDate/{FromDocDate}/{ToDocDate}")]
         public HttpResponseMessage GetOutgoingPaymentsByDate(string DBName, string FromDocDate, string ToDocDate)
@@ -1061,7 +1061,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                                 dt.TableName = "Payments";
                                 sda.Fill(dt);
                                 //return dt;
-                                 string results = DataTableToJSONWithStringBuilder(dt);
+                                string results = DataTableToJSONWithStringBuilder(dt);
                                 var response = Request.CreateResponse(HttpStatusCode.OK);
                                 response.Content = new StringContent(results, Encoding.UTF8, "application/json");
                                 return response;
@@ -1081,7 +1081,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
 
         }
 
-       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
+        //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetIncomingPaymentsByDocEntry/{DocEntry}")]
         public HttpResponseMessage GetIncomingPaymentsByDocEntry(string DBName, string DocEntry)
@@ -1099,7 +1099,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
 
                     if (DbServerType == "SAPHANA")
                     {
-                        querystring = "select * FROM   \""  + Sanitize(DBName) + "\" + \".ORCT\"  " +
+                        querystring = "select * FROM   \"" + Sanitize(DBName) + "\" + \".ORCT\"  " +
                                      " WHERE  \"DocEntry\" = '" + Sanitize(DocEntry) + "'";
 
                     }
@@ -1114,7 +1114,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                             " T0.TrsfrSumSy, T0.NoDocSumSy, T0.DocTotalSy, T0.StornoRate, T0.UpdateDate, T0.CreateDate, T0.TaxDate, T0.Series, " +
                             "T0.BankCode, T0.BankAcct, T0.VatGroup, T0.VatSum, T0.VatSumFC, T0.VatSumSy, T0.FinncPriod, T0.VatPrcnt, T0.Dcount," +
                             " T0.DcntSum, T0.DcntSumFC, T0.WtCode, T0.WtSum, T0.WtSumFrgn, T0.WtSumSys, T0.Proforma, T0.BpAct, T0.BcgSum, " +
-                            "T0.BcgSumFC, T0.BcgSumSy, T0.PayToCode, T0.IsPaytoBnk, T0.PBnkCnt, T0.PBnkCode, T0.PBnkAccnt FROM "  + Sanitize(DBName) + ".[dbo]." + "ORCT T0 " +
+                            "T0.BcgSumFC, T0.BcgSumSy, T0.PayToCode, T0.IsPaytoBnk, T0.PBnkCnt, T0.PBnkCode, T0.PBnkAccnt FROM " + Sanitize(DBName) + ".[dbo]." + "ORCT T0 " +
                             " WHERE  T0.DocEntry = '" + Sanitize(DocEntry) + "'";
 
                     }
@@ -1129,8 +1129,8 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                                 dt.TableName = "Dataset";
                                 sda.Fill(dt);
                                 //return dt;
-                                 string results = DataTableToJSONWithStringBuilder(dt);
-                               
+                                string results = DataTableToJSONWithStringBuilder(dt);
+
                                 var response = Request.CreateResponse(HttpStatusCode.OK);
                                 response.Content = new StringContent(results, Encoding.UTF8, "application/json");
                                 return response;
@@ -1151,7 +1151,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
         }
 
 
-       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
+        //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetOutgoingPaymentsByDocEntry/{DocEntry}")]
         public HttpResponseMessage GetOutgoingPaymentsByDocEntry(string DBName, string DocEntry)
@@ -1198,7 +1198,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                             {
                                 dt.TableName = "Dataset";
                                 sda.Fill(dt);
-                                 string results = DataTableToJSONWithStringBuilder(dt);
+                                string results = DataTableToJSONWithStringBuilder(dt);
                                 var response = Request.CreateResponse(HttpStatusCode.OK);
                                 response.Content = new StringContent(results, Encoding.UTF8, "application/json");
                                 return response;
@@ -1216,7 +1216,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
             }
 
         }
-       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
+        //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         //[HttpPost]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetAccounts")]
@@ -1226,7 +1226,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
             var roles = identity.Claims
                         .Where(c => c.Type == ClaimTypes.Role)
                         .Select(c => c.Value);
-            string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString  + @"Database=" + DBName.Trim() + ";" ;
+            string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
             using (SqlConnection con = new SqlConnection(constr))
             {
 
@@ -1251,8 +1251,8 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                             dt.TableName = "Dataset";
                             sda.Fill(dt);
                             //return dt;
-                             string results = DataTableToJSONWithStringBuilder(dt);
-                             var response = Request.CreateResponse(HttpStatusCode.OK);
+                            string results = DataTableToJSONWithStringBuilder(dt);
+                            var response = Request.CreateResponse(HttpStatusCode.OK);
                             response.Content = new StringContent(results, Encoding.UTF8, "application/json");
                             return response;
                         }
@@ -1261,7 +1261,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
             }
         }
 
-       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
+        //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         //[HttpPost]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetTaxes")]
@@ -1271,18 +1271,18 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
             var roles = identity.Claims
                         .Where(c => c.Type == ClaimTypes.Role)
                         .Select(c => c.Value);
-            string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString  + @"Database=" + DBName.Trim() + ";" ;
+            string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
             using (SqlConnection con = new SqlConnection(constr))
             {
 
 
                 if (DbServerType == "SAPHANA")
                 {
-                    querystring = "select T0.* from  \""  + Sanitize(DBName) + "\" + \".OVTG\" T0  where T0.\"Inactive\"= 'N'";
+                    querystring = "select T0.* from  \"" + Sanitize(DBName) + "\" + \".OVTG\" T0  where T0.\"Inactive\"= 'N'";
                 }
                 else
                 {
-                    querystring = "select T0.* from  "  + Sanitize(DBName) + ".[dbo]." + "OVTG t0 (nolock) where  T0.Inactive='N'";
+                    querystring = "select T0.* from  " + Sanitize(DBName) + ".[dbo]." + "OVTG t0 (nolock) where  T0.Inactive='N'";
 
                 }
 
@@ -1297,7 +1297,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                             dt.TableName = "Dataset";
                             sda.Fill(dt);
                             //return dt;
-                             string results = DataTableToJSONWithStringBuilder(dt);
+                            string results = DataTableToJSONWithStringBuilder(dt);
                             var response = Request.CreateResponse(HttpStatusCode.OK);
                             response.Content = new StringContent(results, Encoding.UTF8, "application/json");
                             return response;
@@ -1308,7 +1308,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
         }
 
 
-       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
+        //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         //[HttpPost]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetWitholdingTaxes")]
@@ -1354,7 +1354,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
             }
         }
 
-       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
+        //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         //[HttpPost]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetWarehouses")]
@@ -1364,17 +1364,17 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
             var roles = identity.Claims
                         .Where(c => c.Type == ClaimTypes.Role)
                         .Select(c => c.Value);
-            string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString  + @"Database=" + DBName.Trim() + ";" ;
+            string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
             using (SqlConnection con = new SqlConnection(constr))
             {
 
                 if (DbServerType == "SAPHANA")
                 {
-                    querystring = "select T0.\"WhsCode\", T0.\"WhsName\" from  \""  + Sanitize(DBName) + "\" + \".OWHS\" T0  where T0.\"Locked\"= 'N'";
+                    querystring = "select T0.\"WhsCode\", T0.\"WhsName\" from  \"" + Sanitize(DBName) + "\" + \".OWHS\" T0  where T0.\"Locked\"= 'N'";
                 }
                 else
                 {
-                    querystring = "select T0.WhsCode, T0.WhsName from  "  + Sanitize(DBName) + ".[dbo]." + "OWHS t0 (nolock) where  T0.Locked='N'";
+                    querystring = "select T0.WhsCode, T0.WhsName from  " + Sanitize(DBName) + ".[dbo]." + "OWHS t0 (nolock) where  T0.Locked='N'";
 
                 }
 
@@ -1392,8 +1392,8 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                             dt.TableName = "Dataset";
                             sda.Fill(dt);
                             //return dt;
-                             string results = DataTableToJSONWithStringBuilder(dt);
-                             var response = Request.CreateResponse(HttpStatusCode.OK);
+                            string results = DataTableToJSONWithStringBuilder(dt);
+                            var response = Request.CreateResponse(HttpStatusCode.OK);
                             response.Content = new StringContent(results, Encoding.UTF8, "application/json");
                             return response;
                         }
@@ -1402,7 +1402,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
             }
         }
 
-       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
+        //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         //[HttpPost]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetPriceslist")]
@@ -1412,17 +1412,17 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
             var roles = identity.Claims
                         .Where(c => c.Type == ClaimTypes.Role)
                         .Select(c => c.Value);
-            string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString  + @"Database=" + DBName.Trim() + ";" ;
+            string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
             using (SqlConnection con = new SqlConnection(constr))
             {
 
                 if (DbServerType == "SAPHANA")
                 {
-                    querystring = "select *  from  \""  + Sanitize(DBName) + "\" + \".OPLN\"    ";
+                    querystring = "select *  from  \"" + Sanitize(DBName) + "\" + \".OPLN\"    ";
                 }
                 else
                 {
-                    querystring = "select * from  "  + Sanitize(DBName) + ".[dbo]." + "OPLN (nolock) ";
+                    querystring = "select * from  " + Sanitize(DBName) + ".[dbo]." + "OPLN (nolock) ";
 
                 }
 
@@ -1437,8 +1437,8 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                             dt.TableName = "Dataset";
                             sda.Fill(dt);
                             //return dt;
-                             string results = DataTableToJSONWithStringBuilder(dt);
-                             var response = Request.CreateResponse(HttpStatusCode.OK);
+                            string results = DataTableToJSONWithStringBuilder(dt);
+                            var response = Request.CreateResponse(HttpStatusCode.OK);
                             response.Content = new StringContent(results, Encoding.UTF8, "application/json");
                             return response;
                         }
@@ -1447,7 +1447,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
             }
         }
 
-       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
+        //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         //[HttpPost]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetItems")]
@@ -1457,18 +1457,18 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
             var roles = identity.Claims
                         .Where(c => c.Type == ClaimTypes.Role)
                         .Select(c => c.Value);
-            string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString  + @"Database=" + DBName.Trim() + ";" ;
+            string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
             using (SqlConnection con = new SqlConnection(constr))
             {
 
                 if (DbServerType == "SAPHANA")
                 {
-                    querystring = "SELECT T0.*,T1.\"Price\",T1.\"PriceList\" FROM   \""  + Sanitize(DBName) + "\" + \".OITM\" T0 " ;
+                    querystring = "SELECT T0.*,T1.\"Price\",T1.\"PriceList\" FROM   \"" + Sanitize(DBName) + "\" + \".OITM\" T0 ";
 
                 }
                 else
                 {
-                    querystring = "SELECT T0.ItemCode, T0.ItemName, T0.ItemType,T1.Price,T1.PriceList FROM   "  + Sanitize(DBName) + ".[dbo]." + "OITM T0(nolock) INNER JOIN   "  + Sanitize(DBName) + ".[dbo]." + "ITM1 T1 ON T0.ItemCode = T1.ItemCode ";
+                    querystring = "SELECT T0.ItemCode, T0.ItemName, T0.ItemType,T1.Price,T1.PriceList FROM   " + Sanitize(DBName) + ".[dbo]." + "OITM T0(nolock) INNER JOIN   " + Sanitize(DBName) + ".[dbo]." + "ITM1 T1 ON T0.ItemCode = T1.ItemCode ";
 
                 }
                 using (SqlCommand cmd = new SqlCommand(querystring))
@@ -1483,7 +1483,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                             dt.TableName = "Dataset";
                             sda.Fill(dt);
                             //return dt;
-                             string results = DataTableToJSONWithStringBuilder(dt);
+                            string results = DataTableToJSONWithStringBuilder(dt);
                             var response = Request.CreateResponse(HttpStatusCode.OK);
                             response.Content = new StringContent(results, Encoding.UTF8, "application/json");
                             return response;
@@ -1494,16 +1494,16 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
         }
 
 
-       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
+        //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         //[HttpPost]
         [HttpGet]
         [Route("api/SAP/{DBName}/IsDBConnected")]
         public HttpResponseMessage Post39()
         {
-           // try { 
+            // try { 
             string message = "";
             //dynamic message_ = null;
-            string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString  + @"Database=" + DBName.Trim() + ";" ;
+            string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
 
             using (SqlConnection con = new SqlConnection(constr))
             {
@@ -1531,21 +1531,21 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                 response.Content = new StringContent(JsonConvert.DeserializeObject(message).ToString(), Encoding.UTF8, "application/json");
                 return response;
                 MarshallObject(oCompany);
-            //return response;
-            //}
+                //return response;
+                //}
 
-            //catch (Exception ex)
-            //{
-            //    // Console.WriteLine("Error writing app settings");
-            //    message = ex.Message;
+                //catch (Exception ex)
+                //{
+                //    // Console.WriteLine("Error writing app settings");
+                //    message = ex.Message;
             }
             return response;
         }
 
-       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
+        //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         //[HttpPost]
         [HttpGet]
-       // [Route("api/SAP/{DBName}/CheckGetPostStatus")]
+        // [Route("api/SAP/{DBName}/CheckGetPostStatus")]
         [Route("api/SAP/{DBName}/CheckGetPostStatus/{SAPUserName}/{SAPPassword}")]
         public HttpResponseMessage CheckGetPostStatus(string DBName, string SAPUserName, string SAPPassword)
         {
@@ -1555,7 +1555,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
             dynamic dbstatus = null;
 
 
-            string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString  + @"Database=" + DBName.Trim() + ";" ;
+            string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
 
             using (SqlConnection con = new SqlConnection(constr))
             {
@@ -1577,7 +1577,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                 else if (0 != oCompany.Connect())
                 {
                     int errcode;
-                    oCompany.GetLastError(out nErr, out erMsg); 
+                    oCompany.GetLastError(out nErr, out erMsg);
                     if (!erMsg.Contains("already connected"))
                     {
 
@@ -1601,25 +1601,25 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                 }
             }
             var response = Request.CreateResponse(HttpStatusCode.OK);
-            response.Content= new StringContent(JsonConvert.DeserializeObject(message).ToString(), Encoding.UTF8, "application/json"); 
+            response.Content = new StringContent(JsonConvert.DeserializeObject(message).ToString(), Encoding.UTF8, "application/json");
             return response;
-          
+
 
         }
 
-       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
+        //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         //[HttpPost]
         [HttpGet]
 
         [Route("api/SAP/{DBName}/IsCompanyConnected/{SAPUserName}/{SAPPassword}")]
         public HttpResponseMessage IsCompanyConnected(string DBName, string SAPUserName, string SAPPassword)
         {
-           
+
             try
             {
                 //var response =null;
-               
-               // dynamic message_ = null;
+
+                // dynamic message_ = null;
 
 
                 AddUpdateAppSettings("CompanyDB", DBName);
@@ -1649,15 +1649,15 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                     {
                         message = "{\"Message\": {\"MessageType\": \"Error\",\"Description\": \"" + erMsg + "\",\"Connection Status\": \"Company\"}}";
                     }
-                    
+
                 }
-                 response = Request.CreateResponse(HttpStatusCode.OK);
+                response = Request.CreateResponse(HttpStatusCode.OK);
                 response.Content = new StringContent(message, Encoding.UTF8, "application/json");
                 MarshallObject(oCompany);
-                
+
             }
-           
-               catch (Exception ex)
+
+            catch (Exception ex)
             {
                 // Console.WriteLine("Error writing app settings");
                 message = ex.Message;
@@ -1670,8 +1670,8 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
             string message = "";
             try
             {
-              
-              //  var configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+
+                //  var configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
                 Configuration configFile = System.Web.Configuration.WebConfigurationManager.OpenWebConfiguration("~");
                 var settings = configFile.AppSettings.Settings;
 
@@ -1697,7 +1697,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                     }
                     configFile.Save(ConfigurationSaveMode.Modified);
                     ConfigurationManager.RefreshSection(configFile.AppSettings.SectionInformation.Name);
-                  
+
                 }
                 else
                 {
@@ -1710,7 +1710,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                 // Console.WriteLine("Error writing app settings");
                 message = ex.Message;
             }
-            
+
             return message;
         }
 
@@ -1721,15 +1721,15 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
             try
             {
 
-                 Configuration configFile = System.Web.Configuration.WebConfigurationManager.OpenWebConfiguration("~");
+                Configuration configFile = System.Web.Configuration.WebConfigurationManager.OpenWebConfiguration("~");
                 var settings = configFile.AppSettings.Settings;
-               
-                ConnectionStringSettings settings_ =   ConfigurationManager.ConnectionStrings[Name];
-                              
+
+                ConnectionStringSettings settings_ = ConfigurationManager.ConnectionStrings[Name];
+
                 if (!(settings_ == null))
                 {
 
-                   // value = EncryptString(encrypt_decrypt_key, value);
+                    // value = EncryptString(encrypt_decrypt_key, value);
                     // configFile.ConnectionStrings.ConnectionStrings.Clear(new ConnectionStringSettings(Name, value))
                     configFile.ConnectionStrings.ConnectionStrings["constr"].ConnectionString = value;
                     configFile.Save(ConfigurationSaveMode.Modified, true);
@@ -1738,10 +1738,10 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                 else
                 {
                     //settings_[Name].Value = value;
-                  
+
                     message = "Key does not Exist";
                 }
-               
+
             }
             catch (Exception ex)
             {
@@ -1797,7 +1797,8 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                     using (CryptoStream cryptoStream = new CryptoStream((Stream)memoryStream, decryptor, CryptoStreamMode.Read))
                     {
                         using (StreamReader streamReader = new StreamReader((Stream)cryptoStream))
-                        {  var string_value = streamReader.ReadToEnd();
+                        {
+                            var string_value = streamReader.ReadToEnd();
                             return string_value;
                         }
                     }
@@ -1806,25 +1807,26 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
         }
 
 
-       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
+        //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         [HttpPost]
         [Route("api/SAP/UpdateWebConfig/{type}/{key}/{value}")]
-        public HttpResponseMessage UpdateWebConfig(string type,string key , string value)
+        public HttpResponseMessage UpdateWebConfig(string type, string key, string value)
         {
             string message = "";
-            if  (type== "connectionStrings") {
-            
-                 message = AddUpdateConfigurationSettings(key, value);
-               
-            }
-            else if  (type == "appSettings") 
+            if (type == "connectionStrings")
             {
-              
-                 message = AddUpdateAppSettings(key, value);
+
+                message = AddUpdateConfigurationSettings(key, value);
+
+            }
+            else if (type == "appSettings")
+            {
+
+                message = AddUpdateAppSettings(key, value);
 
             }
 
-            
+
             if (string.IsNullOrEmpty(message))
             {
                 message = "{\"Message\": {\"MessageType\": \"Success\",\"Description\": \"Successfully updated configuration file\",\"Document Type\": \"configuration\"}}";
@@ -1838,11 +1840,11 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
             }
             var response = Request.CreateResponse(HttpStatusCode.OK);
             response.Content = new StringContent(message, Encoding.UTF8, "application/json");
-           // MarshallObject(oCompany);
+            // MarshallObject(oCompany);
             return response;
         }
 
-       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
+        //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         //[HttpPost]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetAvailableQuantity/{ItemCode}/{WarehouseCode}/{Quantity}")]
@@ -1899,7 +1901,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
 
 
 
-       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
+        //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         //[HttpPost]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetAvailableQuantityBatch/{ItemCode}/{WarehouseCode}/{Quantity}")]
@@ -1972,7 +1974,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
         }
 
 
-       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
+        //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         //[HttpPost]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetItemBatchesAndQuantities/{ItemCode}/{WarehouseCode}")]
@@ -1993,7 +1995,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
             }
             else
             {
-               
+
 
                 //querystring = "SELECT distinct case WHEN T3.OnHand  >= '" + Sanitize(Quantity) + "' THEN  'Y' ELSE 'N' END AS  QuantityOk " +
                 //" FROM " + Sanitize(DBName) + ".[dbo]." + "OITM T0  INNER JOIN " + Sanitize(DBName) + ".[dbo]." + "OBTN T1 ON T0.ItemCode = T1.ItemCode " +
@@ -2040,24 +2042,24 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
             }
         }
 
-       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
+        //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         //[HttpPost]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetItemPrice/{ItemCode}/{CardCode}")]
-        public HttpResponseMessage GetItemPrice(string DBName,string ItemCode, string CardCode)
+        public HttpResponseMessage GetItemPrice(string DBName, string ItemCode, string CardCode)
         {
 
-            
-            
+
+
             if (DbServerType == "SAPHANA")
             {
                 //querystring = "select case WHEN T1.\"OnHand\"  >= '" + Sanitize(Quantity) + "' THEN  'Y' ELSE 'N' END AS \"QuantityOk\" from \"OITM\" T0   INNER JOIN \"OITW\"  T1  ON T0.\"ItemCode\" = T1.\"ItemCode\" INNER JOIN \"OWHS\" T2 ON T2.\"WhsCode\" = T1.\"WhsCode\" WHERE  T0.\"ItemCode\" = '" + Sanitize(ItemCode) + "' and T2.\"WhsCode\" = '" + Sanitize(WarehouseCode) + "'";
-                querystring = "SELECT T0.\"ItemCode\", T0.\"Price\" ,T0.\"PriceList\" FROM  \""  + Sanitize(DBName) + "\" + \".ITM1\" T0 INNER JOIN  \""  + Sanitize(DBName) + "\" + \".OCRD\" T1 ON T0.\"PriceList\" = T1.\"ListNum\"  WHERE T1.\"CardCode\" = '" + Sanitize(CardCode) + "' AND  T0.\"ItemCode\"='" + Sanitize(ItemCode) + "'AND T0.\"Price\" != 0";
+                querystring = "SELECT T0.\"ItemCode\", T0.\"Price\" ,T0.\"PriceList\" FROM  \"" + Sanitize(DBName) + "\" + \".ITM1\" T0 INNER JOIN  \"" + Sanitize(DBName) + "\" + \".OCRD\" T1 ON T0.\"PriceList\" = T1.\"ListNum\"  WHERE T1.\"CardCode\" = '" + Sanitize(CardCode) + "' AND  T0.\"ItemCode\"='" + Sanitize(ItemCode) + "'AND T0.\"Price\" != 0";
 
             }
             else
             {
-                querystring = "SELECT T0.ItemCode, T0.Price ,T0.PriceList FROM  "  + Sanitize(DBName) + ".[dbo]." + "ITM1 T0 (nolock)INNER JOIN  "  + Sanitize(DBName) + ".[dbo]." + "OCRD T1 ON T0.PriceList = T1.ListNum  WHERE T1.CardCode = '" + Sanitize(CardCode) + "' AND  T0.ItemCode='" + Sanitize(ItemCode) + "'AND T0.Price <> 0";
+                querystring = "SELECT T0.ItemCode, T0.Price ,T0.PriceList FROM  " + Sanitize(DBName) + ".[dbo]." + "ITM1 T0 (nolock)INNER JOIN  " + Sanitize(DBName) + ".[dbo]." + "OCRD T1 ON T0.PriceList = T1.ListNum  WHERE T1.CardCode = '" + Sanitize(CardCode) + "' AND  T0.ItemCode='" + Sanitize(ItemCode) + "'AND T0.Price <> 0";
 
             }
 
@@ -2065,7 +2067,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
             var roles = identity.Claims
                         .Where(c => c.Type == ClaimTypes.Role)
                         .Select(c => c.Value);
-            string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString  + @"Database=" + DBName.Trim() + ";" ;
+            string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
             using (SqlConnection con = new SqlConnection(constr))
             {
                 using (SqlCommand cmd = new SqlCommand(querystring))
@@ -2079,8 +2081,8 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                             dt.TableName = "Dataset";
                             sda.Fill(dt);
                             //return dt;
-                             string results = DataTableToJSONWithStringBuilder(dt);
-                          
+                            string results = DataTableToJSONWithStringBuilder(dt);
+
                             var response = Request.CreateResponse(HttpStatusCode.OK);
                             response.Content = new StringContent(results, Encoding.UTF8, "application/json");
 
@@ -2104,15 +2106,15 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
 
 
                 vCompany = new SAPbobsCOM.Company();
-             
+
 
                 string UserName = SAPUserName;
                 string Password = SAPPassword;
-                    //section["Password"];
+                //section["Password"];
                 //DecryptString(encrypt_decrypt_key, section["Password"]);
                 string CompanyDB = DBName;
-                    //section["CompanyDB"];
-             
+                //section["CompanyDB"];
+
                 //DecryptString(encrypt_decrypt_key, section["DbPassword"]);
                 // string DbPassword = "sekonda";
                 vCompany.Server = Server;
@@ -2159,11 +2161,11 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                 {
                     // Console.WriteLine("Error");
                     //  Interaction.MsgBox("failed  to connect  to to Licence server ");
-                    
+
                     string message = "";
                     vCompany.GetLastError(out nErr, out erMsg);
                     message = "{\"Message\": {\"MessageType\": \"Error\",\"Description\": " + erMsg + ",\"Document Type\": \"Customer\"}}";
-                  //  message_ = JsonConvert.DeserializeObject(message);
+                    //  message_ = JsonConvert.DeserializeObject(message);
                 }
                 return vCompany;
             }
@@ -2187,9 +2189,9 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
         {
             public string DocEntry { get; set; }
             public string DocNum { get; set; }
-             public string DocTotal { get; set; }
+            public string DocTotal { get; set; }
             public string PaymentMode { get; set; }
-         
+
 
 
         }
@@ -2212,25 +2214,25 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
             public string DocDate { get; set; }
             public string DocDueDate { get; set; }
             public string TaxDate { get; set; }
-            
+
             public string DocType { get; set; }
             public string CANCELED { get; set; }
             public string DocStatus { get; set; }
             public string DocTotal { get; set; }
             public string VatSum { get; set; }
-            public string  DocDiscount { get; set; }
+            public string DocDiscount { get; set; }
             public string DocNum { get; set; }
             public string DocCur { get; set; }
             public string DocEntry { get; set; }
             public string Remarks { get; set; }
             public List<MarketingDocument_Rows> MarketingDocument_Rows { get; set; }
             public List<Payment_Rows> Payment_Rows { get; set; }
-         
+
         }
 
         [HttpGet]
         [Route("api/SAP/{DBName}/GetMarketingDocumentsByCardCode/{ObjectType}/{CardCode}/{Page}/{RequestLimit}/")]
-        public HttpResponseMessage GetMarketingDocumentsByCardCode(string DBName, string ObjectType, string CardCode ,string Page, string RequestLimit)
+        public HttpResponseMessage GetMarketingDocumentsByCardCode(string DBName, string ObjectType, string CardCode, string Page, string RequestLimit)
 
 
         {
@@ -2454,10 +2456,19 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
 
         [HttpGet]
         [Route("api/SAP/{DBName}/GetMarketingDocumentsPaginated/{ObjectType}/{Page}/{RequestLimit}")]
-        public HttpResponseMessage GetMarketingDocumentsPaginated(string DBName, string ObjectType ,string Page ,string RequestLimit)
-
-
-        {
+        public HttpResponseMessage GetMarketingDocumentsPaginated(string DBName, string ObjectType, int Page, int RequestLimit,string dateFrom=null, string dateTo=null)
+         {
+            if (string.IsNullOrEmpty(dateFrom))
+                dateFrom = "1900-01-01";
+            if (string.IsNullOrEmpty(dateTo))
+                dateTo = DateTimeOffset.Now.ToString("yyyy-MM-dd");
+            int offset = 0;
+            if (Page < 2)
+            {
+                offset = 0;
+            }
+            else
+                offset = Page*RequestLimit;
             string HeaderTable = "";
             string RowsTable = "";
             if (ObjectType == "SALESQOUTATION")
@@ -2544,9 +2555,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
             {
                 querystring = "select ISNULL(T0.DocEntry,'')'DocEntry',ISNULL(T0.DocNum,'') 'DocNum',ISNULL(T0.DocCur,'') 'DocCur',ISNULL(T0.CardCode,'') 'CardCode', ISNULL(T0.CardName,'') 'CardName'," +
                    " ISNULL( T0.DocDate,'') 'DocDate', ISNULL( T0.DocDueDate,'') 'DocDueDate', ISNULL( T0.TaxDate,'') 'TaxDate',ISNULL(T0.DocType,'') 'DocType', ISNULL(T0.CANCELED,'') 'CANCELED', ISNULL(T0.DocStatus ,'') 'DocStatus'," +
-                   " ISNULL(T0.DocTotal,0)'DocTotal', ISNULL(T0.VatSum,0)'VatSum',ISNULL(T0.DiscSum,0) 'DiscSum' ,ISNULL( T0.Comments,'') 'Comments' from  " + Sanitize(DBName) + ".[dbo]." + HeaderTable + " t0 (nolock) " +
-                   " ORDER BY CardCode asc OFFSET " +  Sanitize(Page) +  "  ROWS FETCH NEXT " + Sanitize(RequestLimit) + " ROWS ONLY ";
-
+                   " ISNULL(T0.DocTotal,0)'DocTotal', ISNULL(T0.VatSum,0)'VatSum',ISNULL(T0.DiscSum,0) 'DiscSum' ,ISNULL( T0.Comments,'') 'Comments' from  " + Sanitize(DBName) + ".[dbo]." + HeaderTable + $" t0 (nolock) where T0.DocDate > '{dateFrom}' and T0.DocDate < '{dateTo}' ORDER BY T0.DocDate DESC OFFSET {offset} ROWS FETCH NEXT {RequestLimit} ROWS ONLY;";
                 // querystring = "select  T0.DocEntry,T0.DocNum,T0.CardCode, T0.CardName, T0.DocDate, T0.DocType, T0.CANCELED, T0.DocStatus, ISNULL(T0.DocTotal,0), T0.VatSum ,ISNULL(T0.DiscSum,0) from  "  + Sanitize(DBName) + ".[dbo]." + "OINV t0 (nolock) ";
 
 
@@ -2653,33 +2662,230 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                 }
 
             }
-            querystring = "select count(T0.DocEntry)/  "+ RequestLimit +" as NumberofPages FROM  " + Sanitize(DBName) + ".[dbo]." + HeaderTable + " t0(nolock)";
-            DataTable records = GetData(DBName, querystring);
-            var json=DataTableToJSONWithStringBuilder(records);
-            string record_details = "{\"RequestLimit\": \"" + RequestLimit + "\",\"CurrentPage\": \"" + Page + "\"}" + json.Replace("[{", "").Replace("]", "");
 
-            
-            string jObject1 =    JsonConvert.SerializeObject(invoices, Newtonsoft.Json.Formatting.Indented);
-           // string final_data =  jObject1 + record_details;
-            var json_final = JsonConvert.SerializeObject(new[] { "MarketingDocument",JsonConvert.DeserializeObject(jObject1),
-                                            "Record Details",JsonConvert.DeserializeObject(record_details) });
-
-          //  var result = new JObject();
-
-           // jObject1.Merge(jObject2);
-            //var json1 = JsonConvert.SerializeObject(record_details, Newtonsoft.Json.Formatting.Indented);
-           // var json_ = JsonConvert.SerializeObject("{"Success":"test"}", Newtonsoft.Json.Formatting.Indented);
+            var json = JsonConvert.SerializeObject(invoices, Newtonsoft.Json.Formatting.Indented);
+            // return Request.CreateResponse(HttpStatusCode.Created, json);
 
             var response = Request.CreateResponse(HttpStatusCode.OK);
-            response.Content = new StringContent(json_final, Encoding.UTF8, "application/json");
+            response.Content = new StringContent(json, Encoding.UTF8, "application/json");
+            return response; 
+        }
+
+
+        //[Authorize(Roles = "SuperAdmin, Admin, User")]
+        [HttpGet]
+        [Route("api/SAP/{DBName}/GetMarketingDocuments/{ObjectType}")]
+        public HttpResponseMessage GetMarketingDocuments(string DBName, string ObjectType)
+
+
+        {
+            string HeaderTable = "";
+            string RowsTable = "";
+            if (ObjectType == "SALESQOUTATION")
+            {
+                HeaderTable = "OQUT";
+                RowsTable = "QUT1";
+            }
+            else if (ObjectType == "SALESORDER")
+            {
+
+                HeaderTable = "ORDR";
+                RowsTable = "RDR1";
+            }
+            else if (ObjectType == "SALESCREDITNOTE")
+            {
+
+
+                HeaderTable = "ORIN";
+                RowsTable = "RIN1";
+            }
+            else if (ObjectType == "SALESINVOICE")
+            {
+
+                HeaderTable = "OINV";
+                RowsTable = "INV1";
+
+            }
+            else if (ObjectType == "PURCHASEREQUEST")
+            {
+
+                HeaderTable = "OPRQ";
+                RowsTable = "PRQ1";
+
+            }
+            else if (ObjectType == "PURCHASEQOUTATION")
+            {
+
+                HeaderTable = "OPQT";
+                RowsTable = "PQT1";
+            }
+            else if (ObjectType == "PURCHASEORDER")
+            {
+
+                HeaderTable = "OPOR";
+                RowsTable = "POR1";
+            }
+            else if (ObjectType == "PURCHASECREDITNOTE")
+            {
+
+
+                HeaderTable = "ORPC";
+                RowsTable = "RPC1";
+            }
+            else if (ObjectType == "GRPO")
+            {
+
+                HeaderTable = "OPDN";
+                RowsTable = "PDN1";
+            }
+            else if (ObjectType == "GOODSRETURN")
+            {
+
+
+                HeaderTable = "ORPD";
+                RowsTable = "RPD1";
+            }
+            else if (ObjectType == "PURCHASEINVOICE")
+            {
+
+                HeaderTable = "OPCH";
+                RowsTable = "PCH1";
+            }
+
+            List<MarketingDocumentHeader> invoices = new List<MarketingDocumentHeader>();
+
+
+            if (DbServerType == "SAPHANA")
+            {
+                //querystring = "select case WHEN T1.\"OnHand\"  >= '" + Sanitize(Quantity) + "' THEN  'Y' ELSE 'N' END AS \"QuantityOk\" from \"OITM\" T0   INNER JOIN \"OITW\"  T1  ON T0.\"ItemCode\" = T1.\"ItemCode\" INNER JOIN \"OWHS\" T2 ON T2.\"WhsCode\" = T1.\"WhsCode\" WHERE  T0.\"ItemCode\" = '" + Sanitize(ItemCode) + "' and T2.\"WhsCode\" = '" + Sanitize(WarehouseCode) + "'";
+                querystring = "select T0.\"DocEntry\",T0.\"DocNum\",T0.\"CardCode\", T0.\"CardName\", T0.\"DocDate\", T0.\"DocType\", T0.\"CANCELED\", T0.\"DocStatus\", T0.\"DocTotal\", T0.\"VatSum\" from  \"" + Sanitize(DBName) + "\" + \".OINV\" T0 ";
+
+            }
+            else
+            {
+                querystring = "select ISNULL(T0.DocEntry,'')'DocEntry',ISNULL(T0.DocNum,'') 'DocNum',ISNULL(T0.DocCur,'') 'DocCur',ISNULL(T0.CardCode,'') 'CardCode', ISNULL(T0.CardName,'') 'CardName'," +
+                   " ISNULL( T0.DocDate,'') 'DocDate', ISNULL( T0.DocDueDate,'') 'DocDueDate', ISNULL( T0.TaxDate,'') 'TaxDate',ISNULL(T0.DocType,'') 'DocType', ISNULL(T0.CANCELED,'') 'CANCELED', ISNULL(T0.DocStatus ,'') 'DocStatus'," +
+                   " ISNULL(T0.DocTotal,0)'DocTotal', ISNULL(T0.VatSum,0)'VatSum',ISNULL(T0.DiscSum,0) 'DiscSum' ,ISNULL( T0.Comments,'') 'Comments' from  " + Sanitize(DBName) + ".[dbo]." + HeaderTable + " t0 (nolock) ORDER BY T0.DocDate DESC OFFSET 10 ROWS FETCH NEXT 10 ROWS ONLY;";
+                // querystring = "select  T0.DocEntry,T0.DocNum,T0.CardCode, T0.CardName, T0.DocDate, T0.DocType, T0.CANCELED, T0.DocStatus, ISNULL(T0.DocTotal,0), T0.VatSum ,ISNULL(T0.DiscSum,0) from  "  + Sanitize(DBName) + ".[dbo]." + "OINV t0 (nolock) ";
+
+
+            }
+            DataTable dt = GetData(DBName, querystring);
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                if ((ObjectType.EndsWith("INVOICE")))
+                {
+
+                    MarketingDocumentHeader document = new MarketingDocumentHeader
+                    {
+
+
+                        DocEntry = Convert.ToString(dt.Rows[i]["DocEntry"])
+                ,
+                        DocNum = Convert.ToString(dt.Rows[i]["DocNum"])
+                ,
+                        DocCur = Convert.ToString(dt.Rows[i]["DocCur"])
+                ,
+                        CardCode = Convert.ToString(dt.Rows[i]["CardCode"])
+                ,
+                        CardName = Convert.ToString(dt.Rows[i]["CardName"])
+                ,
+                        DocDate = Convert.ToString(dt.Rows[i]["DocDate"])
+
+                ,
+                        MarketingDocument = ObjectType,
+                        DocDueDate = Convert.ToString(dt.Rows[i]["DocDueDate"])
+
+                ,
+                        TaxDate = Convert.ToString(dt.Rows[i]["TaxDate"])
+
+                ,
+                        DocType = Convert.ToString(dt.Rows[i]["DocType"])
+                ,
+                        CANCELED = Convert.ToString(dt.Rows[i]["CANCELED"])
+                ,
+                        DocStatus = Convert.ToString(dt.Rows[i]["DocStatus"])
+                ,
+                        DocTotal = Convert.ToString(dt.Rows[i]["DocTotal"])
+                ,
+                        VatSum = Convert.ToString(dt.Rows[i]["VatSum"])
+                ,
+                        DocDiscount = Convert.ToString(dt.Rows[i]["DiscSum"])
+                ,
+                        Remarks = Convert.ToString(dt.Rows[i]["Comments"])
+                ,
+                        MarketingDocument_Rows = GetMarketingDocumentRows(DBName, HeaderTable, RowsTable, Convert.ToString(dt.Rows[i]["DocEntry"])),
+                        Payment_Rows = GetPayment_Rows(DBName, HeaderTable, RowsTable, Convert.ToString(dt.Rows[i]["DocEntry"]))
+
+                    };
+                    invoices.Add(document);
+                }
+
+
+
+                else
+                {
+                    MarketingDocumentHeader document = new MarketingDocumentHeader
+                    {
+
+
+                        DocEntry = Convert.ToString(dt.Rows[i]["DocEntry"])
+                       ,
+                        DocNum = Convert.ToString(dt.Rows[i]["DocNum"])
+                       ,
+                        DocCur = Convert.ToString(dt.Rows[i]["DocCur"])
+                       ,
+                        CardCode = Convert.ToString(dt.Rows[i]["CardCode"])
+                       ,
+                        CardName = Convert.ToString(dt.Rows[i]["CardName"])
+                       ,
+                        DocDate = Convert.ToString(dt.Rows[i]["DocDate"])
+
+                       ,
+                        MarketingDocument = ObjectType,
+                        DocDueDate = Convert.ToString(dt.Rows[i]["DocDueDate"])
+
+                       ,
+                        TaxDate = Convert.ToString(dt.Rows[i]["TaxDate"])
+
+                       ,
+                        DocType = Convert.ToString(dt.Rows[i]["DocType"])
+                       ,
+                        CANCELED = Convert.ToString(dt.Rows[i]["CANCELED"])
+                       ,
+                        DocStatus = Convert.ToString(dt.Rows[i]["DocStatus"])
+                       ,
+                        DocTotal = Convert.ToString(dt.Rows[i]["DocTotal"])
+                       ,
+                        VatSum = Convert.ToString(dt.Rows[i]["VatSum"])
+                       ,
+                        DocDiscount = Convert.ToString(dt.Rows[i]["DiscSum"])
+                       ,
+                        Remarks = Convert.ToString(dt.Rows[i]["Comments"])
+                       ,
+                        MarketingDocument_Rows = GetMarketingDocumentRows(DBName, HeaderTable, RowsTable, Convert.ToString(dt.Rows[i]["DocEntry"])),
+                        // Payment_Rows = GetPayment_Rows(DBName, HeaderTable, RowsTable, Convert.ToString(dt.Rows[i]["DocEntry"]))
+
+                    };
+                    invoices.Add(document);
+
+                }
+
+            }
+
+            var json = JsonConvert.SerializeObject(invoices, Newtonsoft.Json.Formatting.Indented);
+            // return Request.CreateResponse(HttpStatusCode.Created, json);
+
+            var response = Request.CreateResponse(HttpStatusCode.OK);
+            response.Content = new StringContent(json, Encoding.UTF8, "application/json");
             return response;
         }
-       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
-      
-       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
+        //  [Authorize(Roles = "SuperAdmin, Admin, User")]
+
+        //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetMarketingDocumentByDate/{ObjectType}/{FromDocDate}/{ToDocDate}")]
-        public HttpResponseMessage GetMarketingDocumentByDate(string DBName, string ObjectType,string FromDocDate, string ToDocDate)
+        public HttpResponseMessage GetMarketingDocumentByDate(string DBName, string ObjectType, string FromDocDate, string ToDocDate)
 
 
         {
@@ -2774,14 +2980,14 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
 
 
             }
-            DataTable dt =  GetData(DBName,querystring);
+            DataTable dt = GetData(DBName, querystring);
             for (int i = 0; i < dt.Rows.Count; i++)
             {
 
                 MarketingDocumentHeader document = new MarketingDocumentHeader
                 {
 
-                    
+
                     DocEntry = Convert.ToString(dt.Rows[i]["DocEntry"])
                     ,
                     DocNum = Convert.ToString(dt.Rows[i]["DocNum"])
@@ -2821,8 +3027,8 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                 };
                 invoices.Add(document);
             }
-          
-            
+
+
 
             var json = JsonConvert.SerializeObject(invoices, Newtonsoft.Json.Formatting.Indented);
             // return Request.CreateResponse(HttpStatusCode.Created, json);
@@ -2833,12 +3039,12 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
         }
 
 
-      
 
 
 
 
-       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
+
+        //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         //[HttpPost]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetMarketingDocByDocEntry/{ObjectType}/{DocEntry}")]
@@ -2979,12 +3185,12 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                     ,
                     Remarks = Convert.ToString(dt.Rows[i]["Comments"])
                     ,
-                    MarketingDocument_Rows = GetMarketingDocumentRows( DBName ,HeaderTable,RowsTable, Convert.ToString(dt.Rows[i]["DocEntry"])),
+                    MarketingDocument_Rows = GetMarketingDocumentRows(DBName, HeaderTable, RowsTable, Convert.ToString(dt.Rows[i]["DocEntry"])),
                     Payment_Rows = GetPayment_Rows(DBName, HeaderTable, RowsTable, Convert.ToString(dt.Rows[i]["DocEntry"]))
                 };
                 break;
             }
-            if (invoice ==null)
+            if (invoice == null)
             {
                 return Request.CreateResponse(HttpStatusCode.NotFound);
             }
@@ -2994,20 +3200,20 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
             return response;
         }
 
-       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
+        //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         //[HttpPost]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetInvoicesById/{DocEntry}")]
-        public HttpResponseMessage GetInvoicesById(string DBName, string DocEntry,string Table)
+        public HttpResponseMessage GetInvoicesById(string DBName, string DocEntry, string Table)
 
         {
 
             string HeaderTable = "";
             string RowsTable = "";
-            
 
-                HeaderTable = "OINV";
-                RowsTable = "INV1";
+
+            HeaderTable = "OINV";
+            RowsTable = "INV1";
 
 
             List<MarketingDocumentHeader> invoices = new List<MarketingDocumentHeader>();
@@ -3028,9 +3234,9 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
 
 
             }
-            
 
-            DataTable dt =  GetData(DBName,querystring);
+
+            DataTable dt = GetData(DBName, querystring);
             for (int i = 0; i < dt.Rows.Count; i++)
             {
 
@@ -3076,8 +3282,8 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
         public List<MarketingDocument_Rows> GetMarketingDocumentRows(string DBName, string HeaderTable, string RowsTable, string DocEntry)
         {
 
-            
-          
+
+
             List<MarketingDocument_Rows> invoicerows = new List<MarketingDocument_Rows>();
             DataTable dt = null;
             bool is_Numeric = IsNumeric(DocEntry);
@@ -3088,22 +3294,22 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                 if (DbServerType == "SAPHANA")
                 {
                     //querystring = "select case WHEN T1.\"OnHand\"  >= '" + Sanitize(Quantity) + "' THEN  'Y' ELSE 'N' END AS \"QuantityOk\" from \"OITM\" T0   INNER JOIN \"OITW\"  T1  ON T0.\"ItemCode\" = T1.\"ItemCode\" INNER JOIN \"OWHS\" T2 ON T2.\"WhsCode\" = T1.\"WhsCode\" WHERE  T0.\"ItemCode\" = '" + Sanitize(ItemCode) + "' and T2.\"WhsCode\" = '" + Sanitize(WarehouseCode) + "'";
-                    querystring = "select  T1.\"DocEntry\" ,T1.\"ItemCode\", T1.\"ItemCode\", T1.\"Dscription\", T1.\"Quantity\", T1.\"WhsCode\", T1.\"LineTotal\", T1.\"PriceBefDi\",T1.\"Price\", T1.\"VatGroup\", T1.\"VatSum\" from  \""  + Sanitize(DBName) + "\" + \".INV1\" T1  INNER JOIN" +
-                              "   \""  + Sanitize(DBName) + "\" + \".OINV\"  T0  ON  T0.\"DocEntry\" =T1.\"DocEntry\"  Where T0.\"DocEntry\" ='" + DocEntry + "'";
+                    querystring = "select  T1.\"DocEntry\" ,T1.\"ItemCode\", T1.\"ItemCode\", T1.\"Dscription\", T1.\"Quantity\", T1.\"WhsCode\", T1.\"LineTotal\", T1.\"PriceBefDi\",T1.\"Price\", T1.\"VatGroup\", T1.\"VatSum\" from  \"" + Sanitize(DBName) + "\" + \".INV1\" T1  INNER JOIN" +
+                              "   \"" + Sanitize(DBName) + "\" + \".OINV\"  T0  ON  T0.\"DocEntry\" =T1.\"DocEntry\"  Where T0.\"DocEntry\" ='" + DocEntry + "'";
                 }
                 else
                 {
                     querystring = "select  ISNULL(T1.DocEntry,'') 'DocEntry' , ISNULL(T1.ItemCode,'') 'ItemCode' , " +
                         " ISNULL(T1.ItemCode,'') 'ItemCode', ISNULL(T1.Dscription ,'') 'Dscription', ISNULL(T1.Quantity ,0) 'Quantity', ISNULL(T1.WhsCode ,'') 'WhsCode', " +
                         " ISNULL(T1.LineTotal,0) 'LineTotal',ISNULL( T1.PriceBefDi,0) 'PriceBefDi',ISNULL(T1.Price,0) 'Price'," +
-                        " ISNULL(T1.VatGroup,'') 'VatGroup', ISNULL(T1.VatSum,0) 'VatSum' from "  + Sanitize(DBName) + ".[dbo]."  + RowsTable + " T1 (nolock) INNER JOIN" +
-                              " "  + Sanitize(DBName) + ".[dbo]." + HeaderTable + " T0  ON  T0.DocEntry =T1.DocEntry  Where T0.DocEntry ='" + DocEntry + "'";
+                        " ISNULL(T1.VatGroup,'') 'VatGroup', ISNULL(T1.VatSum,0) 'VatSum' from " + Sanitize(DBName) + ".[dbo]." + RowsTable + " T1 (nolock) INNER JOIN" +
+                              " " + Sanitize(DBName) + ".[dbo]." + HeaderTable + " T0  ON  T0.DocEntry =T1.DocEntry  Where T0.DocEntry ='" + DocEntry + "'";
                 }
 
 
 
 
-                dt = GetData(DBName,querystring);
+                dt = GetData(DBName, querystring);
             }
             for (int i = 0; i < dt.Rows.Count; i++)
             {
@@ -3161,8 +3367,8 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                 else
                 {
                     querystring = "SELECT isnull(T0.DocEntry, 0) 'DocEntry',isnull(T0.DocNum, '') 'DocNum',isnull(T0.DocTotal, 0) 'DocTotal'," +
-                        " case  when T0.TrsfrSum > 0 then 'Transfer' when T0.CashSum > 0 then 'Cash' when T0.CheckSum > 0 then 'Cheque' when T0.CreditSum > 0 then 'Credit Card' end 'PaymentMode' FROM  " 
-                        + Sanitize(DBName) + ".[dbo]." + "ORCT T0 LEFT JOIN "+ Sanitize(DBName) + ".[dbo]." + "RCT2 T1 ON T1.DocNum = T0.DocNum " +
+                        " case  when T0.TrsfrSum > 0 then 'Transfer' when T0.CashSum > 0 then 'Cash' when T0.CheckSum > 0 then 'Cheque' when T0.CreditSum > 0 then 'Credit Card' end 'PaymentMode' FROM  "
+                        + Sanitize(DBName) + ".[dbo]." + "ORCT T0 LEFT JOIN " + Sanitize(DBName) + ".[dbo]." + "RCT2 T1 ON T1.DocNum = T0.DocNum " +
                         " LEFT JOIN " + Sanitize(DBName) + ".[dbo]." + "OINV T2 ON T2.DocEntry = T1.DocEntry LEFT JOIN "
                          + Sanitize(DBName) + ".[dbo]." + "OACT T3 ON T3.AcctCode = TrsfrAcct " +
                         "  Where T2.DocEntry ='" + DocEntry + "' AND  T0.Canceled='N'";
@@ -3186,8 +3392,8 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                     DocTotal = Convert.ToString(dt.Rows[i]["DocTotal"])
                     ,
                     PaymentMode = Convert.ToString(dt.Rows[i]["PaymentMode"])
-                   
-                  
+
+
                 });
             }
             return paymentrows;
@@ -3244,7 +3450,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
             if (DbServerType == "SAPHANA")
             {
                 //querystring = "select case WHEN T1.\"OnHand\"  >= '" + Sanitize(Quantity) + "' THEN  'Y' ELSE 'N' END AS \"QuantityOk\" from \"OITM\" T0   INNER JOIN \"OITW\"  T1  ON T0.\"ItemCode\" = T1.\"ItemCode\" INNER JOIN \"OWHS\" T2 ON T2.\"WhsCode\" = T1.\"WhsCode\" WHERE  T0.\"ItemCode\" = '" + Sanitize(ItemCode) + "' and T2.\"WhsCode\" = '" + Sanitize(WarehouseCode) + "'";
-                querystring = querystring = "select  T0.\"CardCode\", T0.\"CardName\", T0.\"Balance\", T0.\"CreditLine\", T0.\"DebtLine\", T0.\"Currency\" from  \""  + Sanitize(DBName) + "\" + \".OCRD\" T0  WHERE  T0.\"frozenFor\"='N'";
+                querystring = querystring = "select  T0.\"CardCode\", T0.\"CardName\", T0.\"Balance\", T0.\"CreditLine\", T0.\"DebtLine\", T0.\"Currency\" from  \"" + Sanitize(DBName) + "\" + \".OCRD\" T0  WHERE  T0.\"frozenFor\"='N'";
 
             }
             else
@@ -3300,7 +3506,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
         }
 
 
-       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
+        //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         [HttpPost]
         [Route("api/SAP/{DBName}/DeleteBusinessPartner/{SAPUserName}/{SAPPassword}")]
         //public HttpResponseMessage Post([FromBody]string value)
@@ -3309,68 +3515,68 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
         {
             //try
             //{
-                var jsonString = await request.Content.ReadAsStringAsync();
-                string bsl = @"\";
-                JObject json = JObject.Parse(jsonString);
-                var response = "";
-                dynamic message_ = null;
-                var message = "";
-                string CardCode, CardName, CardType, Action;
-                //Header Section 
+            var jsonString = await request.Content.ReadAsStringAsync();
+            string bsl = @"\";
+            JObject json = JObject.Parse(jsonString);
+            var response = "";
+            dynamic message_ = null;
+            var message = "";
+            string CardCode, CardName, CardType, Action;
+            //Header Section 
 
-                CardCode = (string)json.SelectToken("BPInformation").SelectToken("CardCode");
-                CardName = (string)json.SelectToken("BPInformation").SelectToken("CardName");
-                CardType = (string)json.SelectToken("BPInformation").SelectToken("CardType").ToString().ToUpper();
-                Action = (string)json.SelectToken("BPInformation").SelectToken("Action");
+            CardCode = (string)json.SelectToken("BPInformation").SelectToken("CardCode");
+            CardName = (string)json.SelectToken("BPInformation").SelectToken("CardName");
+            CardType = (string)json.SelectToken("BPInformation").SelectToken("CardType").ToString().ToUpper();
+            Action = (string)json.SelectToken("BPInformation").SelectToken("Action");
 
-                Connect_To_SAP connect = new Connect_To_SAP();
-                oCompany = connect.ConnectSAPDB(DBName, SAPUserName, SAPPassword);
-                SAPbobsCOM.BusinessPartners sboBP = (SAPbobsCOM.BusinessPartners)oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oBusinessPartners);
-                bool check_card_code = CheckIfExists(DBName, CardCode, CardType);
-                if (check_card_code == true && Action == "DELETE")
+            Connect_To_SAP connect = new Connect_To_SAP();
+            oCompany = connect.ConnectSAPDB(DBName, SAPUserName, SAPPassword);
+            SAPbobsCOM.BusinessPartners sboBP = (SAPbobsCOM.BusinessPartners)oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oBusinessPartners);
+            bool check_card_code = CheckIfExists(DBName, CardCode, CardType);
+            if (check_card_code == true && Action == "DELETE")
+            {
+                sboBP.GetByKey(CardCode);
+
+
+
+                if (sboBP.Remove() != 0)
                 {
-                    sboBP.GetByKey(CardCode);
-                   
-                                     
+                    string dqt = @"""";
+                    oCompany.GetLastError(out nErr, out erMsg);
 
-                    if (sboBP.Remove() != 0)
-                    {
-                        string dqt = @"""";
-                        oCompany.GetLastError(out nErr, out erMsg);
-                   
-                    message = "{\"Message\": {\"MessageType\": \"Error\",\"Description\": " + dqt + erMsg.Replace("-","")+ dqt + ", \"Customer Number\": " + dqt + CardCode + dqt + ",\"Document Type\": \"Customer\"}}";
+                    message = "{\"Message\": {\"MessageType\": \"Error\",\"Description\": " + dqt + erMsg.Replace("-", "") + dqt + ", \"Customer Number\": " + dqt + CardCode + dqt + ",\"Document Type\": \"Customer\"}}";
                     message_ = JsonConvert.DeserializeObject(message);
 
                     MarshallObject(sboBP);
-                        MarshallObject(oCompany);
-                    }
-                    else
-                    {
-
-                      
-                        message = "{\"Message\": {\"MessageType\": \"Success\",\"Description\": \"Successfully Removed Business Partner\",\"Business Partner Number\": \"" + CardCode + "\",\"Document Type\": \"Business Partner\"}}";
-                        message_ = JsonConvert.DeserializeObject(message);
-
-                        SAP_SEND_MESSAGE("Business Partner Removed", "Business Partner Removed from API", "Business Partner Name", CardCode, "2", CardCode, "", "", "", "");
-
-                        MarshallObject(sboBP);
-                        MarshallObject(oCompany);
-
-
-                    }
-
+                    MarshallObject(oCompany);
                 }
                 else
                 {
 
-                    message = "{\"Message\": {\"MessageType\": \"Error\",\"Description\": \"Customer Does not Exists \",\"Business Partner Number\": \"" + CardCode + "\" ,\"Document Type\": \"Business Partner\"}}";
-                    message_ = JsonConvert.DeserializeObject(message);
-                }
-                var json_response = JsonConvert.SerializeObject(message_, Newtonsoft.Json.Formatting.Indented);
-                var response_invoice = Request.CreateResponse(HttpStatusCode.OK);
-                response_invoice.Content = new StringContent(json_response, Encoding.UTF8, "application/json");
 
-                return response_invoice;
+                    message = "{\"Message\": {\"MessageType\": \"Success\",\"Description\": \"Successfully Removed Business Partner\",\"Business Partner Number\": \"" + CardCode + "\",\"Document Type\": \"Business Partner\"}}";
+                    message_ = JsonConvert.DeserializeObject(message);
+
+                    SAP_SEND_MESSAGE("Business Partner Removed", "Business Partner Removed from API", "Business Partner Name", CardCode, "2", CardCode, "", "", "", "");
+
+                    MarshallObject(sboBP);
+                    MarshallObject(oCompany);
+
+
+                }
+
+            }
+            else
+            {
+
+                message = "{\"Message\": {\"MessageType\": \"Error\",\"Description\": \"Customer Does not Exists \",\"Business Partner Number\": \"" + CardCode + "\" ,\"Document Type\": \"Business Partner\"}}";
+                message_ = JsonConvert.DeserializeObject(message);
+            }
+            var json_response = JsonConvert.SerializeObject(message_, Newtonsoft.Json.Formatting.Indented);
+            var response_invoice = Request.CreateResponse(HttpStatusCode.OK);
+            response_invoice.Content = new StringContent(json_response, Encoding.UTF8, "application/json");
+
+            return response_invoice;
 
 
             //}
@@ -3386,12 +3592,12 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
 
 
         }
-       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
+        //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         [HttpPost]
         [Route("api/SAP/{DBName}/CreateBusinessPartner/")]
         //public HttpResponseMessage Post([FromBody]string value)
         //{
-        public async Task<HttpResponseMessage> CreateBusinessPartner(HttpRequestMessage request ,string DBName)
+        public async Task<HttpResponseMessage> CreateBusinessPartner(HttpRequestMessage request, string DBName)
         {
             try
             {
@@ -3449,7 +3655,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                 oCompany = connect.ConnectSAPDB(DBName, SAPUserName, SAPPassword);
                 //oCompany = connect.ConnectSAPDB(DBName, SAPUserName, SAPPassword);
                 SAPbobsCOM.BusinessPartners sboBP = (SAPbobsCOM.BusinessPartners)oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oBusinessPartners);
-                bool check_card_code = CheckIfExists(DBName,CardCode, CardType);
+                bool check_card_code = CheckIfExists(DBName, CardCode, CardType);
                 if (check_card_code == false && Action == "ADD")
                 {
 
@@ -3464,8 +3670,8 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                     {
                         sboBP.CardType = BoCardTypes.cSupplier;
                         Insert_WithholdingTax(oCompany.CompanyDB, CardCode);
-                       sboBP.SubjectToWithholdingTax = SAPbobsCOM.BoYesNoNoneEnum.boYES;
-                       
+                        sboBP.SubjectToWithholdingTax = SAPbobsCOM.BoYesNoNoneEnum.boYES;
+
 
                     }
                     else if (CardType == "LEAD")
@@ -3533,7 +3739,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
 
 
 
-                   
+
                     // 
                     if (!string.IsNullOrEmpty(PayTermsGrpCode))
                     {
@@ -3738,7 +3944,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
 
         }
 
-       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
+        //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         [HttpPost]
         [Route("api/SAP/{DBName}/ReverseDocument/{SAPUserName}/{SAPPassword}")]
         //public HttpResponseMessage Post([FromBody]string value)
@@ -3750,7 +3956,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
             string ObjectType = "";
             string DocEntry = "";
             string DocType = "";
-            string CardCode ="";
+            string CardCode = "";
             dynamic message_ = null;
             var jsonString = await request.Content.ReadAsStringAsync();
             JObject json = JObject.Parse(jsonString);
@@ -3777,7 +3983,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
             {
 
                 oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oCreditNotes);
-                oDoc.GetByKey( Convert.ToInt32(DocEntry));
+                oDoc.GetByKey(Convert.ToInt32(DocEntry));
 
                 Table = "OINV";
                 ObjectTypeNum = "14";
@@ -3800,7 +4006,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                 foreach (var item in jarr)
                 {
                     string Description, AcctCode, VatGroup, UnitPrice, LineTotal;
-                   
+
                     LineTotal = item.SelectToken("LineTotal").ToString();
                     Description = item.SelectToken("Description").ToString();
                     AcctCode = item.SelectToken("AcctCode").ToString();
@@ -3814,7 +4020,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                     {
                         oDoc.Lines.BaseEntry = Convert.ToInt32(DocEntry);
                         oDoc.Lines.BaseLine = (Int32)item[0];
-                       // oDoc.Lines.BaseType = SAPbobsCOM.BoObjectTypes.oCreditNotes;
+                        // oDoc.Lines.BaseType = SAPbobsCOM.BoObjectTypes.oCreditNotes;
                         oDoc.Lines.BaseType = (Int32)SAPbobsCOM.BoObjectTypes.oInvoices;
                     }
                     else if (ObjectType == "PURCHASEINVOICE")
@@ -3823,7 +4029,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                         oDoc.Lines.BaseLine = (Int32)item[0];
                         oDoc.Lines.BaseType = (Int32)SAPbobsCOM.BoObjectTypes.oPurchaseInvoices;
                     }
-                  
+
                     oDoc.Lines.ItemDescription = Description;
                     oDoc.Lines.AccountCode = AcctCode;
                     oDoc.Lines.VatGroup = VatGroup;
@@ -3923,63 +4129,64 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                     MarshallObject(oDoc);
                     MarshallObject(oCompany);
                 }
-            }  
-       
-        var json_response = JsonConvert.SerializeObject(message_, Newtonsoft.Json.Formatting.Indented);
-        var response_invoice = Request.CreateResponse(HttpStatusCode.OK);
-         response_invoice.Content = new StringContent(json_response, Encoding.UTF8, "application/json");
+            }
 
-       return response_invoice;
+            var json_response = JsonConvert.SerializeObject(message_, Newtonsoft.Json.Formatting.Indented);
+            var response_invoice = Request.CreateResponse(HttpStatusCode.OK);
+            response_invoice.Content = new StringContent(json_response, Encoding.UTF8, "application/json");
+
+            return response_invoice;
         }
 
-          
-       
 
 
-       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
+
+
+        //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         [HttpPost]
         [Route("api/SAP/{DBName}/CancelDocument/{SAPUserName}/{SAPPassword}")]
         //public HttpResponseMessage Post([FromBody]string value)
         //{
         public async Task<HttpResponseMessage> CancelDocument(HttpRequestMessage request, string DBName, string SAPUserName, string SAPPassword)
         {
-            try { 
-            string ObjectType = "";
-            string DocEntry = "";
-            string DocType = "";
-            string CardCode = "";
-            dynamic message_ = null;
-            var jsonString = await request.Content.ReadAsStringAsync();
-            JObject json = JObject.Parse(jsonString);
+            try
+            {
+                string ObjectType = "";
+                string DocEntry = "";
+                string DocType = "";
+                string CardCode = "";
+                dynamic message_ = null;
+                var jsonString = await request.Content.ReadAsStringAsync();
+                JObject json = JObject.Parse(jsonString);
 
-            AddUpdateAppSettings("CompanyDB", DBName);
-            AddUpdateAppSettings("manager", SAPUserName);
-            AddUpdateAppSettings("Password", SAPPassword);
-
-
-            ObjectType = (string)json.SelectToken("Header").SelectToken("ObjectType");
-            DocEntry = (string)json.SelectToken("Header").SelectToken("DocEntry");
-            DocType = (string)json.SelectToken("Header").SelectToken("DocType");
-            CardCode = (string)json.SelectToken("Header").SelectToken("CardCode");
-            oCompany = new Connect_To_SAP().ConnectSAPDB(DBName, SAPUserName, SAPPassword);
+                AddUpdateAppSettings("CompanyDB", DBName);
+                AddUpdateAppSettings("manager", SAPUserName);
+                AddUpdateAppSettings("Password", SAPPassword);
 
 
+                ObjectType = (string)json.SelectToken("Header").SelectToken("ObjectType");
+                DocEntry = (string)json.SelectToken("Header").SelectToken("DocEntry");
+                DocType = (string)json.SelectToken("Header").SelectToken("DocType");
+                CardCode = (string)json.SelectToken("Header").SelectToken("CardCode");
+                oCompany = new Connect_To_SAP().ConnectSAPDB(DBName, SAPUserName, SAPPassword);
 
-            SAPbobsCOM.Documents oDoc = null;
-            SAPbobsCOM.Documents oDocCancellation = null;
-            SAPbobsCOM.Documents FinalDoc = null;
 
-            //Dim document As SAPbobsCOM.Documents = DirectCast(vCompany.GetBusinessObject(BoObjectTypes.oPurchaseInvoices), Documents)
-            //Dim InvoiceDocNum As Integer = CInt(ListBox1.Items(i).ToString())
-            //document.GetByKey(InvoiceDocNum)
-            //Dim cancel_doc = document.CreateCancellationDocument()
-            //''cancel_doc.UserFields.Fields.Item("U_XMLNAME").Value = "cancellation"
-            //retcode = cancel_doc.Add()
-            string Table = "";
 
-            string ObjectTypeNum = "";
+                SAPbobsCOM.Documents oDoc = null;
+                SAPbobsCOM.Documents oDocCancellation = null;
+                SAPbobsCOM.Documents FinalDoc = null;
 
-           
+                //Dim document As SAPbobsCOM.Documents = DirectCast(vCompany.GetBusinessObject(BoObjectTypes.oPurchaseInvoices), Documents)
+                //Dim InvoiceDocNum As Integer = CInt(ListBox1.Items(i).ToString())
+                //document.GetByKey(InvoiceDocNum)
+                //Dim cancel_doc = document.CreateCancellationDocument()
+                //''cancel_doc.UserFields.Fields.Item("U_XMLNAME").Value = "cancellation"
+                //retcode = cancel_doc.Add()
+                string Table = "";
+
+                string ObjectTypeNum = "";
+
+
                 if (ObjectType == "SALESQOUTATION")
                 {
                     oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oQuotations);
@@ -3990,8 +4197,8 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                 else if (ObjectType == "SALESORDER")
                 {
                     oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oOrders);
-                     oDoc.GetByKey(Convert.ToInt32(DocEntry));
-                Table = "ORDR";
+                    oDoc.GetByKey(Convert.ToInt32(DocEntry));
+                    Table = "ORDR";
                     ObjectTypeNum = "17";
                 }
                 else if (ObjectType == "SALESRETURN")
@@ -4001,135 +4208,135 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                     Table = "ORDN";
                     ObjectTypeNum = "16";
                 }
-               else if (ObjectType == "SALESCREDITNOTE")
+                else if (ObjectType == "SALESCREDITNOTE")
                 {
 
-                oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oCreditNotes);
-                oDoc.GetByKey(Convert.ToInt32(DocEntry));
-                Table = "ORIN";
+                    oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oCreditNotes);
+                    oDoc.GetByKey(Convert.ToInt32(DocEntry));
+                    Table = "ORIN";
                     ObjectTypeNum = "14";
                 }
                 else if (ObjectType == "SALESINVOICE")
                 {
-                oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oInvoices);
-                oDoc.GetByKey(Convert.ToInt32(DocEntry));
-                Table = "OINV";
+                    oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oInvoices);
+                    oDoc.GetByKey(Convert.ToInt32(DocEntry));
+                    Table = "OINV";
                     ObjectTypeNum = "13";
 
                 }
                 else if (ObjectType == "PURCHASEREQUEST")
                 {
-                oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oPurchaseRequest);
-                oDoc.GetByKey(Convert.ToInt32(DocEntry));
-                ObjectTypeNum = "14700001";
-                Table = "OPRQ";
-                ObjectTypeNum = "13";
+                    oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oPurchaseRequest);
+                    oDoc.GetByKey(Convert.ToInt32(DocEntry));
+                    ObjectTypeNum = "14700001";
+                    Table = "OPRQ";
+                    ObjectTypeNum = "13";
                 }
                 else if (ObjectType == "PURCHASEQOUTATION")
                 {
-                oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oPurchaseQuotations);
-                oDoc.GetByKey(Convert.ToInt32(DocEntry));
-                Table = "OPQT";
-                ObjectTypeNum = "540000006";
-                   
+                    oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oPurchaseQuotations);
+                    oDoc.GetByKey(Convert.ToInt32(DocEntry));
+                    Table = "OPQT";
+                    ObjectTypeNum = "540000006";
+
                 }
                 else if (ObjectType == "PURCHASEORDER")
                 {
-                oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oPurchaseOrders);
-                oDoc.GetByKey(Convert.ToInt32(DocEntry));
-                Table = "OPOR";
+                    oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oPurchaseOrders);
+                    oDoc.GetByKey(Convert.ToInt32(DocEntry));
+                    Table = "OPOR";
                     ObjectTypeNum = "22";
                 }
                 else if (ObjectType == "PURCHASECREDITNOTE")
                 {
 
-                oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oPurchaseCreditNotes);
-                oDoc.GetByKey(Convert.ToInt32(DocEntry));
-                Table = "ORPC";
+                    oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oPurchaseCreditNotes);
+                    oDoc.GetByKey(Convert.ToInt32(DocEntry));
+                    Table = "ORPC";
                     ObjectTypeNum = "19";
                 }
                 else if (ObjectType == "GRPO")
                 {
-                oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oPurchaseDeliveryNotes);
-                oDoc.GetByKey(Convert.ToInt32(DocEntry));
-                Table = "OPDN";
+                    oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oPurchaseDeliveryNotes);
+                    oDoc.GetByKey(Convert.ToInt32(DocEntry));
+                    Table = "OPDN";
                     ObjectTypeNum = "20";
                 }
                 else if (ObjectType == "GOODSRETURN")
                 {
-                oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oPurchaseReturns);
-                oDoc.GetByKey(Convert.ToInt32(DocEntry));
-                Table = "ORPD";
+                    oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oPurchaseReturns);
+                    oDoc.GetByKey(Convert.ToInt32(DocEntry));
+                    Table = "ORPD";
                     ObjectTypeNum = "21";
                 }
                 else if (ObjectType == "PURCHASEINVOICE")
                 {
-                oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oPurchaseInvoices);
-                oDoc.GetByKey(Convert.ToInt32(DocEntry));
-                Table = "OPCH";
+                    oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oPurchaseInvoices);
+                    oDoc.GetByKey(Convert.ToInt32(DocEntry));
+                    Table = "OPCH";
                     ObjectTypeNum = "18";
                 }
-            int retcode = 0;
-            if  (ObjectType.EndsWith("INVOICE") || ObjectType.EndsWith("RETURN") || ObjectType.EndsWith("PO"))
+                int retcode = 0;
+                if (ObjectType.EndsWith("INVOICE") || ObjectType.EndsWith("RETURN") || ObjectType.EndsWith("PO"))
                 {
-                oDocCancellation = oDoc.CreateCancellationDocument();
-                retcode = oDocCancellation.Add();
-            }
+                    oDocCancellation = oDoc.CreateCancellationDocument();
+                    retcode = oDocCancellation.Add();
+                }
 
-            else 
-            {
-                retcode = oDoc.Cancel();
-             }
-            
-                        
+                else
+                {
+                    retcode = oDoc.Cancel();
+                }
+
+
                 if (retcode != 0)
                 {
 
-                oCompany.GetLastError(out nErr, out erMsg);
+                    oCompany.GetLastError(out nErr, out erMsg);
 
-                erMsg = Sanitize_Errors(erMsg);
-                //.Replace(dbqt, "");
-                message = "{\"Message\": {\"MessageType\": \"Error\",\"Description\": \"" + erMsg + "\",\"Destination Number\": \"0\",\"Document Type\": \"" + ObjectType + "\"}}";
-                message_ = JsonConvert.DeserializeObject(message);
-                MarshallObject(oDoc);
-                MarshallObject(oCompany);
-            }
-            else
-            {
-                //int snum = Int32.Parse(oCompany.GetNewObjectKey());
-                // oDoc.GetByKey(snum);
-                //XmlDocument doc = new XmlDocument();
-                //doc.LoadXml(oDoc.GetAsXML());
-                //string jsonText = JsonConvert.SerializeXmlNode(doc);
-                //message = jsonText;
-
-                string add_data = Get_DocData(DBName, Table, CardCode);
-                if (add_data.Length > 1)
-                {
-
-                    message = "{\"Message\": {\"MessageType\": \"Success\",\"ObjectType\": \"" + ObjectType + "\",\"Description\": \"Successfully Cancelled\"" + add_data;
-
-                    JObject json_data = JObject.Parse(message);
-                    string Doc_Entry = json_data.SelectToken("Message").SelectToken("DocEntry").ToString();
-                    message_ = JsonConvert.DeserializeObject(message);
-                    SAP_SEND_MESSAGE("Document  Cancellation", "Document Cancelled from API", "Business Partner Name", CardCode, "2", CardCode, "Document Number", Doc_Entry, ObjectTypeNum, DocEntry);
-                }
-                else
-                {
-                    string SourceNumber = "0";
-                    erMsg = "Customer Code  or ItemCode was not found in this  Company " + DBName;
-                    message = "{\"Message\": {\"MessageType\": \"Error\",\"Description\": \"" + erMsg + "\",\"Source Number\": \"" + SourceNumber + "\",\"Destination Number\": \"0\",\"Document Type\": \"" + ObjectType + "\"}}";
+                    erMsg = Sanitize_Errors(erMsg);
+                    //.Replace(dbqt, "");
+                    message = "{\"Message\": {\"MessageType\": \"Error\",\"Description\": \"" + erMsg + "\",\"Destination Number\": \"0\",\"Document Type\": \"" + ObjectType + "\"}}";
                     message_ = JsonConvert.DeserializeObject(message);
                     MarshallObject(oDoc);
                     MarshallObject(oCompany);
                 }
-            }
+                else
+                {
+                    //int snum = Int32.Parse(oCompany.GetNewObjectKey());
+                    // oDoc.GetByKey(snum);
+                    //XmlDocument doc = new XmlDocument();
+                    //doc.LoadXml(oDoc.GetAsXML());
+                    //string jsonText = JsonConvert.SerializeXmlNode(doc);
+                    //message = jsonText;
 
-            var json_response = JsonConvert.SerializeObject(message_, Newtonsoft.Json.Formatting.Indented);
-            var response_invoice = Request.CreateResponse(HttpStatusCode.OK);
-            response_invoice.Content = new StringContent(json_response, Encoding.UTF8, "application/json");
+                    string add_data = Get_DocData(DBName, Table, CardCode);
+                    if (add_data.Length > 1)
+                    {
 
-            return response_invoice;
+                        message = "{\"Message\": {\"MessageType\": \"Success\",\"ObjectType\": \"" + ObjectType + "\",\"Description\": \"Successfully Cancelled\"" + add_data;
+
+                        JObject json_data = JObject.Parse(message);
+                        string Doc_Entry = json_data.SelectToken("Message").SelectToken("DocEntry").ToString();
+                        message_ = JsonConvert.DeserializeObject(message);
+                        SAP_SEND_MESSAGE("Document  Cancellation", "Document Cancelled from API", "Business Partner Name", CardCode, "2", CardCode, "Document Number", Doc_Entry, ObjectTypeNum, DocEntry);
+                    }
+                    else
+                    {
+                        string SourceNumber = "0";
+                        erMsg = "Customer Code  or ItemCode was not found in this  Company " + DBName;
+                        message = "{\"Message\": {\"MessageType\": \"Error\",\"Description\": \"" + erMsg + "\",\"Source Number\": \"" + SourceNumber + "\",\"Destination Number\": \"0\",\"Document Type\": \"" + ObjectType + "\"}}";
+                        message_ = JsonConvert.DeserializeObject(message);
+                        MarshallObject(oDoc);
+                        MarshallObject(oCompany);
+                    }
+                }
+
+                var json_response = JsonConvert.SerializeObject(message_, Newtonsoft.Json.Formatting.Indented);
+                var response_invoice = Request.CreateResponse(HttpStatusCode.OK);
+                response_invoice.Content = new StringContent(json_response, Encoding.UTF8, "application/json");
+
+                return response_invoice;
             }
             catch (Exception ex)
             {
@@ -4142,7 +4349,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
 
 
 
-            //  [Authorize(Roles = "SuperAdmin, Admin, User")]
+        //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         [HttpPost]
         [Route("api/SAP/{DBName}/SetExchangeRate/{SAPUserName}/{SAPPassword}")]
         //public HttpResponseMessage Post([FromBody]string value)
@@ -4153,48 +4360,48 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
             {
 
                 var jsonString = await request.Content.ReadAsStringAsync();
-            //context.Response.ContentType = "text/JSON";
-            string output = "";
-            string message = "";
-            dynamic message_ = null;
+                //context.Response.ContentType = "text/JSON";
+                string output = "";
+                string message = "";
+                dynamic message_ = null;
 
-            JObject json = JObject.Parse(jsonString);
+                JObject json = JObject.Parse(jsonString);
 
-            // string SourceNumber = "";
-            // string PaymentReference;
+                // string SourceNumber = "";
+                // string PaymentReference;
 
-            string Date = "";
-            string Currency = "";
-            string Rate = "";
-            
-            AddUpdateAppSettings("CompanyDB", DBName);
-            AddUpdateAppSettings("manager", SAPUserName);
-            AddUpdateAppSettings("Password", SAPPassword);
+                string Date = "";
+                string Currency = "";
+                string Rate = "";
 
-          
-            Date = (string)json.SelectToken("Header").SelectToken("Date");
-            Currency = (string)json.SelectToken("Header").SelectToken("Currency");
-            Rate = (string)json.SelectToken("Header").SelectToken("Rate");
+                AddUpdateAppSettings("CompanyDB", DBName);
+                AddUpdateAppSettings("manager", SAPUserName);
+                AddUpdateAppSettings("Password", SAPPassword);
+
+
+                Date = (string)json.SelectToken("Header").SelectToken("Date");
+                Currency = (string)json.SelectToken("Header").SelectToken("Currency");
+                Rate = (string)json.SelectToken("Header").SelectToken("Rate");
 
                 oCompany = new Connect_To_SAP().ConnectSAPDB(DBName, SAPUserName, SAPPassword);
 
 
 
-                SAPbobsCOM.SBObob oSBObob =  (SAPbobsCOM.SBObob) oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoBridge);
+                SAPbobsCOM.SBObob oSBObob = (SAPbobsCOM.SBObob)oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoBridge);
 
                 oSBObob.SetCurrencyRate(Currency, Convert.ToDateTime(Date), Convert.ToDouble(Rate), true);
 
 
 
-                message = "{\"Message\": {\"MessageType\": \"Success\",\"Description\": \"Successfully Updated " + Currency + " Exchange Rate to " + Rate +  " For Date " + Date + "\"}}";
-                 
+                message = "{\"Message\": {\"MessageType\": \"Success\",\"Description\": \"Successfully Updated " + Currency + " Exchange Rate to " + Rate + " For Date " + Date + "\"}}";
 
-            message_ = JsonConvert.DeserializeObject(message);
-                 
-          
-            var json_response = JsonConvert.SerializeObject(message_, Newtonsoft.Json.Formatting.None);
-            var response_invoice = Request.CreateResponse(HttpStatusCode.OK);
-            response_invoice.Content = new StringContent(json_response, Encoding.UTF8, "application/json");
+
+                message_ = JsonConvert.DeserializeObject(message);
+
+
+                var json_response = JsonConvert.SerializeObject(message_, Newtonsoft.Json.Formatting.None);
+                var response_invoice = Request.CreateResponse(HttpStatusCode.OK);
+                response_invoice.Content = new StringContent(json_response, Encoding.UTF8, "application/json");
                 MarshallObject(oSBObob);
                 MarshallObject(oCompany);
 
@@ -4212,7 +4419,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
 
         }
 
-       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
+        //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         [HttpPost]
         [Route("api/SAP/{DBName}/CreateInvoice/{SAPUserName}/{SAPPassword}")]
         //public HttpResponseMessage Post([FromBody]string value)
@@ -4246,11 +4453,11 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                 string Remarks = "";
 
 
-            AddUpdateAppSettings("CompanyDB", DBName);
-            AddUpdateAppSettings("manager", SAPUserName);
-            AddUpdateAppSettings("Password", SAPPassword);
+                AddUpdateAppSettings("CompanyDB", DBName);
+                AddUpdateAppSettings("manager", SAPUserName);
+                AddUpdateAppSettings("Password", SAPPassword);
 
-            DocDate = (string)json.SelectToken("Header").SelectToken("DocDate");
+                DocDate = (string)json.SelectToken("Header").SelectToken("DocDate");
                 PostingDate = (string)json.SelectToken("Header").SelectToken("PostingDate");
                 CardCode = (string)json.SelectToken("Header").SelectToken("CardCode");
                 CardName = (string)json.SelectToken("Header").SelectToken("CardName");
@@ -4261,7 +4468,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                 Rounding = (string)json.SelectToken("Header").SelectToken("Rounding");
                 Reference = (string)json.SelectToken("Header").SelectToken("Reference");
                 Remarks = (string)json.SelectToken("Header").SelectToken("Remarks");
-            oCompany = new Connect_To_SAP().ConnectSAPDB(DBName, SAPUserName, SAPPassword);
+                oCompany = new Connect_To_SAP().ConnectSAPDB(DBName, SAPUserName, SAPPassword);
                 //int checkif_customer_exist = 0;
 
 
@@ -4355,7 +4562,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                 {
 
                     oCompany.GetLastError(out nErr, out erMsg);
-                    
+
                     erMsg = Sanitize_Errors(erMsg);
                     //.Replace(dbqt, "");
                     message = "{\"Message\": {\"MessageType\": \"Error\",\"Description\": \"" + erMsg + "\",\"Source Number\": \"" + SourceNumber + "\",\"Destination Number\": \"0\",\"Document Type\": \"Invoice\"}}";
@@ -4371,27 +4578,27 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                     //doc.LoadXml(oInvoice.GetAsXML());
                     //string jsonText = JsonConvert.SerializeXmlNode(doc);
                     //message = jsonText;
-                    
-                    string add_data =Get_InvoiceData(DBName ,CardCode);
-                if (add_data.Length > 1)
-                {
 
-                    message = "{\"Message\": {\"MessageType\": \"Success\",\"Description\": \"Successfully Created\"" + add_data;
-                    // {\"Message\": {\"MessageType\": \"Success\",\"Description\": \"Successfully Created\",\"DocTotal\": \"3000\",\"VatSum\": \"0\",\"DiscSum\": \"0\"}}
-                    //   message = message;
-                    JObject json_data = JObject.Parse(message);
-                    string DocEntry = json_data.SelectToken("Message").SelectToken("DocEntry").ToString();
-                    message_ = JsonConvert.DeserializeObject(message);
-                    SAP_SEND_MESSAGE("Invoice Added", "Invoice Added from API", "Customer Name", CardCode, "2", CardCode, "Invoice Number", DocEntry, "13", DocEntry);
-                }
-                else
-                {
-                    erMsg = "Customer Code  or ItemCode was not found in this  Company " + DBName;
-                    message = "{\"Message\": {\"MessageType\": \"Error\",\"Description\": \"" + erMsg + "\",\"Source Number\": \"" + SourceNumber + "\",\"Destination Number\": \"0\",\"Document Type\": \"Invoice\"}}";
-                    message_ = JsonConvert.DeserializeObject(message);
-                    MarshallObject(oInvoice);
-                    MarshallObject(oCompany);
-                }
+                    string add_data = Get_InvoiceData(DBName, CardCode);
+                    if (add_data.Length > 1)
+                    {
+
+                        message = "{\"Message\": {\"MessageType\": \"Success\",\"Description\": \"Successfully Created\"" + add_data;
+                        // {\"Message\": {\"MessageType\": \"Success\",\"Description\": \"Successfully Created\",\"DocTotal\": \"3000\",\"VatSum\": \"0\",\"DiscSum\": \"0\"}}
+                        //   message = message;
+                        JObject json_data = JObject.Parse(message);
+                        string DocEntry = json_data.SelectToken("Message").SelectToken("DocEntry").ToString();
+                        message_ = JsonConvert.DeserializeObject(message);
+                        SAP_SEND_MESSAGE("Invoice Added", "Invoice Added from API", "Customer Name", CardCode, "2", CardCode, "Invoice Number", DocEntry, "13", DocEntry);
+                    }
+                    else
+                    {
+                        erMsg = "Customer Code  or ItemCode was not found in this  Company " + DBName;
+                        message = "{\"Message\": {\"MessageType\": \"Error\",\"Description\": \"" + erMsg + "\",\"Source Number\": \"" + SourceNumber + "\",\"Destination Number\": \"0\",\"Document Type\": \"Invoice\"}}";
+                        message_ = JsonConvert.DeserializeObject(message);
+                        MarshallObject(oInvoice);
+                        MarshallObject(oCompany);
+                    }
 
                 }
                 var json_response = JsonConvert.SerializeObject(message_, Newtonsoft.Json.Formatting.None);
@@ -4415,7 +4622,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
 
         }
 
-       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
+        //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         [HttpPost]
         [Route("api/SAP/{DBName}/CreateMarketingDocument/")]
         //public HttpResponseMessage Post([FromBody]string value)
@@ -4426,61 +4633,61 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
             {
 
                 var jsonString = await request.Content.ReadAsStringAsync();
-            //context.Response.ContentType = "text/JSON";
-            string output = "";
-            string message = "";
-            dynamic message_ = null;
+                //context.Response.ContentType = "text/JSON";
+                string output = "";
+                string message = "";
+                dynamic message_ = null;
 
-            JObject json = JObject.Parse(jsonString);
+                JObject json = JObject.Parse(jsonString);
 
-            // string SourceNumber = "";
-            // string PaymentReference;
+                // string SourceNumber = "";
+                // string PaymentReference;
 
-            string DocDate = "";
-            string PostingDate = "";
-            string DocDueDate = "";
-            string RequiredDate = "";
-            string ValidUntil = "";
-            string CardCode = "";
-            string CardName = "";
-            string ObjectType = "";
-            string DocType = "";
-            string SourceNumber = "";
-            string Action = "";
-            string Rounding = "";
-            string Reference = "";
-            string Remarks = "";
-            string SalesPersonCode = "";
-            string DocumentOwnerCode = "";
-            string DocCurrency = "";
-            string WVAT = "";
-            string TaxbleAmnt = "";
-            string WTAmnt  = "";
-            //  AddUpdateAppSettings("CompanyDB", DBName);
-            //AddUpdateAppSettings("manager", SAPUserName);
-            //AddUpdateAppSettings("Password", SAPPassword);
+                string DocDate = "";
+                string PostingDate = "";
+                string DocDueDate = "";
+                string RequiredDate = "";
+                string ValidUntil = "";
+                string CardCode = "";
+                string CardName = "";
+                string ObjectType = "";
+                string DocType = "";
+                string SourceNumber = "";
+                string Action = "";
+                string Rounding = "";
+                string Reference = "";
+                string Remarks = "";
+                string SalesPersonCode = "";
+                string DocumentOwnerCode = "";
+                string DocCurrency = "";
+                string WVAT = "";
+                string TaxbleAmnt = "";
+                string WTAmnt = "";
+                //  AddUpdateAppSettings("CompanyDB", DBName);
+                //AddUpdateAppSettings("manager", SAPUserName);
+                //AddUpdateAppSettings("Password", SAPPassword);
 
-            DocDate = (string)json.SelectToken("Header").SelectToken("DocDate");
-            PostingDate = (string)json.SelectToken("Header").SelectToken("PostingDate");
-            DocDueDate = (string)json.SelectToken("Header").SelectToken("DocDueDate");
-            DocCurrency = (string)json.SelectToken("Header").SelectToken("DocCurrency");
-            RequiredDate = (string)json.SelectToken("Header").SelectToken("RequiredDate");
-            ValidUntil = (string)json.SelectToken("Header").SelectToken("ValidUntil");
-            ObjectType = (string)json.SelectToken("Header").SelectToken("ObjectType");
-            CardCode = (string)json.SelectToken("Header").SelectToken("CardCode");
-            CardName = (string)json.SelectToken("Header").SelectToken("CardName");
-            Action = (string)json.SelectToken("Header").SelectToken("Action");
-            SalesPersonCode = (string)json.SelectToken("Header").SelectToken("SalesPersonCode");
-            DocumentOwnerCode = (string)json.SelectToken("Header").SelectToken("DocumentOwnerCode");
+                DocDate = (string)json.SelectToken("Header").SelectToken("DocDate");
+                PostingDate = (string)json.SelectToken("Header").SelectToken("PostingDate");
+                DocDueDate = (string)json.SelectToken("Header").SelectToken("DocDueDate");
+                DocCurrency = (string)json.SelectToken("Header").SelectToken("DocCurrency");
+                RequiredDate = (string)json.SelectToken("Header").SelectToken("RequiredDate");
+                ValidUntil = (string)json.SelectToken("Header").SelectToken("ValidUntil");
+                ObjectType = (string)json.SelectToken("Header").SelectToken("ObjectType");
+                CardCode = (string)json.SelectToken("Header").SelectToken("CardCode");
+                CardName = (string)json.SelectToken("Header").SelectToken("CardName");
+                Action = (string)json.SelectToken("Header").SelectToken("Action");
+                SalesPersonCode = (string)json.SelectToken("Header").SelectToken("SalesPersonCode");
+                DocumentOwnerCode = (string)json.SelectToken("Header").SelectToken("DocumentOwnerCode");
 
 
 
-            DocType = (string)json.SelectToken("Header").SelectToken("DocType");
-            SourceNumber = (string)json.SelectToken("Header").SelectToken("SourceNumber");
-            Action = (string)json.SelectToken("Header").SelectToken("Action");
-            Rounding = (string)json.SelectToken("Header").SelectToken("Rounding");
-            Reference = (string)json.SelectToken("Header").SelectToken("Reference");
-            Remarks = (string)json.SelectToken("Header").SelectToken("Remarks");
+                DocType = (string)json.SelectToken("Header").SelectToken("DocType");
+                SourceNumber = (string)json.SelectToken("Header").SelectToken("SourceNumber");
+                Action = (string)json.SelectToken("Header").SelectToken("Action");
+                Rounding = (string)json.SelectToken("Header").SelectToken("Rounding");
+                Reference = (string)json.SelectToken("Header").SelectToken("Reference");
+                Remarks = (string)json.SelectToken("Header").SelectToken("Remarks");
                 string SAPUserName = userName;
                 string SAPPassword = section["Password"];
 
@@ -4489,36 +4696,36 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
 
                 string Table = "";
 
-            SAPbobsCOM.Documents oDoc = null;
+                SAPbobsCOM.Documents oDoc = null;
 
-            string ObjectTypeNum = "";
-           string DraftsObjectTypeNum = "";
-            if (ObjectType == "SALESQOUTATION")
-            {
-                oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oQuotations);
-                oDoc.CardCode = CardCode;
-                oDoc.NumAtCard = SourceNumber;
-                Table = "OQUT";
-                ObjectTypeNum = "23";
-            }
-            else if (ObjectType == "SALESORDER")
-            {
-                oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oOrders);
-                oDoc.CardCode = CardCode;
-                oDoc.DocDueDate = Convert.ToDateTime(DocDueDate);
-                oDoc.NumAtCard = SourceNumber;
-                Table = "ORDR";
-                ObjectTypeNum = "17";
-            }
-            else if (ObjectType == "SALESCREDITNOTE")
-            {
+                string ObjectTypeNum = "";
+                string DraftsObjectTypeNum = "";
+                if (ObjectType == "SALESQOUTATION")
+                {
+                    oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oQuotations);
+                    oDoc.CardCode = CardCode;
+                    oDoc.NumAtCard = SourceNumber;
+                    Table = "OQUT";
+                    ObjectTypeNum = "23";
+                }
+                else if (ObjectType == "SALESORDER")
+                {
+                    oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oOrders);
+                    oDoc.CardCode = CardCode;
+                    oDoc.DocDueDate = Convert.ToDateTime(DocDueDate);
+                    oDoc.NumAtCard = SourceNumber;
+                    Table = "ORDR";
+                    ObjectTypeNum = "17";
+                }
+                else if (ObjectType == "SALESCREDITNOTE")
+                {
 
-                oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oCreditNotes);
-                oDoc.CardCode = CardCode;
-                oDoc.NumAtCard = SourceNumber;
-                Table = "ORIN";
-                ObjectTypeNum = "14";
-            }
+                    oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oCreditNotes);
+                    oDoc.CardCode = CardCode;
+                    oDoc.NumAtCard = SourceNumber;
+                    Table = "ORIN";
+                    ObjectTypeNum = "14";
+                }
                 else if (ObjectType == "SALESRETURN")
                 {
 
@@ -4531,176 +4738,176 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
 
 
                 else if (ObjectType == "SALESINVOICE")
-            {
-                oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oInvoices);
-                oDoc.CardCode = CardCode;
-                oDoc.NumAtCard = SourceNumber;
-                Table = "OINV";
-                ObjectTypeNum = "13";
+                {
+                    oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oInvoices);
+                    oDoc.CardCode = CardCode;
+                    oDoc.NumAtCard = SourceNumber;
+                    Table = "OINV";
+                    ObjectTypeNum = "13";
 
-            }
+                }
 
-               
+
 
                 else if (ObjectType == "SALESQOUTATIONDRAFT")
-                     {
-                        oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oDrafts);
-                        oDoc.DocObjectCode = SAPbobsCOM.BoObjectTypes.oInvoices;
-                        oDoc.CardCode = CardCode;
-                        oDoc.NumAtCard = SourceNumber;
-                        Table = "ODRF";
-                        ObjectTypeNum = "23";
-                    DraftsObjectTypeNum = "112";
-                       }
-                   else if (ObjectType == "SALESORDERDRAFT")
-                    {
-                        oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oDrafts);
-                    oDoc.DocObjectCode = SAPbobsCOM.BoObjectTypes.oOrders;
+                {
+                    oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oDrafts);
+                    oDoc.DocObjectCode = SAPbobsCOM.BoObjectTypes.oInvoices;
                     oDoc.CardCode = CardCode;
-                        oDoc.DocDueDate = Convert.ToDateTime(DocDueDate);
-                        oDoc.NumAtCard = SourceNumber;
-                        Table = "ODRF";
-                        ObjectTypeNum = "17";
+                    oDoc.NumAtCard = SourceNumber;
+                    Table = "ODRF";
+                    ObjectTypeNum = "23";
                     DraftsObjectTypeNum = "112";
                 }
-                    else if (ObjectType == "SALESCREDITNOTEDRAFT")
-                    {
+                else if (ObjectType == "SALESORDERDRAFT")
+                {
+                    oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oDrafts);
+                    oDoc.DocObjectCode = SAPbobsCOM.BoObjectTypes.oOrders;
+                    oDoc.CardCode = CardCode;
+                    oDoc.DocDueDate = Convert.ToDateTime(DocDueDate);
+                    oDoc.NumAtCard = SourceNumber;
+                    Table = "ODRF";
+                    ObjectTypeNum = "17";
+                    DraftsObjectTypeNum = "112";
+                }
+                else if (ObjectType == "SALESCREDITNOTEDRAFT")
+                {
 
-                        oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oDrafts);
+                    oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oDrafts);
                     oDoc.DocObjectCode = SAPbobsCOM.BoObjectTypes.oCreditNotes;
 
                     oDoc.CardCode = CardCode;
-                        oDoc.NumAtCard = SourceNumber;
-                        Table = "ODRF";
-                        ObjectTypeNum = "14";
+                    oDoc.NumAtCard = SourceNumber;
+                    Table = "ODRF";
+                    ObjectTypeNum = "14";
                     DraftsObjectTypeNum = "112";
                 }
-                    else if (ObjectType == "SALESRETURNDRAFT")
-                    {
+                else if (ObjectType == "SALESRETURNDRAFT")
+                {
 
                     oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oDrafts);
                     oDoc.DocObjectCode = SAPbobsCOM.BoObjectTypes.oReturns;
 
                     oDoc.CardCode = CardCode;
-                        oDoc.NumAtCard = SourceNumber;
-                        Table = "ODRF";
-                        ObjectTypeNum = "16";
+                    oDoc.NumAtCard = SourceNumber;
+                    Table = "ODRF";
+                    ObjectTypeNum = "16";
                     DraftsObjectTypeNum = "112";
                 }
-                    else if (ObjectType == "SALESINVOICEDRAFT")
-                    {
-                        //oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oInvoices);
+                else if (ObjectType == "SALESINVOICEDRAFT")
+                {
+                    //oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oInvoices);
                     oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oDrafts);
                     oDoc.DocObjectCode = SAPbobsCOM.BoObjectTypes.oInvoices;
                     oDoc.CardCode = CardCode;
-                        oDoc.NumAtCard = SourceNumber;
-                        Table = "ODRF";
-                        ObjectTypeNum = "13";
+                    oDoc.NumAtCard = SourceNumber;
+                    Table = "ODRF";
+                    ObjectTypeNum = "13";
                     DraftsObjectTypeNum = "112";
 
                 }
 
-                    else if (ObjectType == "SALESDELIVERYNOTEDRAFT")
-                    {
-                      //  oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oDeliveryNotes);
+                else if (ObjectType == "SALESDELIVERYNOTEDRAFT")
+                {
+                    //  oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oDeliveryNotes);
                     oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oDrafts);
                     oDoc.DocObjectCode = SAPbobsCOM.BoObjectTypes.oDeliveryNotes;
                     oDoc.CardCode = CardCode;
-                        oDoc.NumAtCard = SourceNumber;
-                        Table = "ODRF";
-                        ObjectTypeNum = "15";
+                    oDoc.NumAtCard = SourceNumber;
+                    Table = "ODRF";
+                    ObjectTypeNum = "15";
                     DraftsObjectTypeNum = "112";
 
                 }
-                    else if (ObjectType == "PURCHASEREQUESTDRAFT")
-                    {
-                       // oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oPurchaseRequest);
+                else if (ObjectType == "PURCHASEREQUESTDRAFT")
+                {
+                    // oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oPurchaseRequest);
                     oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oDrafts);
                     oDoc.DocObjectCode = SAPbobsCOM.BoObjectTypes.oPurchaseRequest;
 
                     oDoc.RequriedDate = Convert.ToDateTime(RequiredDate);
-                        oDoc.ClosingDate = Convert.ToDateTime(ValidUntil);
-                        Table = "ODRF";
-                        ObjectTypeNum = "1470000113";
+                    oDoc.ClosingDate = Convert.ToDateTime(ValidUntil);
+                    Table = "ODRF";
+                    ObjectTypeNum = "1470000113";
                     DraftsObjectTypeNum = "112";
                 }
-                    else if (ObjectType == "PURCHASEQOUTATIONDRAFT")
-                    {
-                       // oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oPurchaseQuotations);
+                else if (ObjectType == "PURCHASEQOUTATIONDRAFT")
+                {
+                    // oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oPurchaseQuotations);
                     oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oDrafts);
                     oDoc.DocObjectCode = SAPbobsCOM.BoObjectTypes.oPurchaseQuotations;
                     oDoc.CardCode = CardCode;
-                        oDoc.NumAtCard = SourceNumber;
-                        Table = "ODRF";
-                        ObjectTypeNum = "540000006";
+                    oDoc.NumAtCard = SourceNumber;
+                    Table = "ODRF";
+                    ObjectTypeNum = "540000006";
                     DraftsObjectTypeNum = "112";
                     oDoc.RequriedDate = Convert.ToDateTime(RequiredDate);
-                    }
-                    else if (ObjectType == "PURCHASEORDERDRAFT")
-                    {
-                       // oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oPurchaseOrders);
+                }
+                else if (ObjectType == "PURCHASEORDERDRAFT")
+                {
+                    // oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oPurchaseOrders);
                     oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oDrafts);
                     oDoc.DocObjectCode = SAPbobsCOM.BoObjectTypes.oPurchaseOrders;
                     oDoc.CardCode = CardCode;
-                        oDoc.NumAtCard = SourceNumber;
-                        Table = "ODRF";
-                        ObjectTypeNum = "22";
+                    oDoc.NumAtCard = SourceNumber;
+                    Table = "ODRF";
+                    ObjectTypeNum = "22";
                     DraftsObjectTypeNum = "112";
                 }
-                    else if (ObjectType == "PURCHASECREDITNOTEDRAFT")
-                    {
+                else if (ObjectType == "PURCHASECREDITNOTEDRAFT")
+                {
 
-                     //   oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oPurchaseCreditNotes);
+                    //   oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oPurchaseCreditNotes);
                     oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oDrafts);
                     oDoc.DocObjectCode = SAPbobsCOM.BoObjectTypes.oPurchaseCreditNotes;
                     oDoc.CardCode = CardCode;
-                        oDoc.NumAtCard = SourceNumber;
-                        Table = "ODRF";
-                        ObjectTypeNum = "19";
+                    oDoc.NumAtCard = SourceNumber;
+                    Table = "ODRF";
+                    ObjectTypeNum = "19";
                     DraftsObjectTypeNum = "112";
                 }
-                    else if (ObjectType == "GRPODRAFT")
-                    {
-                      //  oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oPurchaseDeliveryNotes);
+                else if (ObjectType == "GRPODRAFT")
+                {
+                    //  oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oPurchaseDeliveryNotes);
                     oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oDrafts);
                     oDoc.DocObjectCode = SAPbobsCOM.BoObjectTypes.oPurchaseDeliveryNotes;
 
                     oDoc.CardCode = CardCode;
-                        oDoc.NumAtCard = SourceNumber;
-                        Table = "ODRF";
-                        ObjectTypeNum = "20";
+                    oDoc.NumAtCard = SourceNumber;
+                    Table = "ODRF";
+                    ObjectTypeNum = "20";
                     DraftsObjectTypeNum = "112";
                 }
-                    else if (ObjectType == "GOODSRETURNDRAFT")
-                    {
-                        //oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oPurchaseReturns);
+                else if (ObjectType == "GOODSRETURNDRAFT")
+                {
+                    //oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oPurchaseReturns);
                     oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oDrafts);
                     oDoc.DocObjectCode = SAPbobsCOM.BoObjectTypes.oPurchaseReturns;
 
                     oDoc.CardCode = CardCode;
-                        oDoc.NumAtCard = SourceNumber;
-                        Table = "ODRF";
-                        ObjectTypeNum = "21";
+                    oDoc.NumAtCard = SourceNumber;
+                    Table = "ODRF";
+                    ObjectTypeNum = "21";
                     DraftsObjectTypeNum = "112";
                 }
-                    else if (ObjectType == "PURCHASEINVOICEDRAFT")
-                    {
-                      //  oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oPurchaseInvoices);
+                else if (ObjectType == "PURCHASEINVOICEDRAFT")
+                {
+                    //  oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oPurchaseInvoices);
 
                     oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oDrafts);
                     oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oPurchaseInvoices);
                     oDoc.CardCode = CardCode;
-                        oDoc.NumAtCard = SourceNumber;
-                        Table = "ODRF";
+                    oDoc.NumAtCard = SourceNumber;
+                    Table = "ODRF";
                     DraftsObjectTypeNum = "112";
-                        ObjectTypeNum = "18";
-
-                  
-                    }
+                    ObjectTypeNum = "18";
 
 
-                
-            
+                }
+
+
+
+
                 else if (ObjectType == "SALESDELIVERYNOTE")
                 {
                     oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oDeliveryNotes);
@@ -4711,71 +4918,71 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
 
                 }
                 else if (ObjectType == "PURCHASEREQUEST")
-            {
-                oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oPurchaseRequest);
-                oDoc.RequriedDate = Convert.ToDateTime(RequiredDate);
-                oDoc.ClosingDate = Convert.ToDateTime(ValidUntil);
-                Table = "OPRQ";
-                ObjectTypeNum = "1470000113";
-            }
-            else if (ObjectType == "PURCHASEQOUTATION")
-            {
-                oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oPurchaseQuotations);
-                oDoc.CardCode = CardCode;
-                oDoc.NumAtCard = SourceNumber;
-                Table = "OPQT";
-                ObjectTypeNum = "540000006";
-                oDoc.RequriedDate = Convert.ToDateTime(RequiredDate);
-            }
-            else if (ObjectType == "PURCHASEORDER")
-            {
-                oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oPurchaseOrders);
-                oDoc.CardCode = CardCode;
-                oDoc.NumAtCard = SourceNumber;
-                Table = "OPOR";
-                ObjectTypeNum = "22";
-            }
-            else if (ObjectType == "PURCHASECREDITNOTE")
-            {
+                {
+                    oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oPurchaseRequest);
+                    oDoc.RequriedDate = Convert.ToDateTime(RequiredDate);
+                    oDoc.ClosingDate = Convert.ToDateTime(ValidUntil);
+                    Table = "OPRQ";
+                    ObjectTypeNum = "1470000113";
+                }
+                else if (ObjectType == "PURCHASEQOUTATION")
+                {
+                    oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oPurchaseQuotations);
+                    oDoc.CardCode = CardCode;
+                    oDoc.NumAtCard = SourceNumber;
+                    Table = "OPQT";
+                    ObjectTypeNum = "540000006";
+                    oDoc.RequriedDate = Convert.ToDateTime(RequiredDate);
+                }
+                else if (ObjectType == "PURCHASEORDER")
+                {
+                    oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oPurchaseOrders);
+                    oDoc.CardCode = CardCode;
+                    oDoc.NumAtCard = SourceNumber;
+                    Table = "OPOR";
+                    ObjectTypeNum = "22";
+                }
+                else if (ObjectType == "PURCHASECREDITNOTE")
+                {
 
-                oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oPurchaseCreditNotes);
-                oDoc.CardCode = CardCode;
-                oDoc.NumAtCard = SourceNumber;
-                Table = "ORPC";
-                ObjectTypeNum = "19";
-            }
-            else if (ObjectType == "GRPO")
-            {
-                oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oPurchaseDeliveryNotes);
-                oDoc.CardCode = CardCode;
-                oDoc.NumAtCard = SourceNumber;
-                Table = "OPDN";
-                ObjectTypeNum = "20";
-            }
-            else if (ObjectType == "GOODSRETURN")
-            {
-                oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oPurchaseReturns);
-                oDoc.CardCode = CardCode;
-                oDoc.NumAtCard = SourceNumber;
-                Table = "ORPD";
-                ObjectTypeNum = "21";
-            }
-            else if (ObjectType == "PURCHASEINVOICE")
-            {
-                oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oPurchaseInvoices);
-                oDoc.CardCode = CardCode;
-                oDoc.NumAtCard = SourceNumber;
-                Table = "OPCH";
-                ObjectTypeNum = "18";
-                  
+                    oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oPurchaseCreditNotes);
+                    oDoc.CardCode = CardCode;
+                    oDoc.NumAtCard = SourceNumber;
+                    Table = "ORPC";
+                    ObjectTypeNum = "19";
+                }
+                else if (ObjectType == "GRPO")
+                {
+                    oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oPurchaseDeliveryNotes);
+                    oDoc.CardCode = CardCode;
+                    oDoc.NumAtCard = SourceNumber;
+                    Table = "OPDN";
+                    ObjectTypeNum = "20";
+                }
+                else if (ObjectType == "GOODSRETURN")
+                {
+                    oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oPurchaseReturns);
+                    oDoc.CardCode = CardCode;
+                    oDoc.NumAtCard = SourceNumber;
+                    Table = "ORPD";
+                    ObjectTypeNum = "21";
+                }
+                else if (ObjectType == "PURCHASEINVOICE")
+                {
+                    oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oPurchaseInvoices);
+                    oDoc.CardCode = CardCode;
+                    oDoc.NumAtCard = SourceNumber;
+                    Table = "OPCH";
+                    ObjectTypeNum = "18";
 
-            }
 
-          
-            oDoc.Rounding = BoYesNoEnum.tYES;
-                
+                }
+
+
+                oDoc.Rounding = BoYesNoEnum.tYES;
+
                 oDoc.TaxDate = Convert.ToDateTime(PostingDate);
-            oDoc.DocDate = Convert.ToDateTime(DocDate);
+                oDoc.DocDate = Convert.ToDateTime(DocDate);
                 // oDoc.SalesPersonCode = get_salespersoncode;
 
                 if (!string.IsNullOrEmpty(SalesPersonCode))
@@ -4787,52 +4994,52 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                 {
                     oDoc.DocumentsOwner = Convert.ToInt32(DocumentOwnerCode);
                 }
-            oDoc.Comments = Remarks + " " + "SourceNumber :" + SourceNumber;
+                oDoc.Comments = Remarks + " " + "SourceNumber :" + SourceNumber;
 
-            if (string.IsNullOrEmpty(DocCurrency))
-            {
-                DocCurrency = LocalCurrency(DBName, SAPUserName, SAPPassword);
-                oDoc.DocCurrency = DocCurrency;
-            }
-            else 
-            {
-                oDoc.DocCurrency = DocCurrency;
-            }
-                
-            // oDoc.BPL_IDAssignedToDoc = Convert.ToInt32(Branch);
-
-            JArray jarr = (JArray)json["Rows"];
-           
-            if (DocType == "S")
-            {
-                foreach (var item in jarr)
+                if (string.IsNullOrEmpty(DocCurrency))
                 {
-                    string Description, AcctCode, VatGroup, UnitPrice, LineTotal;
-
-                    LineTotal = item.SelectToken("LineTotal").ToString();
-                    Description = item.SelectToken("Description").ToString();
-                    AcctCode = item.SelectToken("AcctCode").ToString();
-                    UnitPrice = item.SelectToken("UnitPrice").ToString();
-                    VatGroup = item.SelectToken("VatGroup").ToString();
-
-                    oDoc.DocType = SAPbobsCOM.BoDocumentTypes.dDocument_Service;
-                    oDoc.Lines.ItemDescription = Description;
-                    oDoc.Lines.AccountCode = AcctCode;
-                    oDoc.Lines.VatGroup = VatGroup;
-                    oDoc.Lines.UnitPrice = Convert.ToDouble(UnitPrice);
-                    oDoc.Lines.LineTotal = Convert.ToDouble(LineTotal);
-                    oDoc.Lines.PriceAfterVAT = Convert.ToDouble(LineTotal);
-                    oDoc.Lines.Add();
-
+                    DocCurrency = LocalCurrency(DBName, SAPUserName, SAPPassword);
+                    oDoc.DocCurrency = DocCurrency;
                 }
-            }
-            else
-            {
+                else
+                {
+                    oDoc.DocCurrency = DocCurrency;
+                }
 
-                   JToken token = JToken.Parse(jsonString);
-                                        
+                // oDoc.BPL_IDAssignedToDoc = Convert.ToInt32(Branch);
 
-                    for (int i = 0; i <= jarr.Count()-1; i++)
+                JArray jarr = (JArray)json["Rows"];
+
+                if (DocType == "S")
+                {
+                    foreach (var item in jarr)
+                    {
+                        string Description, AcctCode, VatGroup, UnitPrice, LineTotal;
+
+                        LineTotal = item.SelectToken("LineTotal").ToString();
+                        Description = item.SelectToken("Description").ToString();
+                        AcctCode = item.SelectToken("AcctCode").ToString();
+                        UnitPrice = item.SelectToken("UnitPrice").ToString();
+                        VatGroup = item.SelectToken("VatGroup").ToString();
+
+                        oDoc.DocType = SAPbobsCOM.BoDocumentTypes.dDocument_Service;
+                        oDoc.Lines.ItemDescription = Description;
+                        oDoc.Lines.AccountCode = AcctCode;
+                        oDoc.Lines.VatGroup = VatGroup;
+                        oDoc.Lines.UnitPrice = Convert.ToDouble(UnitPrice);
+                        oDoc.Lines.LineTotal = Convert.ToDouble(LineTotal);
+                        oDoc.Lines.PriceAfterVAT = Convert.ToDouble(LineTotal);
+                        oDoc.Lines.Add();
+
+                    }
+                }
+                else
+                {
+
+                    JToken token = JToken.Parse(jsonString);
+
+
+                    for (int i = 0; i <= jarr.Count() - 1; i++)
                     {
                         string ItemCode, Description, Quantity, UnitPrice, VatGroup, LineTotal, WarehouseCode;
 
@@ -4851,43 +5058,43 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                         oDoc.Lines.Add();
                         // oDoc.Lines.WTLiable = BoYesNoEnum.tYES;
                         // oDoc.Lines.TaxLiable = BoYesNoEnum.tYES;
-                    //    string batchmanageditem = Check_If_Item_BatchManaged(DBName, ItemCode, SAPUserName, SAPPassword);
-                    //if (batchmanageditem == "Y")
-                    //{
-                    //    int count = token.SelectToken("Rows[" + i + "]").SelectToken("Batch").Count();
-                    //    for (int CountBatChRows = 0; CountBatChRows <= count - 1; CountBatChRows++)
-                    //    {
-                    //        var jBatchObject = (JObject)token.SelectToken("Rows[" + i + "].Batch[" + CountBatChRows + "]");
+                        //    string batchmanageditem = Check_If_Item_BatchManaged(DBName, ItemCode, SAPUserName, SAPPassword);
+                        //if (batchmanageditem == "Y")
+                        //{
+                        //    int count = token.SelectToken("Rows[" + i + "]").SelectToken("Batch").Count();
+                        //    for (int CountBatChRows = 0; CountBatChRows <= count - 1; CountBatChRows++)
+                        //    {
+                        //        var jBatchObject = (JObject)token.SelectToken("Rows[" + i + "].Batch[" + CountBatChRows + "]");
 
-                    //        string BatchNumber = jBatchObject["BatchNum"].ToString();
-                    //        string BatchQuantity = jBatchObject["BatchQuantity"].ToString();
+                        //        string BatchNumber = jBatchObject["BatchNum"].ToString();
+                        //        string BatchQuantity = jBatchObject["BatchQuantity"].ToString();
 
-                    //        oDoc.Lines.BatchNumbers.BatchNumber = BatchNumber.ToString();
+                        //        oDoc.Lines.BatchNumbers.BatchNumber = BatchNumber.ToString();
 
-                    //        oDoc.Lines.BatchNumbers.Quantity = Convert.ToInt32(BatchQuantity);
-                    //        oDoc.Lines.BatchNumbers.Add();
+                        //        oDoc.Lines.BatchNumbers.Quantity = Convert.ToInt32(BatchQuantity);
+                        //        oDoc.Lines.BatchNumbers.Add();
 
-                    //    }
-                    //    oDoc.Lines.Add();
-                    //}
-                    //else
-                    //{
-                    //    oDoc.Lines.Add();
-                    //}
-                      
+                        //    }
+                        //    oDoc.Lines.Add();
+                        //}
+                        //else
+                        //{
+                        //    oDoc.Lines.Add();
+                        //}
+
                     }
 
 
-                   
+
 
                 }
-             
 
-              
+
+
                 if (oDoc.Add() != 0)
-               {
+                {
 
-                oCompany.GetLastError(out nErr, out erMsg);
+                    oCompany.GetLastError(out nErr, out erMsg);
                     //if (string.IsNullOrEmpty(erMsg))
                     //{
 
@@ -4895,26 +5102,26 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                     //}
                     //else
                     //{
-                        erMsg = Sanitize_Errors(erMsg);
+                    erMsg = Sanitize_Errors(erMsg);
                     //}
 
 
                     //.Replace(dbqt, "");
-                    message = "{\"Message\": {\"MessageType\": \"Error\",\"Description\": \"" + erMsg + "\",\"Source Number\": \"" + SourceNumber + "\",\"Destination Number\": \"0\",\"Document Type\": \""+ ObjectType + "\"}}";
-                message_ = JsonConvert.DeserializeObject(message);
-                MarshallObject(oDoc);
-                MarshallObject(oCompany);
-            }
-            else
-            {
-                //int snum = Int32.Parse(oCompany.GetNewObjectKey());
-                // oDoc.GetByKey(snum);
-                //XmlDocument doc = new XmlDocument();
-                //doc.LoadXml(oDoc.GetAsXML());
-                //string jsonText = JsonConvert.SerializeXmlNode(doc);
-                //message = jsonText;
+                    message = "{\"Message\": {\"MessageType\": \"Error\",\"Description\": \"" + erMsg + "\",\"Source Number\": \"" + SourceNumber + "\",\"Destination Number\": \"0\",\"Document Type\": \"" + ObjectType + "\"}}";
+                    message_ = JsonConvert.DeserializeObject(message);
+                    MarshallObject(oDoc);
+                    MarshallObject(oCompany);
+                }
+                else
+                {
+                    //int snum = Int32.Parse(oCompany.GetNewObjectKey());
+                    // oDoc.GetByKey(snum);
+                    //XmlDocument doc = new XmlDocument();
+                    //doc.LoadXml(oDoc.GetAsXML());
+                    //string jsonText = JsonConvert.SerializeXmlNode(doc);
+                    //message = jsonText;
 
-                string add_data = Get_DocData(DBName,Table, CardCode);
+                    string add_data = Get_DocData(DBName, Table, CardCode);
                     if (add_data.Length > 1)
                     {
 
@@ -4925,12 +5132,12 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                         message_ = JsonConvert.DeserializeObject(message);
                         if (!ObjectType.EndsWith("DRAFT"))
                         {
-                            SAP_SEND_MESSAGE("Document " + ObjectType.ToLower() +  " Added", "Document Added  " + ObjectType.ToLower() + " from API", "Business Partner Name", CardCode, "2", CardCode, ObjectType.ToLower() +  " Number" , DocEntry, ObjectTypeNum, DocEntry);
+                            SAP_SEND_MESSAGE("Document " + ObjectType.ToLower() + " Added", "Document Added  " + ObjectType.ToLower() + " from API", "Business Partner Name", CardCode, "2", CardCode, ObjectType.ToLower() + " Number", DocEntry, ObjectTypeNum, DocEntry);
                         }
                         else
                         {
 
-                            SAP_SEND_MESSAGE("Document " + ObjectType.ToLower() +  " Added", "Document Added from " + ObjectType.ToLower() + " API", "Business Partner Name", CardCode, "2", CardCode, ObjectType.ToLower() + " Number", DocEntry, DraftsObjectTypeNum, DocEntry);
+                            SAP_SEND_MESSAGE("Document " + ObjectType.ToLower() + " Added", "Document Added from " + ObjectType.ToLower() + " API", "Business Partner Name", CardCode, "2", CardCode, ObjectType.ToLower() + " Number", DocEntry, DraftsObjectTypeNum, DocEntry);
 
                         }
                     }
@@ -4943,32 +5150,32 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                         MarshallObject(oCompany);
                     }
 
+                }
+                var json_response = JsonConvert.SerializeObject(message_, Newtonsoft.Json.Formatting.None);
+                var response_invoice = Request.CreateResponse(HttpStatusCode.OK);
+                response_invoice.Content = new StringContent(json_response, Encoding.UTF8, "application/json");
+
+                MarshallObject(QueryObjectDocEntry);
+                MarshallObject(QueryObject);
+                MarshallObject(oDoc);
+                MarshallObject(oCompany);
+                return response_invoice;
+
             }
-            var json_response = JsonConvert.SerializeObject(message_, Newtonsoft.Json.Formatting.None);
-            var response_invoice = Request.CreateResponse(HttpStatusCode.OK);
-            response_invoice.Content = new StringContent(json_response, Encoding.UTF8, "application/json");
-
-            MarshallObject(QueryObjectDocEntry);
-            MarshallObject(QueryObject);           
-            MarshallObject(oDoc);
-            MarshallObject(oCompany);
-            return response_invoice;
-
-        }
             catch (Exception ex)
             {
 
                 HttpResponseMessage exeption_response = null;
-        exeption_response.Content = new StringContent(ex.Message, Encoding.UTF8, "application/json");
+                exeption_response.Content = new StringContent(ex.Message, Encoding.UTF8, "application/json");
                 return exeption_response;
             }
 
 
-}
+        }
 
 
 
-       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
+        //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         [HttpPost]
         [Route("api/SAP/{DBName}/CreatePurchaseDocuments/{SAPUserName}/{SAPPassword}")]
         //public HttpResponseMessage Post([FromBody]string value)
@@ -5042,7 +5249,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
 
                 string ObjectTypeNum = "";
                 string DraftsObjectTypeNum = "";
-            if (ObjectType == "PURCHASEINVOICE")
+                if (ObjectType == "PURCHASEINVOICE")
                 {
                     oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oPurchaseInvoices);
                     oDoc.CardCode = CardCode;
@@ -5168,7 +5375,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                 }
                 oDoc.WithholdingTaxData.WTCode = WVAT;
                 oDoc.WithholdingTaxData.TaxableAmount = Convert.ToDouble(TaxbleAmnt);
-              //  oDoc.WithholdingTaxData.WTAmount = Convert.ToDouble(WTAmnt);
+                //  oDoc.WithholdingTaxData.WTAmount = Convert.ToDouble(WTAmnt);
                 oDoc.WithholdingTaxData.Add();
                 if (oDoc.Add() != 0)
                 {
@@ -5220,7 +5427,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
 
                         }
                     }
-                   
+
 
                 }
                 var json_response = JsonConvert.SerializeObject(message_, Newtonsoft.Json.Formatting.None);
@@ -5256,11 +5463,11 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
             }
             catch (Exception ex)
             {
-              //  Get_specific_errorline(ex, "write_Error_to_file");
+                //  Get_specific_errorline(ex, "write_Error_to_file");
             }
         }
 
-       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
+        //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         [HttpPost]
         [Route("api/SAP/{DBName}/CreatePayment/")]
 
@@ -5311,7 +5518,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                 Connect_To_SAP connect = new Connect_To_SAP();
                 oCompany = connect.ConnectSAPDB(DBName, SAPUserName, SAPPassword);
                 if (CardType == "C" && Type == "INCOMING")
-                    {
+                {
                     oPayment = (SAPbobsCOM.Payments)oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oIncomingPayments);
                     oPayment.DocObjectCode = SAPbobsCOM.BoPaymentsObjectType.bopot_IncomingPayments;
                     // oPmt.DocObjectCode = SAPbobsCOM.BoPaymentsObjectType.bopot_IncomingPayments
@@ -5386,7 +5593,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                     {
 
 
-                    
+
 
                         if (PaymentType == "CHEQUE")
                         {
@@ -5402,7 +5609,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                                 oPayment.DueDate = Convert.ToDateTime(PaymentDate);
                                 oPayment.CardCode = CardCode;
                                 //oPayment.BPLID = Branchid;
-                                oPayment.Checks.CheckAccount =Account; 
+                                oPayment.Checks.CheckAccount = Account;
                                 oPayment.Remarks = PaymentReference;
                                 oPayment.Checks.CheckNumber = Convert.ToInt32(PaymentReference);
                                 oPayment.Checks.CheckSum = Convert.ToDouble(Amount);
@@ -5416,11 +5623,11 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                                 oPayment.ApplyVAT = BoYesNoEnum.tNO;
                             }
                             else
-                            { 
+                            {
                                 oPayment.DocDate = Convert.ToDateTime(PaymentDate);
                                 oPayment.TaxDate = Convert.ToDateTime(PaymentDate);
                                 oPayment.DueDate = Convert.ToDateTime(PaymentDate);
-                               // // oPayment.Invoices.SumApplied = Convert.ToDouble(Amount);
+                                // // oPayment.Invoices.SumApplied = Convert.ToDouble(Amount);
                                 oPayment.CardCode = CardCode;
                                 //oPayment.BPLID = Branchid;
                                 oPayment.Checks.DueDate = Convert.ToDateTime(PaymentDate);
@@ -5437,7 +5644,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
 
                                 oPayment.Checks.Trnsfrable = SAPbobsCOM.BoYesNoEnum.tNO;
                                 // // // oPayment.Invoices.SumApplied = Convert.ToDouble(Amount);
-                               
+
                                 oPayment.ApplyVAT = BoYesNoEnum.tNO;
 
                             }
@@ -5467,7 +5674,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
 
 
 
-                                
+
 
                             }
                             else
@@ -5482,20 +5689,20 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                                 oPayment.Remarks = PaymentReference;
                                 oPayment.TransferReference = (PaymentReference);
                                 oPayment.TransferSum = Convert.ToDouble(Amount);
-                           // // oPayment.Invoices.SumApplied = Convert.ToDouble(Amount);
+                                // // oPayment.Invoices.SumApplied = Convert.ToDouble(Amount);
                                 oPayment.ApplyVAT = BoYesNoEnum.tNO;
 
                             }
-                       
+
                         }
 
                         else if (PaymentType == "CASH")
                         {
-                           // oPayment.DocType = SAPbobsCOM.BoRcptTypes.rCustomer;
+                            // oPayment.DocType = SAPbobsCOM.BoRcptTypes.rCustomer;
                             if (DocEntry != 0)
                             {
 
-                                oPayment.Invoices.DocEntry = DocEntry; 
+                                oPayment.Invoices.DocEntry = DocEntry;
                                 oPayment.Invoices.SumApplied = Convert.ToDouble(Amount);
                                 oPayment.CashSum = Convert.ToDouble(Amount);
                                 oPayment.DocDate = Convert.ToDateTime(PaymentDate);
@@ -5518,15 +5725,15 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                                 //   oPayment.BPLID = Branchid;
                                 oPayment.Remarks = PaymentReference;
                                 oPayment.CashSum = Convert.ToDouble(Amount);
-                              // // oPayment.Invoices.SumApplied = Convert.ToDouble(Amount);
+                                // // oPayment.Invoices.SumApplied = Convert.ToDouble(Amount);
                                 oPayment.ApplyVAT = BoYesNoEnum.tNO;
 
                             }
-                      
+
                         }
                         else if (PaymentType == "BANKTRANSFER")
                         {
-                           // oPayment.DocType = SAPbobsCOM.BoRcptTypes.rCustomer;
+                            // oPayment.DocType = SAPbobsCOM.BoRcptTypes.rCustomer;
                             if (DocEntry != 0)
                             {
 
@@ -5557,16 +5764,16 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                                 oPayment.Remarks = PaymentReference;
                                 oPayment.TransferReference = (PaymentReference);
                                 oPayment.TransferSum = Convert.ToDouble(Amount);
-                            //// oPayment.Invoices.SumApplied = Convert.ToDouble(Amount);
+                                //// oPayment.Invoices.SumApplied = Convert.ToDouble(Amount);
                                 oPayment.ApplyVAT = BoYesNoEnum.tNO;
 
                             }
-                       
+
                         }
 
                         else if (PaymentType == "CREDITCARD")
                         {
-                           
+
                             if (DocEntry != 0)
                             {
 
@@ -5577,15 +5784,15 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                                 oPayment.TaxDate = Convert.ToDateTime(PaymentDate);
                                 oPayment.DueDate = Convert.ToDateTime(PaymentDate);
                                 oPayment.CardCode = CardCode;
-                               
+
                                 oPayment.TransferDate = Convert.ToDateTime(PaymentDate);
                                 oPayment.Remarks = PaymentReference;
                                 oPayment.CreditCards.CreditSum = Convert.ToDouble(Amount);
-                                 //DateTime cr_year = DateTime.Today.ToString("yyyy-MM-dd"));
+                                //DateTime cr_year = DateTime.Today.ToString("yyyy-MM-dd"));
                                 //DateTime cr_month = (DateTime.Today.ToString("yyyy-MM-dd"));
                                 oPayment.CreditCards.CardValidUntil = DateTime.Now;
                                 oPayment.CreditCards.CreditAcct = Account;
-                                oPayment.CreditCards.CreditCard = Get_CreditCard( DBName,Account);
+                                oPayment.CreditCards.CreditCard = Get_CreditCard(DBName, Account);
                                 oPayment.CreditCards.CreditCardNumber = PaymentReference;
                                 oPayment.CreditCards.VoucherNum = PaymentReference;
                                 oPayment.CreditCards.FirstPaymentDue = Convert.ToDateTime(PaymentDate);
@@ -5617,7 +5824,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                                 oPayment.ApplyVAT = BoYesNoEnum.tNO;
 
                             }
-                         
+
                         }
 
 
@@ -5658,10 +5865,10 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                                 oPayment.ApplyVAT = BoYesNoEnum.tNO;
 
                             }
-                            
+
                         }
 
-                       
+
 
                     }
 
@@ -5698,7 +5905,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
             }
         }
 
-        public string Get_InvoiceData(string DBName ,string CardCode)
+        public string Get_InvoiceData(string DBName, string CardCode)
         {
 
             {
@@ -5706,8 +5913,8 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                 string DocTotal = "";
                 string VatSum = "";
                 string DiscSum = "";
-                 QueryObject = (Recordset)oCompany.GetBusinessObject(BoObjectTypes.BoRecordset);
-                 QueryObjectDocEntry = (Recordset)oCompany.GetBusinessObject(BoObjectTypes.BoRecordset);
+                QueryObject = (Recordset)oCompany.GetBusinessObject(BoObjectTypes.BoRecordset);
+                QueryObjectDocEntry = (Recordset)oCompany.GetBusinessObject(BoObjectTypes.BoRecordset);
 
                 string querystringDocEntry = "";
                 string DocEntry = "";
@@ -5717,16 +5924,16 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                     querystringDocEntry = "SELECT  Top 1 \"DocEntry\"  FROM \"OINV\"   ORDER BY  DocEntry DESC";
                     QueryObjectDocEntry.DoQuery(querystringDocEntry);
                     DocEntry = (QueryObjectDocEntry.Fields.Item(0).Value.ToString());
-                    querystring = "SELECT   \"DocTotal\" ,\"VatSum\" ,\"DiscSum\"  FROM \"OINV\"   WHERE \"DocEntry\" = '" + DocEntry+ "'";
-                   
+                    querystring = "SELECT   \"DocTotal\" ,\"VatSum\" ,\"DiscSum\"  FROM \"OINV\"   WHERE \"DocEntry\" = '" + DocEntry + "'";
+
 
                 }
                 else
                 {
-                    querystringDocEntry = "SELECT  Top 1 DocEntry  FROM   "  + Sanitize(DBName) + ".[dbo]." + "OINV   (nolock) where CardCode ='"+ Sanitize(CardCode) +"'  ORDER BY  DocEntry DESC";
+                    querystringDocEntry = "SELECT  Top 1 DocEntry  FROM   " + Sanitize(DBName) + ".[dbo]." + "OINV   (nolock) where CardCode ='" + Sanitize(CardCode) + "'  ORDER BY  DocEntry DESC";
                     QueryObjectDocEntry.DoQuery(querystringDocEntry);
                     DocEntry = (QueryObjectDocEntry.Fields.Item(0).Value.ToString());
-                    querystring = "SELECT   DocTotal ,VatSum,DiscSum FROM "  + Sanitize(DBName) + ".[dbo]." + "OINV  (nolock) WHERE DocEntry = '" + DocEntry + "' and CardCode ='" + Sanitize(CardCode) + "'";
+                    querystring = "SELECT   DocTotal ,VatSum,DiscSum FROM " + Sanitize(DBName) + ".[dbo]." + "OINV  (nolock) WHERE DocEntry = '" + DocEntry + "' and CardCode ='" + Sanitize(CardCode) + "'";
 
                 }
 
@@ -5772,8 +5979,8 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                 }
                 else
                 {
-                    if ( !string.IsNullOrEmpty(CardCode))
-                        {
+                    if (!string.IsNullOrEmpty(CardCode))
+                    {
 
                         querystringDocEntry = "SELECT  Top 1 DocEntry  FROM   " + Sanitize(DBName) + ".[dbo]. " + Table + "   (nolock) where CardCode ='" + Sanitize(CardCode) + "'  ORDER BY  DocEntry DESC";
                         QueryObjectDocEntry.DoQuery(querystringDocEntry);
@@ -5782,7 +5989,8 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
 
 
                     }
-                    else {
+                    else
+                    {
                         querystringDocEntry = "SELECT  Top 1 DocEntry  FROM   " + Sanitize(DBName) + ".[dbo]. " + Table + "   (nolock)   ORDER BY  DocEntry DESC";
                         QueryObjectDocEntry.DoQuery(querystringDocEntry);
                         DocEntry = (QueryObjectDocEntry.Fields.Item(0).Value.ToString());
@@ -5878,7 +6086,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
         }
 
 
-        public int Get_CreditCard(string DBName,string Account)
+        public int Get_CreditCard(string DBName, string Account)
         {
 
             {
@@ -5890,12 +6098,12 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                 if (DbServerType == "SAPHANA")
                 {
                     //querystring = "select case WHEN T1.\"OnHand\"  >= '" + Sanitize(Quantity) + "' THEN  'Y' ELSE 'N' END AS \"QuantityOk\" from \"OITM\" T0   INNER JOIN \"OITW\"  T1  ON T0.\"ItemCode\" = T1.\"ItemCode\" INNER JOIN \"OWHS\" T2 ON T2.\"WhsCode\" = T1.\"WhsCode\" WHERE  T0.\"ItemCode\" = '" + Sanitize(ItemCode) + "' and T2.\"WhsCode\" = '" + Sanitize(WarehouseCode) + "'";
-                    querystring = "SELECT TOP 1  \"CreditCard\" FROM  \""  + Sanitize(DBName) + "\" + \".OCRC\"   WHERE \"AcctCode\" = '" + (Account) + "'";
+                    querystring = "SELECT TOP 1  \"CreditCard\" FROM  \"" + Sanitize(DBName) + "\" + \".OCRC\"   WHERE \"AcctCode\" = '" + (Account) + "'";
 
                 }
                 else
                 {
-                    querystring = "SELECT TOP 1  CreditCard FROM  "  + Sanitize(DBName) + ".[dbo]." + "OCRC  (nolock) WHERE AcctCode = '" + (Account) + "'";
+                    querystring = "SELECT TOP 1  CreditCard FROM  " + Sanitize(DBName) + ".[dbo]." + "OCRC  (nolock) WHERE AcctCode = '" + (Account) + "'";
 
                 }
 
@@ -5911,7 +6119,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
 
             }
         }
-            public int Get_DocEntry(string DBName,string InvoiceReference, string CardCode)
+        public int Get_DocEntry(string DBName, string InvoiceReference, string CardCode)
         {
 
             {
@@ -5923,12 +6131,12 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                 if (DbServerType == "SAPHANA")
                 {
                     //querystring = "select case WHEN T1.\"OnHand\"  >= '" + Sanitize(Quantity) + "' THEN  'Y' ELSE 'N' END AS \"QuantityOk\" from \"OITM\" T0   INNER JOIN \"OITW\"  T1  ON T0.\"ItemCode\" = T1.\"ItemCode\" INNER JOIN \"OWHS\" T2 ON T2.\"WhsCode\" = T1.\"WhsCode\" WHERE  T0.\"ItemCode\" = '" + Sanitize(ItemCode) + "' and T2.\"WhsCode\" = '" + Sanitize(WarehouseCode) + "'";
-                    querystring = "SELECT TOP 1   \"DocEntry\" FROM  \""  + Sanitize(DBName) + "\" + \".OINV\"   WHERE \"NumAtCard\" = '" + Sanitize(InvoiceReference) + "'  and  \"CardCode\" ='" + Sanitize(CardCode) + "'";
+                    querystring = "SELECT TOP 1   \"DocEntry\" FROM  \"" + Sanitize(DBName) + "\" + \".OINV\"   WHERE \"NumAtCard\" = '" + Sanitize(InvoiceReference) + "'  and  \"CardCode\" ='" + Sanitize(CardCode) + "'";
 
                 }
                 else
                 {
-                    querystring = "SELECT TOP 1  DocEntry FROM  "  + Sanitize(DBName) + ".[dbo]." + "OINV  (nolock) WHERE NumAtCard = '" + Sanitize(InvoiceReference) + "'  and  CardCode ='" + Sanitize(CardCode) + "'";
+                    querystring = "SELECT TOP 1  DocEntry FROM  " + Sanitize(DBName) + ".[dbo]." + "OINV  (nolock) WHERE NumAtCard = '" + Sanitize(InvoiceReference) + "'  and  CardCode ='" + Sanitize(CardCode) + "'";
 
                 }
 
@@ -5963,7 +6171,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
 
         }
 
-        public void SAP_SEND_MESSAGE(string subject, string message , string ColumnOneName ,string ColumnOneValue, string ColumnOneObject, string ColumnOneObjectKey, string ColumnTwoName, string ColumnTwoValue, string ColumnTwoObject, string ColumnTwoObjectKey)
+        public void SAP_SEND_MESSAGE(string subject, string message, string ColumnOneName, string ColumnOneValue, string ColumnOneObject, string ColumnOneObjectKey, string ColumnTwoName, string ColumnTwoValue, string ColumnTwoObject, string ColumnTwoObjectKey)
         {
             try
             {
@@ -6060,19 +6268,19 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                     MarshallObject(oMessage);
                     GC.Collect();
                     //return resul;
-                }  
+                }
             }
             catch (Exception ex)
             {
                 //_message_error += "warning: " + ex.Message;
-               // return false;
+                // return false;
             }
-            
+
         }
-        public void SendSAPMessage(string subject , string message)
+        public void SendSAPMessage(string subject, string message)
         {
 
-           // SAPbobsCOM.Messages oMsg = oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oMessages);
+            // SAPbobsCOM.Messages oMsg = oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oMessages);
             try
             {
 
@@ -6102,13 +6310,13 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
             }
             finally
             {
-               // MarshallObject(oMsg);
+                // MarshallObject(oMsg);
             }
         }
 
 
 
-        public int Check_If_Customer_Exists(string DBName,string CardCode, string SAPUserName, string SAPPassword) 
+        public int Check_If_Customer_Exists(string DBName, string CardCode, string SAPUserName, string SAPPassword)
         {
 
             {
@@ -6121,13 +6329,13 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                 if (DbServerType == "SAPHANA")
                 {
                     //querystring = "select case WHEN T1.\"OnHand\"  >= '" + Sanitize(Quantity) + "' THEN  'Y' ELSE 'N' END AS \"QuantityOk\" from \"OITM\" T0   INNER JOIN \"OITW\"  T1  ON T0.\"ItemCode\" = T1.\"ItemCode\" INNER JOIN \"OWHS\" T2 ON T2.\"WhsCode\" = T1.\"WhsCode\" WHERE  T0.\"ItemCode\" = '" + Sanitize(ItemCode) + "' and T2.\"WhsCode\" = '" + Sanitize(WarehouseCode) + "'";
-                    querystring = "SELECT  COUNT(\"CardCode\") FROM \""+ DBName+ "\" + \".OCRD\"  WHERE  \"CardCode\" ='" + Sanitize(CardCode) + "'";
+                    querystring = "SELECT  COUNT(\"CardCode\") FROM \"" + DBName + "\" + \".OCRD\"  WHERE  \"CardCode\" ='" + Sanitize(CardCode) + "'";
                 }
                 else
                 {
-                    querystring = "SELECT  COUNT(CardCode)FROM  "  + Sanitize(DBName) + ".[dbo]." + "OCRD (nolock) WHERE  CardCode ='" + Sanitize(CardCode) + "'";
+                    querystring = "SELECT  COUNT(CardCode)FROM  " + Sanitize(DBName) + ".[dbo]." + "OCRD (nolock) WHERE  CardCode ='" + Sanitize(CardCode) + "'";
                 }
-               // string querystring = 
+                // string querystring = 
                 QueryObject.DoQuery(querystring);
                 results = Convert.ToInt32(QueryObject.Fields.Item(0).Value);
                 return results;
@@ -6135,7 +6343,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
         }
 
 
-        public string  GetPaymentDocEntry(string DBName, string CardCode, string CardType, string PaymentType, double DocToTal ,string SAPUserName, string SAPPassword)
+        public string GetPaymentDocEntry(string DBName, string CardCode, string CardType, string PaymentType, double DocToTal, string SAPUserName, string SAPPassword)
         {
 
             {
@@ -6144,7 +6352,8 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                 {
                     PaymentTable = "ORCT";
                 }
-                else {
+                else
+                {
                     PaymentTable = "OVPM";
 
                 }
@@ -6157,7 +6366,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                 if (DbServerType == "SAPHANA")
                 {
                     //querystring = "select case WHEN T1.\"OnHand\"  >= '" + Sanitize(Quantity) + "' THEN  'Y' ELSE 'N' END AS \"QuantityOk\" from \"OITM\" T0   INNER JOIN \"OITW\"  T1  ON T0.\"ItemCode\" = T1.\"ItemCode\" INNER JOIN \"OWHS\" T2 ON T2.\"WhsCode\" = T1.\"WhsCode\" WHERE  T0.\"ItemCode\" = '" + Sanitize(ItemCode) + "' and T2.\"WhsCode\" = '" + Sanitize(WarehouseCode) + "'";
-                    querystring = "SELECT  Top 1 \"DocEntry\" FROM \"" + DBName + "\" + \"." + PaymentTable + "\"  WHERE  \"CardCode\" ='" + Sanitize(CardCode) + "'  and  DocToTal ='" +  DocToTal + "' order by  DocEntry desc";
+                    querystring = "SELECT  Top 1 \"DocEntry\" FROM \"" + DBName + "\" + \"." + PaymentTable + "\"  WHERE  \"CardCode\" ='" + Sanitize(CardCode) + "'  and  DocToTal ='" + DocToTal + "' order by  DocEntry desc";
                 }
                 else
                 {
@@ -6194,13 +6403,13 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                     querystring = "SELECT  ManBtchNum FROM  " + Sanitize(DBName) + ".[dbo]." + "OITM (nolock) WHERE  ItemCode ='" + Sanitize(ItemCode) + "' ";
                 }
                 // string querystring = 
-               // QueryObject.DoQuery(querystring);
-               // results = QueryObject.Fields.Item(0).Value;
+                // QueryObject.DoQuery(querystring);
+                // results = QueryObject.Fields.Item(0).Value;
                 return results;
             }
         }
 
-        public string LocalCurrency(string DBName,string SAPUserName, string SAPPassword)
+        public string LocalCurrency(string DBName, string SAPUserName, string SAPPassword)
         {
 
             {
@@ -6222,18 +6431,19 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                 // string querystring = 
                 QueryObject.DoQuery(querystring);
                 results = "";
-                   // QueryObject.Fields.Item(0).Value;
+                // QueryObject.Fields.Item(0).Value;
                 return results;
             }
         }
         public void Create_Customer(string CardCode, string CardName)
         {
-            try {
+            try
+            {
                 SAPbobsCOM.BusinessPartners sboBP = (SAPbobsCOM.BusinessPartners)oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oBusinessPartners);
                 sboBP.CardCode = CardCode;
                 sboBP.CardName = CardName;
                 sboBP.CardType = BoCardTypes.cCustomer;
-                
+
 
 
                 if (sboBP.Add() != 0)
@@ -6248,7 +6458,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                 {
                     SAP_SEND_MESSAGE("Customer Added", "Customer Added from API Kindly update Customer Group and other relevant fields ", "Customer Name", CardCode, "2", CardCode, "", "", "", "");
                     //SendSAPMessage("Customer Added", "A Customer with  code " + CardCode + " and  name  " + CardName + " was created by API kindly update Customer Group and Payment Terms Accordingly ");
-                   // MarshallObject(sboBP);
+                    // MarshallObject(sboBP);
                 }
                 MarshallObject(sboBP);
 
@@ -6261,7 +6471,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
 
 
         }
-        private bool CheckIfExists(string DBName,string CardCode, string CardType)
+        private bool CheckIfExists(string DBName, string CardCode, string CardType)
 
         {
             bool output = false;
@@ -6278,16 +6488,16 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
             //}
             Recordset QueryObject = (Recordset)oCompany.GetBusinessObject(BoObjectTypes.BoRecordset);
 
-           // string querystring = "SELECT  Count(CardCode)  as CardCode_Count  FROM OCRD (nolock)  WHERE CardCode = '" + Sanitize(CardCode) + "'   and  CardType ='" + Sanitize(CardType) + "'";
+            // string querystring = "SELECT  Count(CardCode)  as CardCode_Count  FROM OCRD (nolock)  WHERE CardCode = '" + Sanitize(CardCode) + "'   and  CardType ='" + Sanitize(CardType) + "'";
             if (DbServerType == "SAPHANA")
             {
                 //querystring = "select case WHEN T1.\"OnHand\"  >= '" + Sanitize(Quantity) + "' THEN  'Y' ELSE 'N' END AS \"QuantityOk\" from \"OITM\" T0   INNER JOIN \"OITW\"  T1  ON T0.\"ItemCode\" = T1.\"ItemCode\" INNER JOIN \"OWHS\" T2 ON T2.\"WhsCode\" = T1.\"WhsCode\" WHERE  T0.\"ItemCode\" = '" + Sanitize(ItemCode) + "' and T2.\"WhsCode\" = '" + Sanitize(WarehouseCode) + "'";
-                querystring = "SELECT  Count(\"CardCode\")  AS \"CardCode_Count\"   \""  + Sanitize(DBName) + "\" + \".OCRD\"  WHERE \"CardCode\" = '" + Sanitize(CardCode) + "'   and  \"CardType\" ='" + Sanitize(CardType) + "'";
+                querystring = "SELECT  Count(\"CardCode\")  AS \"CardCode_Count\"   \"" + Sanitize(DBName) + "\" + \".OCRD\"  WHERE \"CardCode\" = '" + Sanitize(CardCode) + "'   and  \"CardType\" ='" + Sanitize(CardType) + "'";
 
             }
             else
             {
-                querystring = "SELECT  Count(CardCode)FROM  "  + Sanitize(DBName) + ".[dbo]." + "OCRD (nolock) WHERE  CardCode ='" + Sanitize(CardCode) + "'";
+                querystring = "SELECT  Count(CardCode)FROM  " + Sanitize(DBName) + ".[dbo]." + "OCRD (nolock) WHERE  CardCode ='" + Sanitize(CardCode) + "'";
             }
 
             QueryObject.DoQuery(querystring);
@@ -6306,7 +6516,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
         }
 
 
-       //  [Authorize(Roles = "SuperAdmin, Admin, User")]
+        //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         //[HttpPost]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetBusinessPartnerByCode/{CardCode}")]
@@ -6321,7 +6531,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                 if (DbServerType == "SAPHANA")
                 {
                     //querystring = "select case WHEN T1.\"OnHand\"  >= '" + Sanitize(Quantity) + "' THEN  'Y' ELSE 'N' END AS \"QuantityOk\" from \"OITM\" T0   INNER JOIN \"OITW\"  T1  ON T0.\"ItemCode\" = T1.\"ItemCode\" INNER JOIN \"OWHS\" T2 ON T2.\"WhsCode\" = T1.\"WhsCode\" WHERE  T0.\"ItemCode\" = '" + Sanitize(ItemCode) + "' and T2.\"WhsCode\" = '" + Sanitize(WarehouseCode) + "'";
-                    querystring = "select top 1 T0.\"CardCode\", T0.\"CardName\", T0.\"Balance\", T0.\"Currency\"  FROM \""  + Sanitize(DBName) + "\" + \".OCRD\" t0  where  T0.\"CardCode\"='" + Sanitize(CardCode) + "'";
+                    querystring = "select top 1 T0.\"CardCode\", T0.\"CardName\", T0.\"Balance\", T0.\"Currency\"  FROM \"" + Sanitize(DBName) + "\" + \".OCRD\" t0  where  T0.\"CardCode\"='" + Sanitize(CardCode) + "'";
 
                 }
                 else
@@ -6354,7 +6564,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                         Telephone2 = Convert.ToString(dt.Rows[i]["Phone2"])
                         ,
                         MobilePhone = Convert.ToString(dt.Rows[i]["Cellular"])
-                       ,                        
+                       ,
                         Pin = Convert.ToString(dt.Rows[i]["VatIdUnCmp"])
                         ,
                         Email = Convert.ToString(dt.Rows[i]["E_Mail"])
@@ -6364,7 +6574,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                         FrozenFor = Convert.ToString(dt.Rows[i]["frozenFor"])
                         ,
 
-                        Bill_To_Address = GetContact(DBName,Convert.ToString(dt.Rows[i]["CardCode"]))
+                        Bill_To_Address = GetContact(DBName, Convert.ToString(dt.Rows[i]["CardCode"]))
                     };
                     break;
                 }
@@ -6392,7 +6602,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
             SAPbobsCOM.BusinessPartners oBP;
             //string forward_slash = "\"";
             string ApplicationPath = AppDomain.CurrentDomain.BaseDirectory;
-            
+
             ApplicationPath = ApplicationPath + @"\" + CardCode + ".xml";
             //"+ ".xml";
             Connect_To_SAP connect = new Connect_To_SAP();
@@ -6427,7 +6637,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
         public HttpResponseMessage GetInvoiceByDocEntry(string DBName, int DocEntry)
         {
 
-           // string forward_slash = "\"";
+            // string forward_slash = "\"";
             string ApplicationPath = AppDomain.CurrentDomain.BaseDirectory;
             //System.IO.Directory.GetParent(System.Windows.Forms.Application.StartupPath).ToString() ;
             ApplicationPath = ApplicationPath + @"\" + DocEntry + ".xml";
@@ -6468,54 +6678,54 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
             if (DbServerType == "SAPHANA")
             {
                 //querystring = "select case WHEN T1.\"OnHand\"  >= '" + Sanitize(Quantity) + "' THEN  'Y' ELSE 'N' END AS \"QuantityOk\" from \"OITM\" T0   INNER JOIN \"OITW\"  T1  ON T0.\"ItemCode\" = T1.\"ItemCode\" INNER JOIN \"OWHS\" T2 ON T2.\"WhsCode\" = T1.\"WhsCode\" WHERE  T0.\"ItemCode\" = '" + Sanitize(ItemCode) + "' and T2.\"WhsCode\" = '" + Sanitize(WarehouseCode) + "'";
-                querystring = "select  T1.\"CardCode\", T1.\"Name\", T1.\"Title\", T1.\"Position\", T1.\"Address\", T1.\"Tel1\", T1.\"Cellolar\", T1.\"E_MailL\", T1.\"Active\" from  \""  + Sanitize(DBName) + "\" + \".OCPR\" T1 INNER JOIN" +
-                           "  \""  + Sanitize(DBName) + "\" + \".OCRD\"  T0  ON  T0.\"CardCode\" =T1.\"CardCode\"  Where T0.\"CardCode\" ='" + (customerId) + "'";
+                querystring = "select  T1.\"CardCode\", T1.\"Name\", T1.\"Title\", T1.\"Position\", T1.\"Address\", T1.\"Tel1\", T1.\"Cellolar\", T1.\"E_MailL\", T1.\"Active\" from  \"" + Sanitize(DBName) + "\" + \".OCPR\" T1 INNER JOIN" +
+                           "  \"" + Sanitize(DBName) + "\" + \".OCRD\"  T0  ON  T0.\"CardCode\" =T1.\"CardCode\"  Where T0.\"CardCode\" ='" + (customerId) + "'";
             }
             else
             {
-                querystring = "select  ISNULL(T0.CardCode,'')'CardCode', ISNULL(T1.Name,'')'Name', ISNULL(T1.Title,'') 'Title',"+
+                querystring = "select  ISNULL(T0.CardCode,'')'CardCode', ISNULL(T1.Name,'')'Name', ISNULL(T1.Title,'') 'Title'," +
                    " ISNULL(T1.Position,'') 'Position', ISNULL(T1.Address,'') 'Address' ,ISNULL( T1.Tel1,'') 'Tel1',ISNULL( T1.Cellolar,'') 'Cellolar'," +
-                    " ISNULL(T1.E_MailL,'') 'E_MailL',ISNULL( T1.Active,'') 'Active' from  "  + Sanitize(DBName) + ".[dbo]." + "OCPR T1(nolock) " +
-                   " INNER JOIN "  + Sanitize(DBName) + ".[dbo]." + "OCRD  T0  ON  T0.CardCode =T1.CardCode  Where T0.CardCode ='" + (customerId) + "'";
+                    " ISNULL(T1.E_MailL,'') 'E_MailL',ISNULL( T1.Active,'') 'Active' from  " + Sanitize(DBName) + ".[dbo]." + "OCPR T1(nolock) " +
+                   " INNER JOIN " + Sanitize(DBName) + ".[dbo]." + "OCRD  T0  ON  T0.CardCode =T1.CardCode  Where T0.CardCode ='" + (customerId) + "'";
             }
             if (customerId.Length > 1)
             {
                 //querystring= querystring
-                DataTable dt =  GetData(DBName,querystring);
-            for (int i = 0; i < dt.Rows.Count; i++)
-            {
-                billtoaddress.Add(new BillToAddress
+                DataTable dt = GetData(DBName, querystring);
+                for (int i = 0; i < dt.Rows.Count; i++)
                 {
-                    CardCode = Convert.ToString(dt.Rows[i]["CardCode"])
-                    ,
-                    Name = Convert.ToString(dt.Rows[i]["Name"])
-                    ,
-                    Title = Convert.ToString(dt.Rows[i]["Title"])
-                    ,
-                    Position = Convert.ToString(dt.Rows[i]["Position"])
-                    ,
-                    Address = Convert.ToString(dt.Rows[i]["Address"])
-                    ,
-                    Tel1 = Convert.ToString(dt.Rows[i]["Tel1"])
-                      ,
-                    Cellolar = Convert.ToString(dt.Rows[i]["Cellolar"])
-                    ,
-                    E_MailL = Convert.ToString(dt.Rows[i]["E_MailL"])
-                    ,
-                    Active = Convert.ToString(dt.Rows[i]["Active"])
-                });
-            }
+                    billtoaddress.Add(new BillToAddress
+                    {
+                        CardCode = Convert.ToString(dt.Rows[i]["CardCode"])
+                        ,
+                        Name = Convert.ToString(dt.Rows[i]["Name"])
+                        ,
+                        Title = Convert.ToString(dt.Rows[i]["Title"])
+                        ,
+                        Position = Convert.ToString(dt.Rows[i]["Position"])
+                        ,
+                        Address = Convert.ToString(dt.Rows[i]["Address"])
+                        ,
+                        Tel1 = Convert.ToString(dt.Rows[i]["Tel1"])
+                          ,
+                        Cellolar = Convert.ToString(dt.Rows[i]["Cellolar"])
+                        ,
+                        E_MailL = Convert.ToString(dt.Rows[i]["E_MailL"])
+                        ,
+                        Active = Convert.ToString(dt.Rows[i]["Active"])
+                    });
+                }
             }
             return billtoaddress;
         }
 
-        private DataTable GetData(string DBName , string query )
+        private DataTable GetData(string DBName, string query)
         {
 
             DataTable dt = null;
             try
             {
-                
+
 
                 string conString = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
                 if (!string.IsNullOrEmpty(query))
@@ -6541,7 +6751,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                         using (dt = new DataTable())
                         {
                             sda.Fill(dt);
-                           
+
 
                         }
                     }
@@ -6549,14 +6759,14 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
 
             }
             catch (Exception ex)
-            
+
             {
                 Console.WriteLine(ex.Message);
             }
             return dt;
         }
 
-        public void Insert_WithholdingTax(string DBname ,string CardCode)
+        public void Insert_WithholdingTax(string DBname, string CardCode)
         {
 
             try
@@ -6573,7 +6783,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
                     querystring = "select  T0.WTCode  from  " + Sanitize(DBName) + ".[dbo]." + "OWHT T0 (nolock) WHERE  Inactive='N' ";
                 }
 
-                DataTable dt =  GetData(DBName,querystring);
+                DataTable dt = GetData(DBName, querystring);
                 for (int i = 0; i < dt.Rows.Count; i++)
                 {
 
@@ -6582,21 +6792,21 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
 
                         string WTCode = Convert.ToString(dt.Rows[i]["WTCode"]);
                         Recordset QueryObject = (Recordset)oCompany.GetBusinessObject(BoObjectTypes.BoRecordset);
-                         string querystring = "Insert  into  CRD4  (CardCode, WTCode ,LogInstanc )values ('" + CardCode + "', '" + WTCode + "', '" + LogInstanc + "')";
+                        string querystring = "Insert  into  CRD4  (CardCode, WTCode ,LogInstanc )values ('" + CardCode + "', '" + WTCode + "', '" + LogInstanc + "')";
                         QueryObject.DoQuery(querystring);
                         MarshallObject(QueryObject);
                     }
                 }
-            
-                 
+
+
 
             }
             catch { }
         }
         public string Sanitize_Errors(string value)
         {
-            List<string> words = new List<string> { "--", ";","," ,@"\\",@"//","[","]", "\"",":" };
-           // .Replace("[", "").Replace("\\", "").Replace("//", "").Replace("]", "").Replace(",", "").Replace(";", "");
+            List<string> words = new List<string> { "--", ";", ",", @"\\", @"//", "[", "]", "\"", ":" };
+            // .Replace("[", "").Replace("\\", "").Replace("//", "").Replace("]", "").Replace(",", "").Replace(";", "");
 
 
             foreach (string _mystring in words)
@@ -6692,7 +6902,7 @@ public HttpResponseMessage GetIncomingPaymentsByDate(string DBName ,string FromD
             return float.TryParse(str, out f);
         }
 
-   
 
-}
+
+    }
 }
