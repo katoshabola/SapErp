@@ -1,58 +1,73 @@
-﻿using System.Linq;
-using System.Web.Http;
-using System.Security.Claims;
-using System.Net.Http;
+﻿using System.Security.Claims;
 using System.Net;
-using System.Configuration;
 using System.Data.SqlClient;
 using System.Data;
 using System.Text;
-using System;
-using System.Collections.Generic;
 using SAPbobsCOM;
-using System.Threading.Tasks;
 using System.Collections.Specialized;
-using System.Data.SqlClient;
-using System.Text.RegularExpressions;
 using System.Security.Cryptography;
-using System.IO;
-using System.Collections.ObjectModel;
+using System.Xml;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using SAPCORE.Models;
+using Microsoft.Data.Sqlite;
+using System.Text.Json;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Xml;
 /// <summary>
 namespace TokenBasedAPI.Controllers
 {
-    public class TestController : ApiController
+    public class TestController : ControllerBase
     {
 
         public SAPbobsCOM.Company oCompany = null;
         private static int nErr = 0;
         string querystring = "";
         private static string erMsg = "";
-        private static NameValueCollection section = (NameValueCollection)ConfigurationManager.GetSection("appSettings");
-        HttpResponseMessage response = null;
+        private readonly IConfigurationSection section;// = (NameValueCollection)ConfigurationManager.GetSection("appSettings");
+        //HttpResponseMessage response = null;
         string message = "";
-        private static string userName = section["userName"];
-        private static string Server = section["Server"];
-        private static string DbServerType = section["DbServerType"];
-        private static string LicenseServer = section["LicenseServer"];
-        private static string DbUserName = section["DbUserName"];
-        private static string DbPassword = section["DbPassword"];
-        private static string MessageFlag = section["MessageFlag"];
-        private static string DBName = section["CompanyDB"];
+        private static string userName;
+        private static string Server;
+        private static string DbServerType;
+        private static string LicenseServer;
+        private static string DbUserName;
+        private static string DbPassword;
+        private static string MessageFlag;
+        private static string DBName;
 
         //private static string @"Database=" + DBName.Trim() + ";" = @"Database=" + DBName.Trim() + ";";
         private static string encrypt_decrypt_key = "b14ca5898a4e4133bbce2ea2315a1916";
         Recordset QueryObject = null;
         Recordset QueryObjectDocEntry = null;
 
+        public IConfiguration Configuration { get; }
+
+        public TestController(IConfiguration configuration)
+        {
+            section = configuration.GetSection("SAPConfig");
+            var value = configuration["SAPConfig:userName"];
+            using(var context = new SetupConfigContext())
+            {
+                userName = context.SetupConfig.Where(c=>c.Name=="userName").Select(c=>c.Value)?.FirstOrDefault()??section["userName"];
+                Server = context.SetupConfig.Where(c => c.Name == "Server").Select(c => c.Value)?.FirstOrDefault() ?? section["Server"];
+                DbServerType = context.SetupConfig.Where(c => c.Name == "DbServerType").Select(c => c.Value).FirstOrDefault() ?? section["Server"]; ;
+                LicenseServer = context.SetupConfig.Where(c => c.Name == "LicenseServer").Select(c => c.Value).FirstOrDefault() ?? section["DbServerType"]; ; 
+                DbUserName = context.SetupConfig.Where(c => c.Name == "DbUserName").Select(c => c.Value).FirstOrDefault() ?? section["DbUserName"]; ;
+                DbPassword = context.SetupConfig.Where(c => c.Name == "DbPassword").Select(c => c.Value).FirstOrDefault() ?? section["DbPassword"]; ;
+                MessageFlag = context.SetupConfig.Where(c => c.Name == "MessageFlag").Select(c => c.Value).FirstOrDefault() ?? section["MessageFlag"]; ;
+                DBName = context.SetupConfig.Where(c => c.Name == "CompanyDB").Select(c => c.Value).FirstOrDefault() ?? section["CompanyDB"]; ;
+            }
+            
+            Configuration = configuration;
+        }
+
 
         // //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         //[HttpPost]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetCurrencies")]
-        public HttpResponseMessage GetCurrencies(string DBName)
+        public IActionResult GetCurrencies(string DBName)
         {
             try
             {
@@ -60,7 +75,7 @@ namespace TokenBasedAPI.Controllers
                 var roles = identity.Claims
                             .Where(c => c.Type == ClaimTypes.Role)
                             .Select(c => c.Value);
-                string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
+                string constr = Configuration.GetConnectionString("constr") + @"Database=" + DBName.Trim() + ";";
                 using (SqlConnection con = new SqlConnection(constr))
                 {
 
@@ -86,10 +101,8 @@ namespace TokenBasedAPI.Controllers
                                 dt.TableName = "Dataset";
                                 sda.Fill(dt);
                                 //return dt;
-                                string results = DataTableToJSONWithStringBuilder(dt);
-                                var response = Request.CreateResponse(HttpStatusCode.OK);
-                                response.Content = new StringContent(results, Encoding.UTF8, "application/json");
-                                return response;
+                                
+                                return Ok(dt);
                                 // return Request.CreateResponse(HttpStatusCode.Created, customers);
                             }
                         }
@@ -98,10 +111,7 @@ namespace TokenBasedAPI.Controllers
             }
             catch (Exception ex)
             {
-
-                HttpResponseMessage exeption_response = null;
-                exeption_response.Content = new StringContent(ex.Message, Encoding.UTF8, "application/json");
-                return exeption_response;
+                return Problem( ex.Message);
             }
 
         }
@@ -111,7 +121,7 @@ namespace TokenBasedAPI.Controllers
         //[HttpPost]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetMarketingDocumentOwner")]
-        public HttpResponseMessage GetMarketingDocumentOwner(string DBName)
+        public IActionResult GetMarketingDocumentOwner(string DBName)
         {
             try
             {
@@ -119,7 +129,7 @@ namespace TokenBasedAPI.Controllers
                 var roles = identity.Claims
                             .Where(c => c.Type == ClaimTypes.Role)
                             .Select(c => c.Value);
-                string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
+                string constr = Configuration.GetConnectionString("constr") + @"Database=" + DBName.Trim() + ";";
                 using (SqlConnection con = new SqlConnection(constr))
                 {
 
@@ -145,10 +155,8 @@ namespace TokenBasedAPI.Controllers
                                 dt.TableName = "Dataset";
                                 sda.Fill(dt);
                                 //return dt;
-                                string results = DataTableToJSONWithStringBuilder(dt);
-                                var response = Request.CreateResponse(HttpStatusCode.OK);
-                                response.Content = new StringContent(results, Encoding.UTF8, "application/json");
-                                return response;
+                                
+                                return Ok(dt);
                                 // return Request.CreateResponse(HttpStatusCode.Created, customers);
                             }
                         }
@@ -160,7 +168,7 @@ namespace TokenBasedAPI.Controllers
 
                 HttpResponseMessage exeption_response = null;
                 exeption_response.Content = new StringContent(ex.Message, Encoding.UTF8, "application/json");
-                return exeption_response;
+                return Problem(ex.Message);
             }
 
         }
@@ -170,7 +178,7 @@ namespace TokenBasedAPI.Controllers
         //[HttpPost]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetMarketingDocumentSalesPerson")]
-        public HttpResponseMessage GetMarketingDocumentSalesPerson(string DBName)
+        public IActionResult GetMarketingDocumentSalesPerson(string DBName)
         {
             try
             {
@@ -178,7 +186,7 @@ namespace TokenBasedAPI.Controllers
                 var roles = identity.Claims
                             .Where(c => c.Type == ClaimTypes.Role)
                             .Select(c => c.Value);
-                string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
+                string constr = Configuration.GetConnectionString("constr") + @"Database=" + DBName.Trim() + ";";
                 using (SqlConnection con = new SqlConnection(constr))
                 {
 
@@ -204,10 +212,7 @@ namespace TokenBasedAPI.Controllers
                                 dt.TableName = "Dataset";
                                 sda.Fill(dt);
                                 //return dt;
-                                string results = DataTableToJSONWithStringBuilder(dt);
-                                var response = Request.CreateResponse(HttpStatusCode.OK);
-                                response.Content = new StringContent(results, Encoding.UTF8, "application/json");
-                                return response;
+                                return Ok(dt);
                                 // return Request.CreateResponse(HttpStatusCode.Created, customers);
                             }
                         }
@@ -219,7 +224,7 @@ namespace TokenBasedAPI.Controllers
 
                 HttpResponseMessage exeption_response = null;
                 exeption_response.Content = new StringContent(ex.Message, Encoding.UTF8, "application/json");
-                return exeption_response;
+                return Problem(ex.Message);
             }
 
         }
@@ -227,7 +232,7 @@ namespace TokenBasedAPI.Controllers
         //[HttpPost]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetBusinessPartnersGroupCode")]
-        public HttpResponseMessage GetBusinessPartnersGroupCode(string DBName)
+        public IActionResult GetBusinessPartnersGroupCode(string DBName)
         {
             try
             {
@@ -235,7 +240,7 @@ namespace TokenBasedAPI.Controllers
                 var roles = identity.Claims
                             .Where(c => c.Type == ClaimTypes.Role)
                             .Select(c => c.Value);
-                string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
+                string constr = Configuration.GetConnectionString("constr") + @"Database=" + DBName.Trim() + ";";
                 using (SqlConnection con = new SqlConnection(constr))
                 {
 
@@ -261,10 +266,8 @@ namespace TokenBasedAPI.Controllers
                                 dt.TableName = "Dataset";
                                 sda.Fill(dt);
                                 //return dt;
-                                string results = DataTableToJSONWithStringBuilder(dt);
-                                var response = Request.CreateResponse(HttpStatusCode.OK);
-                                response.Content = new StringContent(results, Encoding.UTF8, "application/json");
-                                return response;
+                                
+                                return Ok(dt);
                                 // return Request.CreateResponse(HttpStatusCode.Created, customers);
                             }
                         }
@@ -276,7 +279,7 @@ namespace TokenBasedAPI.Controllers
 
                 HttpResponseMessage exeption_response = null;
                 exeption_response.Content = new StringContent(ex.Message, Encoding.UTF8, "application/json");
-                return exeption_response;
+                return Problem(ex.Message);
             }
 
         }
@@ -286,7 +289,7 @@ namespace TokenBasedAPI.Controllers
         //[HttpPost]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetBusinessPartnerPaymentTerms")]
-        public HttpResponseMessage GetBusinessPartnerPaymentTerms(string DBName)
+        public IActionResult GetBusinessPartnerPaymentTerms(string DBName)
         {
             try
             {
@@ -294,7 +297,7 @@ namespace TokenBasedAPI.Controllers
                 var roles = identity.Claims
                             .Where(c => c.Type == ClaimTypes.Role)
                             .Select(c => c.Value);
-                string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
+                string constr = Configuration.GetConnectionString("constr") + @"Database=" + DBName.Trim() + ";";
                 using (SqlConnection con = new SqlConnection(constr))
                 {
 
@@ -320,10 +323,7 @@ namespace TokenBasedAPI.Controllers
                                 dt.TableName = "Dataset";
                                 sda.Fill(dt);
                                 //return dt;
-                                string results = DataTableToJSONWithStringBuilder(dt);
-                                var response = Request.CreateResponse(HttpStatusCode.OK);
-                                response.Content = new StringContent(results, Encoding.UTF8, "application/json");
-                                return response;
+                                return Ok(dt);
                                 // return Request.CreateResponse(HttpStatusCode.Created, customers);
                             }
                         }
@@ -335,14 +335,14 @@ namespace TokenBasedAPI.Controllers
 
                 HttpResponseMessage exeption_response = null;
                 exeption_response.Content = new StringContent(ex.Message, Encoding.UTF8, "application/json");
-                return exeption_response;
+                return Problem(ex.Message);
             }
 
         }
 
         [HttpGet]
         [Route("api/SAP/{DBName}/GetHouseBanks")]
-        public HttpResponseMessage GetHouseBanks(string DBName)
+        public IActionResult GetHouseBanks(string DBName)
         {
             try
             {
@@ -350,7 +350,7 @@ namespace TokenBasedAPI.Controllers
                 var roles = identity.Claims
                             .Where(c => c.Type == ClaimTypes.Role)
                             .Select(c => c.Value);
-                string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
+                string constr = Configuration.GetConnectionString("constr") + @"Database=" + DBName.Trim() + ";";
                 using (SqlConnection con = new SqlConnection(constr))
                 {
 
@@ -376,10 +376,7 @@ namespace TokenBasedAPI.Controllers
                                 dt.TableName = "Dataset";
                                 sda.Fill(dt);
                                 //return dt;
-                                string results = DataTableToJSONWithStringBuilder(dt);
-                                var response = Request.CreateResponse(HttpStatusCode.OK);
-                                response.Content = new StringContent(results, Encoding.UTF8, "application/json");
-                                return response;
+                                return Ok(dt);
                                 // return Request.CreateResponse(HttpStatusCode.Created, customers);
                             }
                         }
@@ -391,14 +388,14 @@ namespace TokenBasedAPI.Controllers
 
                 HttpResponseMessage exeption_response = null;
                 exeption_response.Content = new StringContent(ex.Message, Encoding.UTF8, "application/json");
-                return exeption_response;
+                return Problem(ex.Message);
             }
 
         }
         //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         [HttpGet]
         [Route("api/SAP/GetSAPCompanies")]
-        public HttpResponseMessage GetSAPCompanies()
+        public IActionResult GetSAPCompanies()
         {
             try
             {
@@ -406,7 +403,7 @@ namespace TokenBasedAPI.Controllers
                 var roles = identity.Claims
                             .Where(c => c.Type == ClaimTypes.Role)
                             .Select(c => c.Value);
-                string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
+                string constr = Configuration.GetConnectionString("constr") + @"Database=" + DBName.Trim() + ";";
                 var con = new SqlConnection(constr);
                 {
 
@@ -432,10 +429,7 @@ namespace TokenBasedAPI.Controllers
                                 dt.TableName = "Dataset";
                                 sda.Fill(dt);
                                 //return dt;
-                                string results = DataTableToJSONWithStringBuilder(dt);
-                                var response = Request.CreateResponse(HttpStatusCode.OK);
-                                response.Content = new StringContent(results, Encoding.UTF8, "application/json");
-                                return response;
+                                return Ok(dt);
                                 // return Request.CreateResponse(HttpStatusCode.Created, customers);
                             }
                         }
@@ -447,7 +441,7 @@ namespace TokenBasedAPI.Controllers
 
                 HttpResponseMessage exeption_response = new HttpResponseMessage();
                 exeption_response.Content = new StringContent(ex.Message, Encoding.UTF8, "application/json");
-                return exeption_response;
+                return Problem(ex.Message);
             }
 
         }
@@ -457,7 +451,7 @@ namespace TokenBasedAPI.Controllers
         //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetIncomingPayments")]
-        public IHttpActionResult GetIncomingPayments(string DBName)
+        public IActionResult GetIncomingPayments(string DBName)
         {
             try
             {
@@ -465,7 +459,7 @@ namespace TokenBasedAPI.Controllers
                 var roles = identity.Claims
                             .Where(c => c.Type == ClaimTypes.Role)
                             .Select(c => c.Value);
-                string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
+                string constr = Configuration.GetConnectionString("constr") + @"Database=" + DBName.Trim() + ";";
                 using (SqlConnection con = new SqlConnection(constr))
                 {
 
@@ -500,9 +494,6 @@ namespace TokenBasedAPI.Controllers
                                 dt.TableName = "Payments";
                                 sda.Fill(dt);
                                 //return dt;
-                                //string results = DataTableToJSONWithStringBuilder(dt);
-                                //var response = Request.CreateResponse(HttpStatusCode.OK);
-                                //response.Content = new StringContent(results, Encoding.UTF8, "application/json");
                                 return Ok(dt);
                                 // return Request.CreateResponse(HttpStatusCode.Created, customers);
                             }
@@ -517,7 +508,7 @@ namespace TokenBasedAPI.Controllers
 
                 HttpResponseMessage exeption_response = null;
                 exeption_response.Content = new StringContent(ex.Message, Encoding.UTF8, "application/json");
-                return BadRequest(ex.Message);
+                return Problem(ex.Message);
             }
 
         }
@@ -527,7 +518,7 @@ namespace TokenBasedAPI.Controllers
         //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetOutgoingPayments")]
-        public HttpResponseMessage GetOutgoingPayments(string DBName)
+        public IActionResult GetOutgoingPayments(string DBName)
         {
             try
             {
@@ -535,7 +526,7 @@ namespace TokenBasedAPI.Controllers
                 var roles = identity.Claims
                             .Where(c => c.Type == ClaimTypes.Role)
                             .Select(c => c.Value);
-                string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
+                string constr = Configuration.GetConnectionString("constr") + @"Database=" + DBName.Trim() + ";";
 
                 using (SqlConnection con = new SqlConnection(constr))
                 {
@@ -571,10 +562,7 @@ namespace TokenBasedAPI.Controllers
                                 dt.TableName = "Payments";
                                 sda.Fill(dt);
                                 //return dt;
-                                string results = DataTableToJSONWithStringBuilder(dt);
-                                var response = Request.CreateResponse(HttpStatusCode.OK);
-                                response.Content = new StringContent(results, Encoding.UTF8, "application/json");
-                                return response;
+                                return Ok(dt);
                                 // return Request.CreateResponse(HttpStatusCode.Created, customers);
                             }
                         }
@@ -588,7 +576,7 @@ namespace TokenBasedAPI.Controllers
 
                 HttpResponseMessage exeption_response = null;
                 exeption_response.Content = new StringContent(ex.Message, Encoding.UTF8, "application/json");
-                return exeption_response;
+                return Problem(ex.Message);
             }
 
         }
@@ -597,7 +585,7 @@ namespace TokenBasedAPI.Controllers
         //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetIncomingPaymentsPaginated/{CardCode}/{Page}/{RequestLimit}")]
-        public HttpResponseMessage GetIncomingPaymentsPaginated(string DBName, string CardCode, string Page, string RequestLimit)
+        public IActionResult GetIncomingPaymentsPaginated(string DBName, string CardCode, string Page, string RequestLimit)
         {
             try
             {
@@ -605,7 +593,7 @@ namespace TokenBasedAPI.Controllers
                 var roles = identity.Claims
                             .Where(c => c.Type == ClaimTypes.Role)
                             .Select(c => c.Value);
-                string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
+                string constr = Configuration.GetConnectionString("constr") + @"Database=" + DBName.Trim() + ";";
                 using (SqlConnection con = new SqlConnection(constr))
                 {
 
@@ -641,10 +629,7 @@ namespace TokenBasedAPI.Controllers
                                 dt.TableName = "Payments";
                                 sda.Fill(dt);
                                 //return dt;
-                                string results = DataTableToJSONWithStringBuilder(dt);
-                                var response = Request.CreateResponse(HttpStatusCode.OK);
-                                response.Content = new StringContent(results, Encoding.UTF8, "application/json");
-                                return response;
+                                return Ok(dt);
                                 // return Request.CreateResponse(HttpStatusCode.Created, customers);
                             }
                         }
@@ -658,7 +643,7 @@ namespace TokenBasedAPI.Controllers
 
                 HttpResponseMessage exeption_response = null;
                 exeption_response.Content = new StringContent(ex.Message, Encoding.UTF8, "application/json");
-                return exeption_response;
+                return Problem(ex.Message);
             }
 
         }
@@ -668,7 +653,7 @@ namespace TokenBasedAPI.Controllers
         //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetOutgoingPaymentsPaginated/{CardCode}/{Page}/{RequestLimit}")]
-        public HttpResponseMessage GetOutgoingPaymentsPaginated(string DBName, string CardCode, string Page, string RequestLimit)
+        public IActionResult GetOutgoingPaymentsPaginated(string DBName, string CardCode, string Page, string RequestLimit)
         {
             try
             {
@@ -676,7 +661,7 @@ namespace TokenBasedAPI.Controllers
                 var roles = identity.Claims
                             .Where(c => c.Type == ClaimTypes.Role)
                             .Select(c => c.Value);
-                string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
+                string constr = Configuration.GetConnectionString("constr") + @"Database=" + DBName.Trim() + ";";
 
                 using (SqlConnection con = new SqlConnection(constr))
                 {
@@ -713,10 +698,7 @@ namespace TokenBasedAPI.Controllers
                                 dt.TableName = "Payments";
                                 sda.Fill(dt);
                                 //return dt;
-                                string results = DataTableToJSONWithStringBuilder(dt);
-                                var response = Request.CreateResponse(HttpStatusCode.OK);
-                                response.Content = new StringContent(results, Encoding.UTF8, "application/json");
-                                return response;
+                                return Ok(dt);
                                 // return Request.CreateResponse(HttpStatusCode.Created, customers);
                             }
                         }
@@ -730,14 +712,14 @@ namespace TokenBasedAPI.Controllers
 
                 HttpResponseMessage exeption_response = null;
                 exeption_response.Content = new StringContent(ex.Message, Encoding.UTF8, "application/json");
-                return exeption_response;
+                return Problem(ex.Message);
             }
 
         }
 
         [HttpGet]
         [Route("api/SAP/{DBName}/GetIncomingPaymentsPaginated/{Page}/{RequestLimit}")]
-        public HttpResponseMessage GetIncomingPaymentsPaginated(string DBName, string Page, string RequestLimit)
+        public IActionResult GetIncomingPaymentsPaginated(string DBName, string Page, string RequestLimit)
         {
             try
             {
@@ -745,7 +727,7 @@ namespace TokenBasedAPI.Controllers
                 var roles = identity.Claims
                             .Where(c => c.Type == ClaimTypes.Role)
                             .Select(c => c.Value);
-                string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
+                string constr = Configuration.GetConnectionString("constr") + @"Database=" + DBName.Trim() + ";";
                 using (SqlConnection con = new SqlConnection(constr))
                 {
 
@@ -781,10 +763,7 @@ namespace TokenBasedAPI.Controllers
                                 dt.TableName = "Payments";
                                 sda.Fill(dt);
                                 //return dt;
-                                string results = DataTableToJSONWithStringBuilder(dt);
-                                var response = Request.CreateResponse(HttpStatusCode.OK);
-                                response.Content = new StringContent(results, Encoding.UTF8, "application/json");
-                                return response;
+                                return Ok(dt);
                                 // return Request.CreateResponse(HttpStatusCode.Created, customers);
                             }
                         }
@@ -798,7 +777,7 @@ namespace TokenBasedAPI.Controllers
 
                 HttpResponseMessage exeption_response = null;
                 exeption_response.Content = new StringContent(ex.Message, Encoding.UTF8, "application/json");
-                return exeption_response;
+                return Problem(ex.Message);
             }
 
         }
@@ -808,7 +787,7 @@ namespace TokenBasedAPI.Controllers
         //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetOutgoingPaymentsPaginated/{Page}/{RequestLimit}")]
-        public HttpResponseMessage GetOutgoingPaymentsPaginated(string DBName, string Page, string RequestLimit)
+        public IActionResult GetOutgoingPaymentsPaginated(string DBName, string Page, string RequestLimit)
         {
             try
             {
@@ -816,7 +795,7 @@ namespace TokenBasedAPI.Controllers
                 var roles = identity.Claims
                             .Where(c => c.Type == ClaimTypes.Role)
                             .Select(c => c.Value);
-                string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
+                string constr = Configuration.GetConnectionString("constr") + @"Database=" + DBName.Trim() + ";";
 
                 using (SqlConnection con = new SqlConnection(constr))
                 {
@@ -853,10 +832,7 @@ namespace TokenBasedAPI.Controllers
                                 dt.TableName = "Payments";
                                 sda.Fill(dt);
                                 //return dt;
-                                string results = DataTableToJSONWithStringBuilder(dt);
-                                var response = Request.CreateResponse(HttpStatusCode.OK);
-                                response.Content = new StringContent(results, Encoding.UTF8, "application/json");
-                                return response;
+                                return Ok(dt);
                                 // return Request.CreateResponse(HttpStatusCode.Created, customers);
                             }
                         }
@@ -870,7 +846,7 @@ namespace TokenBasedAPI.Controllers
 
                 HttpResponseMessage exeption_response = null;
                 exeption_response.Content = new StringContent(ex.Message, Encoding.UTF8, "application/json");
-                return exeption_response;
+                return Problem(ex.Message);
             }
 
         }
@@ -880,7 +856,7 @@ namespace TokenBasedAPI.Controllers
         [HttpGet]
         [Route("api/SAP/{DBName}/GetCompanyDetails")]
         // [Route("api/SAP/GetIncomingPayments")]
-        public HttpResponseMessage GetCompanyDetails(string DBName)
+        public IActionResult GetCompanyDetails(string DBName)
         {
             //try
             //{
@@ -888,7 +864,7 @@ namespace TokenBasedAPI.Controllers
             var roles = identity.Claims
                         .Where(c => c.Type == ClaimTypes.Role)
                         .Select(c => c.Value);
-            string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
+            string constr = Configuration.GetConnectionString("constr") + @"Database=" + DBName.Trim() + ";";
 
             // string constr = (ConfigurationManager.ConnectionStrings["constr"].ConnectionString);
             //string constr = (DecryptString(encrypt_decrypt_key, "ics4rk5x7PdAhKGpSaI9EQ7QnVLudfbvP4/KbNqyZkPkdNy7+oxOCjueMpEDCpVjzFqWuH/kencobsf/QAIJOef+fFD+VLplL8ba96ECFeLmJaeg8hyK+ginTQRH5LTf"));
@@ -919,10 +895,7 @@ namespace TokenBasedAPI.Controllers
                             dt.TableName = "Payments";
                             sda.Fill(dt);
                             //return dt;
-                            string results = DataTableToJSONWithStringBuilder(dt);
-                            var response = Request.CreateResponse(HttpStatusCode.OK);
-                            response.Content = new StringContent(results, Encoding.UTF8, "application/json");
-                            return response;
+                            return Ok(dt);
                             // return Request.CreateResponse(HttpStatusCode.Created, customers);
                         }
                     }
@@ -936,7 +909,7 @@ namespace TokenBasedAPI.Controllers
 
             //    HttpResponseMessage exeption_response = null;
             //    exeption_response.Content = new StringContent(ex.Message, Encoding.UTF8, "application/json");
-            //    return exeption_response;
+            //    return Problem(ex.Message);
             //}
 
         }
@@ -948,7 +921,7 @@ namespace TokenBasedAPI.Controllers
         [Authorize(Roles = "SuperAdmin, Admin, User")]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetIncomingPaymentsByDate/{FromDocDate}/{ToDocDate}")]
-        public HttpResponseMessage GetIncomingPaymentsByDate(string DBName, string FromDocDate, string ToDocDate)
+        public IActionResult GetIncomingPaymentsByDate(string DBName, string FromDocDate, string ToDocDate)
         {
             try
             {
@@ -956,7 +929,7 @@ namespace TokenBasedAPI.Controllers
                 var roles = identity.Claims
                             .Where(c => c.Type == ClaimTypes.Role)
                             .Select(c => c.Value);
-                string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
+                string constr = Configuration.GetConnectionString("constr") + @"Database=" + DBName.Trim() + ";";
                 using (SqlConnection con = new SqlConnection(constr))
                 {
 
@@ -993,10 +966,7 @@ namespace TokenBasedAPI.Controllers
                                 dt.TableName = "Payments";
                                 sda.Fill(dt);
                                 //return dt;
-                                string results = DataTableToJSONWithStringBuilder(dt);
-                                var response = Request.CreateResponse(HttpStatusCode.OK);
-                                response.Content = new StringContent(results, Encoding.UTF8, "application/json");
-                                return response;
+                                return Ok(dt);
                                 // return Request.CreateResponse(HttpStatusCode.Created, customers);
                             }
                         }
@@ -1008,7 +978,7 @@ namespace TokenBasedAPI.Controllers
 
                 HttpResponseMessage exeption_response = null;
                 exeption_response.Content = new StringContent(ex.Message, Encoding.UTF8, "application/json");
-                return exeption_response;
+                return Problem(ex.Message);
             }
 
         }
@@ -1016,7 +986,7 @@ namespace TokenBasedAPI.Controllers
         //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetOutgoingPaymentsByDate/{FromDocDate}/{ToDocDate}")]
-        public HttpResponseMessage GetOutgoingPaymentsByDate(string DBName, string FromDocDate, string ToDocDate)
+        public IActionResult GetOutgoingPaymentsByDate(string DBName, string FromDocDate, string ToDocDate)
         {
             try
             {
@@ -1024,7 +994,7 @@ namespace TokenBasedAPI.Controllers
                 var roles = identity.Claims
                             .Where(c => c.Type == ClaimTypes.Role)
                             .Select(c => c.Value);
-                string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
+                string constr = Configuration.GetConnectionString("constr") + @"Database=" + DBName.Trim() + ";";
                 using (SqlConnection con = new SqlConnection(constr))
                 {
 
@@ -1061,10 +1031,7 @@ namespace TokenBasedAPI.Controllers
                                 dt.TableName = "Payments";
                                 sda.Fill(dt);
                                 //return dt;
-                                string results = DataTableToJSONWithStringBuilder(dt);
-                                var response = Request.CreateResponse(HttpStatusCode.OK);
-                                response.Content = new StringContent(results, Encoding.UTF8, "application/json");
-                                return response;
+                                return Ok(dt);
                                 // return Request.CreateResponse(HttpStatusCode.Created, customers);
                             }
                         }
@@ -1076,7 +1043,7 @@ namespace TokenBasedAPI.Controllers
 
                 HttpResponseMessage exeption_response = null;
                 exeption_response.Content = new StringContent(ex.Message, Encoding.UTF8, "application/json");
-                return exeption_response;
+                return Problem(ex.Message);
             }
 
         }
@@ -1084,7 +1051,7 @@ namespace TokenBasedAPI.Controllers
         //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetIncomingPaymentsByDocEntry/{DocEntry}")]
-        public HttpResponseMessage GetIncomingPaymentsByDocEntry(string DBName, string DocEntry)
+        public IActionResult GetIncomingPaymentsByDocEntry(string DBName, string DocEntry)
         {
             try
             {
@@ -1092,7 +1059,7 @@ namespace TokenBasedAPI.Controllers
                 var roles = identity.Claims
                             .Where(c => c.Type == ClaimTypes.Role)
                             .Select(c => c.Value);
-                string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
+                string constr = Configuration.GetConnectionString("constr") + @"Database=" + DBName.Trim() + ";";
                 using (SqlConnection con = new SqlConnection(constr))
                 {
 
@@ -1131,9 +1098,7 @@ namespace TokenBasedAPI.Controllers
                                 //return dt;
                                 string results = DataTableToJSONWithStringBuilder(dt);
 
-                                var response = Request.CreateResponse(HttpStatusCode.OK);
-                                response.Content = new StringContent(results, Encoding.UTF8, "application/json");
-                                return response;
+                                return Ok(dt);
                                 // return Request.CreateResponse(HttpStatusCode.Created, customers);
                             }
                         }
@@ -1145,7 +1110,7 @@ namespace TokenBasedAPI.Controllers
 
                 HttpResponseMessage exeption_response = null;
                 exeption_response.Content = new StringContent(ex.Message, Encoding.UTF8, "application/json");
-                return exeption_response;
+                return Problem(ex.Message);
             }
 
         }
@@ -1154,7 +1119,7 @@ namespace TokenBasedAPI.Controllers
         //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetOutgoingPaymentsByDocEntry/{DocEntry}")]
-        public HttpResponseMessage GetOutgoingPaymentsByDocEntry(string DBName, string DocEntry)
+        public IActionResult GetOutgoingPaymentsByDocEntry(string DBName, string DocEntry)
         {
             try
             {
@@ -1162,7 +1127,7 @@ namespace TokenBasedAPI.Controllers
                 var roles = identity.Claims
                             .Where(c => c.Type == ClaimTypes.Role)
                             .Select(c => c.Value);
-                string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
+                string constr = Configuration.GetConnectionString("constr") + @"Database=" + DBName.Trim() + ";";
                 using (SqlConnection con = new SqlConnection(constr))
                 {
 
@@ -1198,10 +1163,7 @@ namespace TokenBasedAPI.Controllers
                             {
                                 dt.TableName = "Dataset";
                                 sda.Fill(dt);
-                                string results = DataTableToJSONWithStringBuilder(dt);
-                                var response = Request.CreateResponse(HttpStatusCode.OK);
-                                response.Content = new StringContent(results, Encoding.UTF8, "application/json");
-                                return response;
+                                return Ok(dt);
                             }
                         }
                     }
@@ -1212,7 +1174,7 @@ namespace TokenBasedAPI.Controllers
 
                 HttpResponseMessage exeption_response = null;
                 exeption_response.Content = new StringContent(ex.Message, Encoding.UTF8, "application/json");
-                return exeption_response;
+                return Problem(ex.Message);
             }
 
         }
@@ -1220,13 +1182,13 @@ namespace TokenBasedAPI.Controllers
         //[HttpPost]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetAccounts")]
-        public HttpResponseMessage GetAccounts(string DBName)
+        public IActionResult GetAccounts(string DBName)
         {
             var identity = (ClaimsIdentity)User.Identity;
             var roles = identity.Claims
                         .Where(c => c.Type == ClaimTypes.Role)
                         .Select(c => c.Value);
-            string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
+            string constr = Configuration.GetConnectionString("constr") + @"Database=" + DBName.Trim() + ";";
             using (SqlConnection con = new SqlConnection(constr))
             {
 
@@ -1251,10 +1213,7 @@ namespace TokenBasedAPI.Controllers
                             dt.TableName = "Dataset";
                             sda.Fill(dt);
                             //return dt;
-                            string results = DataTableToJSONWithStringBuilder(dt);
-                            var response = Request.CreateResponse(HttpStatusCode.OK);
-                            response.Content = new StringContent(results, Encoding.UTF8, "application/json");
-                            return response;
+                            return Ok(dt);
                         }
                     }
                 }
@@ -1265,13 +1224,13 @@ namespace TokenBasedAPI.Controllers
         //[HttpPost]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetTaxes")]
-        public HttpResponseMessage GetTaxes(string DBName)
+        public IActionResult GetTaxes(string DBName)
         {
             var identity = (ClaimsIdentity)User.Identity;
             var roles = identity.Claims
                         .Where(c => c.Type == ClaimTypes.Role)
                         .Select(c => c.Value);
-            string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
+            string constr = Configuration.GetConnectionString("constr") + @"Database=" + DBName.Trim() + ";";
             using (SqlConnection con = new SqlConnection(constr))
             {
 
@@ -1297,10 +1256,7 @@ namespace TokenBasedAPI.Controllers
                             dt.TableName = "Dataset";
                             sda.Fill(dt);
                             //return dt;
-                            string results = DataTableToJSONWithStringBuilder(dt);
-                            var response = Request.CreateResponse(HttpStatusCode.OK);
-                            response.Content = new StringContent(results, Encoding.UTF8, "application/json");
-                            return response;
+                            return Ok(dt);
                         }
                     }
                 }
@@ -1312,13 +1268,13 @@ namespace TokenBasedAPI.Controllers
         //[HttpPost]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetWitholdingTaxes")]
-        public HttpResponseMessage GetWitholdingTaxes(string DBName)
+        public IActionResult GetWitholdingTaxes(string DBName)
         {
             var identity = (ClaimsIdentity)User.Identity;
             var roles = identity.Claims
                         .Where(c => c.Type == ClaimTypes.Role)
                         .Select(c => c.Value);
-            string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
+            string constr = Configuration.GetConnectionString("constr") + @"Database=" + DBName.Trim() + ";";
             using (SqlConnection con = new SqlConnection(constr))
             {
 
@@ -1344,10 +1300,7 @@ namespace TokenBasedAPI.Controllers
                             dt.TableName = "Dataset";
                             sda.Fill(dt);
                             //return dt;
-                            string results = DataTableToJSONWithStringBuilder(dt);
-                            var response = Request.CreateResponse(HttpStatusCode.OK);
-                            response.Content = new StringContent(results, Encoding.UTF8, "application/json");
-                            return response;
+                            return Ok(dt);
                         }
                     }
                 }
@@ -1358,13 +1311,13 @@ namespace TokenBasedAPI.Controllers
         //[HttpPost]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetWarehouses")]
-        public HttpResponseMessage GetWarehouses(string DBName)
+        public IActionResult GetWarehouses(string DBName)
         {
             var identity = (ClaimsIdentity)User.Identity;
             var roles = identity.Claims
                         .Where(c => c.Type == ClaimTypes.Role)
                         .Select(c => c.Value);
-            string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
+            string constr = Configuration.GetConnectionString("constr") + @"Database=" + DBName.Trim() + ";";
             using (SqlConnection con = new SqlConnection(constr))
             {
 
@@ -1392,10 +1345,7 @@ namespace TokenBasedAPI.Controllers
                             dt.TableName = "Dataset";
                             sda.Fill(dt);
                             //return dt;
-                            string results = DataTableToJSONWithStringBuilder(dt);
-                            var response = Request.CreateResponse(HttpStatusCode.OK);
-                            response.Content = new StringContent(results, Encoding.UTF8, "application/json");
-                            return response;
+                            return Ok(dt);
                         }
                     }
                 }
@@ -1406,13 +1356,13 @@ namespace TokenBasedAPI.Controllers
         //[HttpPost]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetPriceslist")]
-        public HttpResponseMessage GetPriceslist(string DBName)
+        public IActionResult GetPriceslist(string DBName)
         {
             var identity = (ClaimsIdentity)User.Identity;
             var roles = identity.Claims
                         .Where(c => c.Type == ClaimTypes.Role)
                         .Select(c => c.Value);
-            string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
+            string constr = Configuration.GetConnectionString("constr") + @"Database=" + DBName.Trim() + ";";
             using (SqlConnection con = new SqlConnection(constr))
             {
 
@@ -1437,10 +1387,7 @@ namespace TokenBasedAPI.Controllers
                             dt.TableName = "Dataset";
                             sda.Fill(dt);
                             //return dt;
-                            string results = DataTableToJSONWithStringBuilder(dt);
-                            var response = Request.CreateResponse(HttpStatusCode.OK);
-                            response.Content = new StringContent(results, Encoding.UTF8, "application/json");
-                            return response;
+                            return Ok(dt);
                         }
                     }
                 }
@@ -1451,13 +1398,13 @@ namespace TokenBasedAPI.Controllers
         //[HttpPost]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetItems")]
-        public HttpResponseMessage GetItems(string DBName)
+        public IActionResult GetItems(string DBName)
         {
             var identity = (ClaimsIdentity)User.Identity;
             var roles = identity.Claims
                         .Where(c => c.Type == ClaimTypes.Role)
                         .Select(c => c.Value);
-            string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
+            string constr = Configuration.GetConnectionString("constr") + @"Database=" + DBName.Trim() + ";";
             using (SqlConnection con = new SqlConnection(constr))
             {
 
@@ -1483,10 +1430,7 @@ namespace TokenBasedAPI.Controllers
                             dt.TableName = "Dataset";
                             sda.Fill(dt);
                             //return dt;
-                            string results = DataTableToJSONWithStringBuilder(dt);
-                            var response = Request.CreateResponse(HttpStatusCode.OK);
-                            response.Content = new StringContent(results, Encoding.UTF8, "application/json");
-                            return response;
+                            return Ok(dt);
                         }
                     }
                 }
@@ -1498,12 +1442,12 @@ namespace TokenBasedAPI.Controllers
         //[HttpPost]
         [HttpGet]
         [Route("api/SAP/{DBName}/IsDBConnected")]
-        public HttpResponseMessage Post39()
+        public IActionResult Post39()
         {
             // try { 
             string message = "";
             //dynamic message_ = null;
-            string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
+            string constr = Configuration.GetConnectionString("constr") + @"Database=" + DBName.Trim() + ";";
 
             using (SqlConnection con = new SqlConnection(constr))
             {
@@ -1527,9 +1471,7 @@ namespace TokenBasedAPI.Controllers
                 con.Dispose();
                 // }
                 message = message;
-                var response = Request.CreateResponse(HttpStatusCode.OK);
-                response.Content = new StringContent(JsonConvert.DeserializeObject(message).ToString(), Encoding.UTF8, "application/json");
-                return response;
+                return Ok(System.Text.Json.JsonSerializer.Deserialize<object>( message));
                 MarshallObject(oCompany);
                 //return response;
                 //}
@@ -1539,7 +1481,6 @@ namespace TokenBasedAPI.Controllers
                 //    // Console.WriteLine("Error writing app settings");
                 //    message = ex.Message;
             }
-            return response;
         }
 
         //  [Authorize(Roles = "SuperAdmin, Admin, User")]
@@ -1547,7 +1488,7 @@ namespace TokenBasedAPI.Controllers
         [HttpGet]
         // [Route("api/SAP/{DBName}/CheckGetPostStatus")]
         [Route("api/SAP/{DBName}/CheckGetPostStatus/{SAPUserName}/{SAPPassword}")]
-        public HttpResponseMessage CheckGetPostStatus(string DBName, string SAPUserName, string SAPPassword)
+        public IActionResult CheckGetPostStatus(string DBName, string SAPUserName, string SAPPassword)
         {
             //  try { 
 
@@ -1555,7 +1496,7 @@ namespace TokenBasedAPI.Controllers
             dynamic dbstatus = null;
 
 
-            string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
+            string constr = Configuration.GetConnectionString("constr") + @"Database=" + DBName.Trim() + ";";
 
             using (SqlConnection con = new SqlConnection(constr))
             {
@@ -1600,9 +1541,7 @@ namespace TokenBasedAPI.Controllers
 
                 }
             }
-            var response = Request.CreateResponse(HttpStatusCode.OK);
-            response.Content = new StringContent(JsonConvert.DeserializeObject(message).ToString(), Encoding.UTF8, "application/json");
-            return response;
+            return Ok(System.Text.Json.JsonSerializer.Deserialize<object>(message));
 
 
         }
@@ -1612,7 +1551,7 @@ namespace TokenBasedAPI.Controllers
         [HttpGet]
 
         [Route("api/SAP/{DBName}/IsCompanyConnected/{SAPUserName}/{SAPPassword}")]
-        public HttpResponseMessage IsCompanyConnected(string DBName, string SAPUserName, string SAPPassword)
+        public IActionResult IsCompanyConnected(string DBName, string SAPUserName, string SAPPassword)
         {
 
             try
@@ -1628,10 +1567,11 @@ namespace TokenBasedAPI.Controllers
 
                 Connect_To_SAP connect = new Connect_To_SAP();
                 oCompany = connect.ConnectSAPDB(DBName, SAPUserName, SAPPassword);
+                ApiResponse message = new ApiResponse();
                 if ((0 == oCompany.Connect()))
                 {
                     erMsg = "You have successfully  connected to Company " + oCompany.CompanyName;
-                    message = "{\"Message\": {\"MessageType\": \"Success\",\"Description\": \"" + erMsg + "\",\"Connection Status\": \"Company\"}}";
+                    message = new ApiResponse { Message=new SAPCORE.Models.Message { MessageType="Success", Description=erMsg } };
                     //  message_ = JsonConvert.DeserializeObject(message);
                 }
                 //  Interaction.MsgBox("Connected to Licence server successfully");
@@ -1643,16 +1583,15 @@ namespace TokenBasedAPI.Controllers
                     oCompany.GetLastError(out nErr, out erMsg); erMsg = Sanitize_Errors(erMsg);
                     if (erMsg.Contains("already connected"))
                     {
-                        message = "{\"Message\": {\"MessageType\": \"Success\",\"Description\": \"" + erMsg + " " + oCompany.CompanyName + "\",\"Connection Status\": \"Company\"}}";
+                        message = new ApiResponse { Message = new SAPCORE.Models.Message { MessageType = "Success", Description = oCompany.CompanyName } };
                     }
                     else
                     {
-                        message = "{\"Message\": {\"MessageType\": \"Error\",\"Description\": \"" + erMsg + "\",\"Connection Status\": \"Company\"}}";
+                        message = new ApiResponse { Message = new SAPCORE.Models.Message { MessageType = "Error", Description = erMsg } };
                     }
 
                 }
-                response = Request.CreateResponse(HttpStatusCode.OK);
-                response.Content = new StringContent(message, Encoding.UTF8, "application/json");
+                return Ok(message);
                 MarshallObject(oCompany);
 
             }
@@ -1660,9 +1599,8 @@ namespace TokenBasedAPI.Controllers
             catch (Exception ex)
             {
                 // Console.WriteLine("Error writing app settings");
-                message = ex.Message;
+                return Problem(ex.Message);
             }
-            return response;
         }
 
         public static string AddUpdateAppSettings(string key, string value)
@@ -1670,40 +1608,52 @@ namespace TokenBasedAPI.Controllers
             string message = "";
             try
             {
-
-                //  var configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-                Configuration configFile = System.Web.Configuration.WebConfigurationManager.OpenWebConfiguration("~");
-                var settings = configFile.AppSettings.Settings;
-
-                //value = EncryptString(encrypt_decrypt_key, value);
-                // var settings_1 = configFile.ConnectionStrings.Settings;
-                ConnectionStringSettings settings_ =
-               ConfigurationManager.ConnectionStrings["name"];
-
-                if (ConfigurationManager.AppSettings.AllKeys.Contains(key))
+                using(var context = new SetupConfigContext())
                 {
-                    //if (key.Contains("Password"))
-                    //    {
-                    //    //value = EncryptString(encrypt_decrypt_key,value);
-                    //    value =  value;
-                    //}
-                    if (settings[key] == null)
-                    {
-                        settings.Add(key, value);
+                    var config = context.SetupConfig.FirstOrDefault(c => c.Name == key);
+                    
+                    if(config==null){
+                        context.SetupConfig.Add(new SetupConfig { Name = key, Value = value });
                     }
                     else
                     {
-                        settings[key].Value = value;
+                        config.Value = value;
                     }
-                    configFile.Save(ConfigurationSaveMode.Modified);
-                    ConfigurationManager.RefreshSection(configFile.AppSettings.SectionInformation.Name);
-
+                    context.SaveChanges();
+                    
                 }
-                else
-                {
+               // Configuration configFile = System.Web.Configuration.WebConfigurationManager.OpenWebConfiguration("~");
+               // var settings = configFile.AppSettings.Settings;
 
-                    message = "Key does not Exist";
-                }
+               // //value = EncryptString(encrypt_decrypt_key, value);
+               // // var settings_1 = configFile.ConnectionStrings.Settings;
+               // ConnectionStringSettings settings_ =
+               //ConfigurationManager.ConnectionStrings["name"];
+
+               // if (ConfigurationManager.AppSettings.AllKeys.Contains(key))
+               // {
+               //     //if (key.Contains("Password"))
+               //     //    {
+               //     //    //value = EncryptString(encrypt_decrypt_key,value);
+               //     //    value =  value;
+               //     //}
+               //     if (settings[key] == null)
+               //     {
+               //         settings.Add(key, value);
+               //     }
+               //     else
+               //     {
+               //         settings[key].Value = value;
+               //     }
+               //     configFile.Save(ConfigurationSaveMode.Modified);
+               //     ConfigurationManager.RefreshSection(configFile.AppSettings.SectionInformation.Name);
+
+               // }
+               // else
+               // {
+
+               //     message = "Key does not Exist";
+               // }
             }
             catch (Exception ex)
             {
@@ -1720,27 +1670,41 @@ namespace TokenBasedAPI.Controllers
             string message = "";
             try
             {
-
-                Configuration configFile = System.Web.Configuration.WebConfigurationManager.OpenWebConfiguration("~");
-                var settings = configFile.AppSettings.Settings;
-
-                ConnectionStringSettings settings_ = ConfigurationManager.ConnectionStrings[Name];
-
-                if (!(settings_ == null))
+                using (var context = new SetupConfigContext())
                 {
+                    var config = context.SetupConfig.FirstOrDefault(c => c.Name == Name);
 
-                    // value = EncryptString(encrypt_decrypt_key, value);
-                    // configFile.ConnectionStrings.ConnectionStrings.Clear(new ConnectionStringSettings(Name, value))
-                    configFile.ConnectionStrings.ConnectionStrings["constr"].ConnectionString = value;
-                    configFile.Save(ConfigurationSaveMode.Modified, true);
-                    ConfigurationManager.RefreshSection("connectionStrings");
-                }
-                else
-                {
-                    //settings_[Name].Value = value;
+                    if (config == null)
+                    {
+                        context.SetupConfig.Add(new SetupConfig { Name = Name, Value = value });
+                    }
+                    else
+                    {
+                        config.Value = value;
+                    }
+                    context.SaveChanges();
 
-                    message = "Key does not Exist";
                 }
+                //Configuration configFile = System.Web.Configuration.WebConfigurationManager.OpenWebConfiguration("~");
+                //var settings = configFile.AppSettings.Settings;
+
+                //ConnectionStringSettings settings_ = ConfigurationManager.ConnectionStrings[Name];
+
+                //if (!(settings_ == null))
+                //{
+
+                //    // value = EncryptString(encrypt_decrypt_key, value);
+                //    // configFile.ConnectionStrings.ConnectionStrings.Clear(new ConnectionStringSettings(Name, value))
+                //    configFile.ConnectionStrings.ConnectionStrings["constr"].ConnectionString = value;
+                //    configFile.Save(ConfigurationSaveMode.Modified, true);
+                //    ConfigurationManager.RefreshSection("connectionStrings");
+                //}
+                //else
+                //{
+                //    //settings_[Name].Value = value;
+
+                //    message = "Key does not Exist";
+                //}
 
             }
             catch (Exception ex)
@@ -1810,7 +1774,7 @@ namespace TokenBasedAPI.Controllers
         //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         [HttpPost]
         [Route("api/SAP/UpdateWebConfig/{type}/{key}/{value}")]
-        public HttpResponseMessage UpdateWebConfig(string type, string key, string value)
+        public IActionResult UpdateWebConfig(string type, string key, string value)
         {
             string message = "";
             if (type == "connectionStrings")
@@ -1838,17 +1802,16 @@ namespace TokenBasedAPI.Controllers
 
 
             }
-            var response = Request.CreateResponse(HttpStatusCode.OK);
-            response.Content = new StringContent(message, Encoding.UTF8, "application/json");
+            return Ok(System.Text.Json.JsonSerializer.Deserialize<object>(message));
             // MarshallObject(oCompany);
-            return response;
+            //return response;
         }
 
         //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         //[HttpPost]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetAvailableQuantity/{ItemCode}/{WarehouseCode}/{Quantity}")]
-        public HttpResponseMessage GetAvailableQuantity(string DBName, string ItemCode, string WarehouseCode, string Quantity)
+        public IActionResult GetAvailableQuantity(string DBName, string ItemCode, string WarehouseCode, string Quantity)
         {
 
             //ItemCode = ItemCode.Replace(";", "");
@@ -1872,7 +1835,7 @@ namespace TokenBasedAPI.Controllers
             var roles = identity.Claims
                         .Where(c => c.Type == ClaimTypes.Role)
                         .Select(c => c.Value);
-            string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
+            string constr = Configuration.GetConnectionString("constr") + @"Database=" + DBName.Trim() + ";";
 
             //string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString  + @"Database=" + DBName.Trim() + ";" ;
             using (SqlConnection con = new SqlConnection(constr))
@@ -1888,11 +1851,7 @@ namespace TokenBasedAPI.Controllers
                             dt.TableName = "Dataset";
                             sda.Fill(dt);
                             //return dt;
-                            string results = DataTableToJSONWithStringBuilder(dt);
-                            var response = Request.CreateResponse(HttpStatusCode.OK);
-                            response.Content = new StringContent(results, Encoding.UTF8, "application/json");
-
-                            return response;
+                            return Ok(dt);
                         }
                     }
                 }
@@ -1905,7 +1864,7 @@ namespace TokenBasedAPI.Controllers
         //[HttpPost]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetAvailableQuantityBatch/{ItemCode}/{WarehouseCode}/{Quantity}")]
-        public HttpResponseMessage GetAvailableQuantityBatch(string DBName, string ItemCode, string WarehouseCode, string Quantity)
+        public IActionResult GetAvailableQuantityBatch(string DBName, string ItemCode, string WarehouseCode, string Quantity)
         {
 
             //ItemCode = ItemCode.Replace(";", "");
@@ -1946,7 +1905,7 @@ namespace TokenBasedAPI.Controllers
             var roles = identity.Claims
                         .Where(c => c.Type == ClaimTypes.Role)
                         .Select(c => c.Value);
-            string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
+            string constr = Configuration.GetConnectionString("constr") + @"Database=" + DBName.Trim() + ";";
 
             //string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString  + @"Database=" + DBName.Trim() + ";" ;
             using (SqlConnection con = new SqlConnection(constr))
@@ -1962,11 +1921,8 @@ namespace TokenBasedAPI.Controllers
                             dt.TableName = "Dataset";
                             sda.Fill(dt);
                             //return dt;
-                            string results = DataTableToJSONWithStringBuilder(dt);
-                            var response = Request.CreateResponse(HttpStatusCode.OK);
-                            response.Content = new StringContent(results, Encoding.UTF8, "application/json");
+                            return Ok(dt);
 
-                            return response;
                         }
                     }
                 }
@@ -1978,7 +1934,7 @@ namespace TokenBasedAPI.Controllers
         //[HttpPost]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetItemBatchesAndQuantities/{ItemCode}/{WarehouseCode}")]
-        public HttpResponseMessage GetItemBatchesAndQuantities(string DBName, string ItemCode, string WarehouseCode)
+        public IActionResult GetItemBatchesAndQuantities(string DBName, string ItemCode, string WarehouseCode)
         {
 
             //ItemCode = ItemCode.Replace(";", "");
@@ -2015,7 +1971,7 @@ namespace TokenBasedAPI.Controllers
             var roles = identity.Claims
                         .Where(c => c.Type == ClaimTypes.Role)
                         .Select(c => c.Value);
-            string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
+            string constr = Configuration.GetConnectionString("constr") + @"Database=" + DBName.Trim() + ";";
 
             //string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString  + @"Database=" + DBName.Trim() + ";" ;
             using (SqlConnection con = new SqlConnection(constr))
@@ -2031,11 +1987,7 @@ namespace TokenBasedAPI.Controllers
                             dt.TableName = "Dataset";
                             sda.Fill(dt);
                             //return dt;
-                            string results = DataTableToJSONWithStringBuilder(dt);
-                            var response = Request.CreateResponse(HttpStatusCode.OK);
-                            response.Content = new StringContent(results, Encoding.UTF8, "application/json");
-
-                            return response;
+                            return Ok(dt);
                         }
                     }
                 }
@@ -2046,7 +1998,7 @@ namespace TokenBasedAPI.Controllers
         //[HttpPost]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetItemPrice/{ItemCode}/{CardCode}")]
-        public HttpResponseMessage GetItemPrice(string DBName, string ItemCode, string CardCode)
+        public IActionResult GetItemPrice(string DBName, string ItemCode, string CardCode)
         {
 
 
@@ -2067,7 +2019,7 @@ namespace TokenBasedAPI.Controllers
             var roles = identity.Claims
                         .Where(c => c.Type == ClaimTypes.Role)
                         .Select(c => c.Value);
-            string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
+            string constr = Configuration.GetConnectionString("constr") + @"Database=" + DBName.Trim() + ";";
             using (SqlConnection con = new SqlConnection(constr))
             {
                 using (SqlCommand cmd = new SqlCommand(querystring))
@@ -2081,12 +2033,7 @@ namespace TokenBasedAPI.Controllers
                             dt.TableName = "Dataset";
                             sda.Fill(dt);
                             //return dt;
-                            string results = DataTableToJSONWithStringBuilder(dt);
-
-                            var response = Request.CreateResponse(HttpStatusCode.OK);
-                            response.Content = new StringContent(results, Encoding.UTF8, "application/json");
-
-                            return response;
+                            return Ok(dt);
                         }
                     }
                 }
@@ -2232,7 +2179,7 @@ namespace TokenBasedAPI.Controllers
 
         [HttpGet]
         [Route("api/SAP/{DBName}/GetMarketingDocumentsByCardCode/{ObjectType}/{CardCode}/{Page}/{RequestLimit}/")]
-        public HttpResponseMessage GetMarketingDocumentsByCardCode(string DBName, string ObjectType, string CardCode, string Page, string RequestLimit)
+        public IActionResult GetMarketingDocumentsByCardCode(string DBName, string ObjectType, string CardCode, string Page, string RequestLimit)
 
 
         {
@@ -2439,8 +2386,8 @@ namespace TokenBasedAPI.Controllers
 
             string jObject1 = JsonConvert.SerializeObject(invoices, Newtonsoft.Json.Formatting.Indented);
             // string final_data =  jObject1 + record_details;
-            var json_final = JsonConvert.SerializeObject(new[] { "MarketingDocument",JsonConvert.DeserializeObject(jObject1),
-                                            "Record Details",JsonConvert.DeserializeObject(record_details) });
+            var json_final = new[] { "MarketingDocument",JsonConvert.DeserializeObject(jObject1),
+                                            "Record Details",JsonConvert.DeserializeObject(record_details) };
 
 
             //  var result = new JObject();
@@ -2449,14 +2396,12 @@ namespace TokenBasedAPI.Controllers
             //var json1 = JsonConvert.SerializeObject(record_details, Newtonsoft.Json.Formatting.Indented);
             // var json_ = JsonConvert.SerializeObject("{"Success":"test"}", Newtonsoft.Json.Formatting.Indented);
 
-            var response = Request.CreateResponse(HttpStatusCode.OK);
-            response.Content = new StringContent(json_final, Encoding.UTF8, "application/json");
-            return response;
+            return Ok(json_final);
         }
 
         [HttpGet]
         [Route("api/SAP/{DBName}/GetMarketingDocumentsPaginated/{ObjectType}/{Page}/{RequestLimit}")]
-        public HttpResponseMessage GetMarketingDocumentsPaginated(string DBName, string ObjectType, int Page, int RequestLimit,string dateFrom=null, string dateTo=null)
+        public IActionResult GetMarketingDocumentsPaginated(string DBName, string ObjectType, int Page, int RequestLimit,string dateFrom=null, string dateTo=null)
          {
             if (string.IsNullOrEmpty(dateFrom))
                 dateFrom = "1900-01-01";
@@ -2663,19 +2608,14 @@ namespace TokenBasedAPI.Controllers
 
             }
 
-            var json = JsonConvert.SerializeObject(invoices, Newtonsoft.Json.Formatting.Indented);
-            // return Request.CreateResponse(HttpStatusCode.Created, json);
-
-            var response = Request.CreateResponse(HttpStatusCode.OK);
-            response.Content = new StringContent(json, Encoding.UTF8, "application/json");
-            return response; 
+            return Ok(invoices);
         }
 
 
         //[Authorize(Roles = "SuperAdmin, Admin, User")]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetMarketingDocuments/{ObjectType}")]
-        public HttpResponseMessage GetMarketingDocuments(string DBName, string ObjectType)
+        public IActionResult GetMarketingDocuments(string DBName, string ObjectType)
 
 
         {
@@ -2873,19 +2813,14 @@ namespace TokenBasedAPI.Controllers
 
             }
 
-            var json = JsonConvert.SerializeObject(invoices, Newtonsoft.Json.Formatting.Indented);
-            // return Request.CreateResponse(HttpStatusCode.Created, json);
-
-            var response = Request.CreateResponse(HttpStatusCode.OK);
-            response.Content = new StringContent(json, Encoding.UTF8, "application/json");
-            return response;
+            return Ok(invoices);
         }
         //  [Authorize(Roles = "SuperAdmin, Admin, User")]
 
         //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetMarketingDocumentByDate/{ObjectType}/{FromDocDate}/{ToDocDate}")]
-        public HttpResponseMessage GetMarketingDocumentByDate(string DBName, string ObjectType, string FromDocDate, string ToDocDate)
+        public IActionResult GetMarketingDocumentByDate(string DBName, string ObjectType, string FromDocDate, string ToDocDate)
 
 
         {
@@ -3030,12 +2965,7 @@ namespace TokenBasedAPI.Controllers
 
 
 
-            var json = JsonConvert.SerializeObject(invoices, Newtonsoft.Json.Formatting.Indented);
-            // return Request.CreateResponse(HttpStatusCode.Created, json);
-
-            var response = Request.CreateResponse(HttpStatusCode.OK);
-            response.Content = new StringContent(json, Encoding.UTF8, "application/json");
-            return response;
+            return Ok(invoices);
         }
 
 
@@ -3048,7 +2978,7 @@ namespace TokenBasedAPI.Controllers
         //[HttpPost]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetMarketingDocByDocEntry/{ObjectType}/{DocEntry}")]
-        public HttpResponseMessage GetMarketingDocByDocEntry(string DBName, string ObjectType, string DocEntry)
+        public IActionResult GetMarketingDocByDocEntry(string DBName, string ObjectType, string DocEntry)
 
 
         {
@@ -3192,19 +3122,16 @@ namespace TokenBasedAPI.Controllers
             }
             if (invoice == null)
             {
-                return Request.CreateResponse(HttpStatusCode.NotFound);
+                return NotFound();
             }
-            var json = JsonConvert.SerializeObject(invoice, Newtonsoft.Json.Formatting.Indented);
-            var response = Request.CreateResponse(HttpStatusCode.OK);
-            response.Content = new StringContent(json, Encoding.UTF8, "application/json");
-            return response;
+            return Ok(invoices);
         }
 
         //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         //[HttpPost]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetInvoicesById/{DocEntry}")]
-        public HttpResponseMessage GetInvoicesById(string DBName, string DocEntry, string Table)
+        public IActionResult GetInvoicesById(string DBName, string DocEntry, string Table)
 
         {
 
@@ -3274,10 +3201,7 @@ namespace TokenBasedAPI.Controllers
                 invoices.Add(invoice);
             }
 
-            var json = JsonConvert.SerializeObject(invoices, Newtonsoft.Json.Formatting.Indented);
-            var response = Request.CreateResponse(HttpStatusCode.OK);
-            response.Content = new StringContent(json, Encoding.UTF8, "application/json");
-            return response;
+            return Ok(invoices);
         }
         public List<MarketingDocument_Rows> GetMarketingDocumentRows(string DBName, string HeaderTable, string RowsTable, string DocEntry)
         {
@@ -3442,7 +3366,7 @@ namespace TokenBasedAPI.Controllers
         //[HttpPost]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetBusinessPartners")]
-        public HttpResponseMessage GetBusinessPartners(string DBName)
+        public IActionResult GetBusinessPartners(string DBName)
         {
             List<BusinessPartner_Master> customers = new List<BusinessPartner_Master>();
 
@@ -3499,10 +3423,7 @@ namespace TokenBasedAPI.Controllers
 
 
             //  var json = new JavaScriptSerializer().Serialize(customers);
-            var json = JsonConvert.SerializeObject(customers, Newtonsoft.Json.Formatting.Indented);
-            var response = Request.CreateResponse(HttpStatusCode.OK);
-            response.Content = new StringContent(json, Encoding.UTF8, "application/json");
-            return response;
+            return Ok(customers);
         }
 
 
@@ -3510,7 +3431,7 @@ namespace TokenBasedAPI.Controllers
         //[HttpPost]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetBusinessPartnersPaginated/{Page}/{RequestLimit}")]
-        public HttpResponseMessage GetBusinessPartnersPaginated(string DBName,int Page, int RequestLimit)
+        public IActionResult GetBusinessPartnersPaginated(string DBName,int Page, int RequestLimit)
         {
             List<BusinessPartner_Master> customers = new List<BusinessPartner_Master>();
             //if (string.IsNullOrEmpty(dateFrom))
@@ -3577,24 +3498,21 @@ namespace TokenBasedAPI.Controllers
 
 
             //  var json = new JavaScriptSerializer().Serialize(customers);
-            var json = JsonConvert.SerializeObject(customers, Newtonsoft.Json.Formatting.Indented);
-            var response = Request.CreateResponse(HttpStatusCode.OK);
-            response.Content = new StringContent(json, Encoding.UTF8, "application/json");
-            return response;
+            return Ok(customers);
         }
 
         //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         [HttpPost]
         [Route("api/SAP/{DBName}/DeleteBusinessPartner/{SAPUserName}/{SAPPassword}")]
-        //public HttpResponseMessage Post([FromBody]string value)
+        //public IActionResult Post([FromBody]string value)
         //{
-        public async Task<HttpResponseMessage> DeleteBusinessPartner(HttpRequestMessage request, string DBName, string SAPUserName, string SAPPassword)
+        public async Task<IActionResult>  DeleteBusinessPartner(HttpRequestMessage request, string DBName, string SAPUserName, string SAPPassword)
         {
             //try
             //{
             var jsonString = await request.Content.ReadAsStringAsync();
             string bsl = @"\";
-            JObject json = JObject.Parse(jsonString);
+            Newtonsoft.Json.Linq.JObject json = Newtonsoft.Json.Linq.JObject.Parse(jsonString);
             var response = "";
             dynamic message_ = null;
             var message = "";
@@ -3649,11 +3567,7 @@ namespace TokenBasedAPI.Controllers
                 message = "{\"Message\": {\"MessageType\": \"Error\",\"Description\": \"Customer Does not Exists \",\"Business Partner Number\": \"" + CardCode + "\" ,\"Document Type\": \"Business Partner\"}}";
                 message_ = JsonConvert.DeserializeObject(message);
             }
-            var json_response = JsonConvert.SerializeObject(message_, Newtonsoft.Json.Formatting.Indented);
-            var response_invoice = Request.CreateResponse(HttpStatusCode.OK);
-            response_invoice.Content = new StringContent(json_response, Encoding.UTF8, "application/json");
-
-            return response_invoice;
+            return Ok(message_);
 
 
             //}
@@ -3662,7 +3576,7 @@ namespace TokenBasedAPI.Controllers
 
             //    HttpResponseMessage exeption_response = null;
             //    exeption_response.Content = new StringContent(ex.Message, Encoding.UTF8, "application/json");
-            //    return exeption_response;
+            //    return Problem(ex.Message);
             //}
 
 
@@ -3672,9 +3586,9 @@ namespace TokenBasedAPI.Controllers
         //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         [HttpPost]
         [Route("api/SAP/{DBName}/CreateBusinessPartner/")]
-        //public HttpResponseMessage Post([FromBody]string value)
+        //public IActionResult Post([FromBody]string value)
         //{
-        public async Task<HttpResponseMessage> CreateBusinessPartner(HttpRequestMessage request, string DBName)
+        public async Task<IActionResult> CreateBusinessPartner(HttpRequestMessage request, string DBName)
         {
             try
             {
@@ -4000,11 +3914,7 @@ namespace TokenBasedAPI.Controllers
                     message = "{\"Message\": {\"MessageType\": \"Error\",\"Description\": \"Business Partner  Already nt Exists \",\"Business Partner Number\": \"" + CardCode + "\" ,\"Document Type\": \"Business Partner\"}}";
                     message_ = JsonConvert.DeserializeObject(message);
                 }
-                var json_response = JsonConvert.SerializeObject(message_, Newtonsoft.Json.Formatting.Indented);
-                var response_invoice = Request.CreateResponse(HttpStatusCode.OK);
-                response_invoice.Content = new StringContent(json_response, Encoding.UTF8, "application/json");
-
-                return response_invoice;
+                return Ok(message_);
 
 
             }
@@ -4013,7 +3923,7 @@ namespace TokenBasedAPI.Controllers
 
                 HttpResponseMessage exeption_response = null;
                 exeption_response.Content = new StringContent(ex.Message, Encoding.UTF8, "application/json");
-                return exeption_response;
+                return Problem(ex.Message);
             }
 
 
@@ -4024,9 +3934,9 @@ namespace TokenBasedAPI.Controllers
         //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         [HttpPost]
         [Route("api/SAP/{DBName}/ReverseDocument/{SAPUserName}/{SAPPassword}")]
-        //public HttpResponseMessage Post([FromBody]string value)
+        //public IActionResult Post([FromBody]string value)
         //{
-        public async Task<HttpResponseMessage> ReverseDocument(HttpRequestMessage request, string DBName, string SAPUserName, string SAPPassword)
+        public async Task<IActionResult>  ReverseDocument(HttpRequestMessage request, string DBName, string SAPUserName, string SAPPassword)
         {
 
 
@@ -4208,11 +4118,7 @@ namespace TokenBasedAPI.Controllers
                 }
             }
 
-            var json_response = JsonConvert.SerializeObject(message_, Newtonsoft.Json.Formatting.Indented);
-            var response_invoice = Request.CreateResponse(HttpStatusCode.OK);
-            response_invoice.Content = new StringContent(json_response, Encoding.UTF8, "application/json");
-
-            return response_invoice;
+            return Ok(message_);
         }
 
 
@@ -4222,9 +4128,9 @@ namespace TokenBasedAPI.Controllers
         //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         [HttpPost]
         [Route("api/SAP/{DBName}/CancelDocument/{SAPUserName}/{SAPPassword}")]
-        //public HttpResponseMessage Post([FromBody]string value)
+        //public IActionResult Post([FromBody]string value)
         //{
-        public async Task<HttpResponseMessage> CancelDocument(HttpRequestMessage request, string DBName, string SAPUserName, string SAPPassword)
+        public async Task<IActionResult> CancelDocument(HttpRequestMessage request, string DBName, string SAPUserName, string SAPPassword)
         {
             try
             {
@@ -4409,18 +4315,14 @@ namespace TokenBasedAPI.Controllers
                     }
                 }
 
-                var json_response = JsonConvert.SerializeObject(message_, Newtonsoft.Json.Formatting.Indented);
-                var response_invoice = Request.CreateResponse(HttpStatusCode.OK);
-                response_invoice.Content = new StringContent(json_response, Encoding.UTF8, "application/json");
-
-                return response_invoice;
+                return Ok(message_);
             }
             catch (Exception ex)
             {
 
                 HttpResponseMessage exeption_response = null;
                 exeption_response.Content = new StringContent(ex.Message, Encoding.UTF8, "application/json");
-                return exeption_response;
+                return Problem(ex.Message);
             }
         }
 
@@ -4429,9 +4331,9 @@ namespace TokenBasedAPI.Controllers
         //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         [HttpPost]
         [Route("api/SAP/{DBName}/SetExchangeRate/{SAPUserName}/{SAPPassword}")]
-        //public HttpResponseMessage Post([FromBody]string value)
+        //public IActionResult Post([FromBody]string value)
         //{
-        public async Task<HttpResponseMessage> SetExchangeRate(HttpRequestMessage request, string DBName, string SAPUserName, string SAPPassword)
+        public async Task<IActionResult>  SetExchangeRate(HttpRequestMessage request, string DBName, string SAPUserName, string SAPPassword)
         {
             try
             {
@@ -4476,13 +4378,10 @@ namespace TokenBasedAPI.Controllers
                 message_ = JsonConvert.DeserializeObject(message);
 
 
-                var json_response = JsonConvert.SerializeObject(message_, Newtonsoft.Json.Formatting.None);
-                var response_invoice = Request.CreateResponse(HttpStatusCode.OK);
-                response_invoice.Content = new StringContent(json_response, Encoding.UTF8, "application/json");
+                return Ok(message_);
                 MarshallObject(oSBObob);
                 MarshallObject(oCompany);
 
-                return response_invoice;
 
             }
             catch (Exception ex)
@@ -4490,7 +4389,7 @@ namespace TokenBasedAPI.Controllers
 
                 HttpResponseMessage exeption_response = null;
                 exeption_response.Content = new StringContent(ex.Message, Encoding.UTF8, "application/json");
-                return exeption_response;
+                return Problem(ex.Message);
             }
 
 
@@ -4499,9 +4398,9 @@ namespace TokenBasedAPI.Controllers
         //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         [HttpPost]
         [Route("api/SAP/{DBName}/CreateInvoice/{SAPUserName}/{SAPPassword}")]
-        //public HttpResponseMessage Post([FromBody]string value)
+        //public IActionResult Post([FromBody]string value)
         //{
-        public async Task<HttpResponseMessage> CreateInvoice(HttpRequestMessage request, string DBName, string SAPUserName, string SAPPassword)
+        public async Task<IActionResult>  CreateInvoice(HttpRequestMessage request, string DBName, string SAPUserName, string SAPPassword)
         {
             try
             {
@@ -4678,14 +4577,12 @@ namespace TokenBasedAPI.Controllers
                     }
 
                 }
-                var json_response = JsonConvert.SerializeObject(message_, Newtonsoft.Json.Formatting.None);
-                var response_invoice = Request.CreateResponse(HttpStatusCode.OK);
-                response_invoice.Content = new StringContent(json_response, Encoding.UTF8, "application/json");
+                
                 MarshallObject(oInvoice);
                 MarshallObject(oCompany);
                 MarshallObject(QueryObject);
                 MarshallObject(QueryObjectDocEntry);
-                return response_invoice;
+                return Ok(message_);
 
             }
             catch (Exception ex)
@@ -4693,7 +4590,7 @@ namespace TokenBasedAPI.Controllers
 
                 HttpResponseMessage exeption_response = null;
                 exeption_response.Content = new StringContent(ex.Message, Encoding.UTF8, "application/json");
-                return exeption_response;
+                return Problem(ex.Message);
             }
 
 
@@ -4702,9 +4599,9 @@ namespace TokenBasedAPI.Controllers
         //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         [HttpPost]
         [Route("api/SAP/{DBName}/CreateMarketingDocument/")]
-        //public HttpResponseMessage Post([FromBody]string value)
+        //public IActionResult Post([FromBody]string value)
         //{
-        public async Task<HttpResponseMessage> CreateMarketingDocument(HttpRequestMessage request, string DBName)
+        public async Task<IActionResult>  CreateMarketingDocument(HttpRequestMessage request, string DBName)
         {
             try
             {
@@ -5228,15 +5125,11 @@ namespace TokenBasedAPI.Controllers
                     }
 
                 }
-                var json_response = JsonConvert.SerializeObject(message_, Newtonsoft.Json.Formatting.None);
-                var response_invoice = Request.CreateResponse(HttpStatusCode.OK);
-                response_invoice.Content = new StringContent(json_response, Encoding.UTF8, "application/json");
-
                 MarshallObject(QueryObjectDocEntry);
                 MarshallObject(QueryObject);
                 MarshallObject(oDoc);
                 MarshallObject(oCompany);
-                return response_invoice;
+                return Ok(message_);
 
             }
             catch (Exception ex)
@@ -5244,7 +5137,7 @@ namespace TokenBasedAPI.Controllers
 
                 HttpResponseMessage exeption_response = null;
                 exeption_response.Content = new StringContent(ex.Message, Encoding.UTF8, "application/json");
-                return exeption_response;
+                return Problem(ex.Message);
             }
 
 
@@ -5255,9 +5148,9 @@ namespace TokenBasedAPI.Controllers
         //  [Authorize(Roles = "SuperAdmin, Admin, User")]
         [HttpPost]
         [Route("api/SAP/{DBName}/CreatePurchaseDocuments/{SAPUserName}/{SAPPassword}")]
-        //public HttpResponseMessage Post([FromBody]string value)
+        //public IActionResult Post([FromBody]string value)
         //{
-        public async Task<HttpResponseMessage> CreatePurchaseDocuments(HttpRequestMessage request, string DBName, string SAPUserName, string SAPPassword)
+        public async Task<IActionResult>  CreatePurchaseDocuments(HttpRequestMessage request, string DBName, string SAPUserName, string SAPPassword)
         {
             try
             {
@@ -5507,15 +5400,12 @@ namespace TokenBasedAPI.Controllers
 
 
                 }
-                var json_response = JsonConvert.SerializeObject(message_, Newtonsoft.Json.Formatting.None);
-                var response_invoice = Request.CreateResponse(HttpStatusCode.OK);
-                response_invoice.Content = new StringContent(json_response, Encoding.UTF8, "application/json");
-
+                
                 MarshallObject(QueryObjectDocEntry);
                 MarshallObject(QueryObject);
                 MarshallObject(oDoc);
                 MarshallObject(oCompany);
-                return response_invoice;
+                return Ok(message_);
 
             }
             catch (Exception ex)
@@ -5523,7 +5413,7 @@ namespace TokenBasedAPI.Controllers
 
                 HttpResponseMessage exeption_response = null;
                 exeption_response.Content = new StringContent(ex.Message, Encoding.UTF8, "application/json");
-                return exeption_response;
+                return Problem(ex.Message);
             }
 
 
@@ -5548,9 +5438,9 @@ namespace TokenBasedAPI.Controllers
         [HttpPost]
         [Route("api/SAP/{DBName}/CreatePayment/")]
 
-        //public HttpResponseMessage Post([FromBody]string value)
+        //public IActionResult Post([FromBody]string value)
         //{
-        public async Task<HttpResponseMessage> CreatePayment(HttpRequestMessage request, string DBName)
+        public async Task<IActionResult>  CreatePayment(HttpRequestMessage request, string DBName)
         {
             try
             {
@@ -5965,12 +5855,9 @@ namespace TokenBasedAPI.Controllers
                         message_ = JsonConvert.DeserializeObject(message);
                     }
                 }
-                var json_response = JsonConvert.SerializeObject(message_, Newtonsoft.Json.Formatting.Indented);
-                var response_invoice = Request.CreateResponse(HttpStatusCode.OK);
-                response_invoice.Content = new StringContent(json_response, Encoding.UTF8, "application/json");
                 MarshallObject(oPayment);
                 MarshallObject(oCompany);
-                return response_invoice;
+                return Ok(message_);
             }
 
             catch (Exception ex)
@@ -5978,7 +5865,7 @@ namespace TokenBasedAPI.Controllers
 
                 HttpResponseMessage exeption_response = null;
                 exeption_response.Content = new StringContent(ex.Message, Encoding.UTF8, "application/json");
-                return exeption_response;
+                return Problem(ex.Message);
             }
         }
 
@@ -6597,7 +6484,7 @@ namespace TokenBasedAPI.Controllers
         //[HttpPost]
         [HttpGet]
         [Route("api/SAP/{DBName}/GetBusinessPartnerByCode/{CardCode}")]
-        public HttpResponseMessage GetBusinessPartnerByCode(string DBName, string CardCode)
+        public IActionResult GetBusinessPartnerByCode(string DBName, string CardCode)
         {
             try
             {
@@ -6657,24 +6544,21 @@ namespace TokenBasedAPI.Controllers
                 }
                 if (customer == null)
                 {
-                    return Request.CreateResponse(HttpStatusCode.NotFound);
+                    return NotFound();
                 }
-                var json = JsonConvert.SerializeObject(customer, Newtonsoft.Json.Formatting.Indented);
-                var response = Request.CreateResponse(HttpStatusCode.OK);
-                response.Content = new StringContent(json, Encoding.UTF8, "application/json");
-                return response;
+                return Ok(customer);
             }
             catch (Exception ex)
             {
 
                 HttpResponseMessage exeption_response = null;
                 exeption_response.Content = new StringContent(ex.Message, Encoding.UTF8, "application/json");
-                return exeption_response;
+                return Problem(ex.Message);
             }
         }
         [HttpGet]
         [Route("api/SAP/{DBName}/GetBusinessPartnerByCode1/{CardCode}")]
-        public HttpResponseMessage GetBusinessPartnerByCode1(string DBName, string CardCode)
+        public IActionResult GetBusinessPartnerByCode1(string DBName, string CardCode)
         {
             SAPbobsCOM.BusinessPartners oBP;
             //string forward_slash = "\"";
@@ -6688,9 +6572,9 @@ namespace TokenBasedAPI.Controllers
             oBP = (SAPbobsCOM.BusinessPartners)oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oBusinessPartners);
 
             oBP.GetByKey(CardCode);
-            if (File.Exists(ApplicationPath))
+            if (System.IO.File.Exists(ApplicationPath))
             {
-                File.Delete(ApplicationPath);
+                System.IO.File.Delete(ApplicationPath);
                 oBP.SaveXML(ApplicationPath);
             }
             else
@@ -6703,15 +6587,12 @@ namespace TokenBasedAPI.Controllers
             doc.Load(ApplicationPath);
             string jsonText = JsonConvert.SerializeXmlNode(doc);
             jsonText.Replace(@"\", "");
-            var json = JsonConvert.SerializeObject(jsonText, Newtonsoft.Json.Formatting.Indented);
-            var response = Request.CreateResponse(HttpStatusCode.OK);
-            response.Content = new StringContent(json, Encoding.UTF8, "application/json");
-            return response;
+            return Ok(jsonText);
         }
 
         [HttpGet]
         [Route("api/SAP/{DBName}/GetInvoiceByDocEntry/{DocEntry}")]
-        public HttpResponseMessage GetInvoiceByDocEntry(string DBName, int DocEntry)
+        public IActionResult GetInvoiceByDocEntry(string DBName, int DocEntry)
         {
 
             // string forward_slash = "\"";
@@ -6726,9 +6607,9 @@ namespace TokenBasedAPI.Controllers
 
             oDoc = (Documents)oCompany.GetBusinessObject(BoObjectTypes.oInvoices);
             oDoc.GetByKey(DocEntry);
-            if (File.Exists(ApplicationPath))
+            if (System.IO.File.Exists(ApplicationPath))
             {
-                File.Delete(ApplicationPath);
+                System.IO.File.Delete(ApplicationPath);
                 oDoc.SaveXML(ApplicationPath);
             }
             else
@@ -6741,10 +6622,7 @@ namespace TokenBasedAPI.Controllers
             doc.Load(ApplicationPath);
             string jsonText = JsonConvert.SerializeXmlNode(doc);
             // jsonText = jsonText
-            var json = JsonConvert.SerializeObject(jsonText, Newtonsoft.Json.Formatting.Indented);
-            var response = Request.CreateResponse(HttpStatusCode.OK);
-            response.Content = new StringContent(json, Encoding.UTF8, "application /json");
-            return response;
+            return Ok(jsonText);
         }
 
         public List<BillToAddress> GetContact(string DBName, string customerId)
@@ -6804,7 +6682,7 @@ namespace TokenBasedAPI.Controllers
             {
 
 
-                string conString = ConfigurationManager.ConnectionStrings["constr"].ConnectionString + @"Database=" + DBName.Trim() + ";";
+                string conString = Configuration.GetConnectionString("constr") + @"Database=" + DBName.Trim() + ";";
                 if (!string.IsNullOrEmpty(query))
                 {
                     query = query;

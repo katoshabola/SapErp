@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sap", "Sap\Sap.csproj", "{7
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplication1", "WebApplication1\WebApplication1.csproj", "{2A0937AD-90ED-41A0-8530-FD7BE5314160}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAPCORE", "SAPCORE\SAPCORE.csproj", "{8D1E13F4-AFB9-4601-B9EC-3407F09033A0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,18 @@ Global
 		{2A0937AD-90ED-41A0-8530-FD7BE5314160}.Release|x64.Build.0 = Release|x64
 		{2A0937AD-90ED-41A0-8530-FD7BE5314160}.Release|x86.ActiveCfg = Release|x86
 		{2A0937AD-90ED-41A0-8530-FD7BE5314160}.Release|x86.Build.0 = Release|x86
+		{8D1E13F4-AFB9-4601-B9EC-3407F09033A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D1E13F4-AFB9-4601-B9EC-3407F09033A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D1E13F4-AFB9-4601-B9EC-3407F09033A0}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{8D1E13F4-AFB9-4601-B9EC-3407F09033A0}.Debug|x64.Build.0 = Debug|Any CPU
+		{8D1E13F4-AFB9-4601-B9EC-3407F09033A0}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8D1E13F4-AFB9-4601-B9EC-3407F09033A0}.Debug|x86.Build.0 = Debug|Any CPU
+		{8D1E13F4-AFB9-4601-B9EC-3407F09033A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D1E13F4-AFB9-4601-B9EC-3407F09033A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D1E13F4-AFB9-4601-B9EC-3407F09033A0}.Release|x64.ActiveCfg = Release|Any CPU
+		{8D1E13F4-AFB9-4601-B9EC-3407F09033A0}.Release|x64.Build.0 = Release|Any CPU
+		{8D1E13F4-AFB9-4601-B9EC-3407F09033A0}.Release|x86.ActiveCfg = Release|Any CPU
+		{8D1E13F4-AFB9-4601-B9EC-3407F09033A0}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
