@@ -28,6 +28,9 @@ namespace TokenBasedAPI.Controllers
         //HttpResponseMessage response = null;
         string message = "";
         private static string userName;
+
+        public static string Password;
+
         private static string Server;
         private static string DbServerType;
         private static string LicenseServer;
@@ -49,10 +52,11 @@ namespace TokenBasedAPI.Controllers
             var value = configuration["SAPConfig:userName"];
             using(var context = new SetupConfigContext())
             {
-                userName = context.SetupConfig.Where(c=>c.Name=="userName").Select(c=>c.Value)?.FirstOrDefault()??section["userName"];
+                userName = context.SetupConfig.Where(c=>c.Name=="userName").Select(c=>c.Value)?.FirstOrDefault()??section["userName"];// Password
+                Password = context.SetupConfig.Where(c => c.Name == "password").Select(c => c.Value)?.FirstOrDefault() ?? section["password"];// Password
                 Server = context.SetupConfig.Where(c => c.Name == "Server").Select(c => c.Value)?.FirstOrDefault() ?? section["Server"];
-                DbServerType = context.SetupConfig.Where(c => c.Name == "DbServerType").Select(c => c.Value).FirstOrDefault() ?? section["Server"]; ;
-                LicenseServer = context.SetupConfig.Where(c => c.Name == "LicenseServer").Select(c => c.Value).FirstOrDefault() ?? section["DbServerType"]; ; 
+                DbServerType = context.SetupConfig.Where(c => c.Name == "DbServerType").Select(c => c.Value).FirstOrDefault() ?? section["DbServerType"]; ;
+                LicenseServer = context.SetupConfig.Where(c => c.Name == "LicenseServer").Select(c => c.Value).FirstOrDefault() ?? section["LicenseServer"]; ; 
                 DbUserName = context.SetupConfig.Where(c => c.Name == "DbUserName").Select(c => c.Value).FirstOrDefault() ?? section["DbUserName"]; ;
                 DbPassword = context.SetupConfig.Where(c => c.Name == "DbPassword").Select(c => c.Value).FirstOrDefault() ?? section["DbPassword"]; ;
                 MessageFlag = context.SetupConfig.Where(c => c.Name == "MessageFlag").Select(c => c.Value).FirstOrDefault() ?? section["MessageFlag"]; ;
@@ -3588,113 +3592,113 @@ namespace TokenBasedAPI.Controllers
         [Route("api/SAP/{DBName}/CreateBusinessPartner/")]
         //public IActionResult Post([FromBody]string value)
         //{
-        public async Task<IActionResult> CreateBusinessPartner(HttpRequestMessage request, string DBName)
+        public async Task<IActionResult> CreateBusinessPartner([FromBody]CreateBusinessPartnerRequest request, string DBName)
         {
             try
             {
-                var jsonString = await request.Content.ReadAsStringAsync();
+                //var jsonString = await request.Content.ReadAsStringAsync();
                 string bsl = @"\";
-                JObject json = JObject.Parse(jsonString);
+                //JObject json = JObject.Parse(jsonString);
                 var response = "";
                 dynamic message_ = null;
                 var message = "";
-                string CardCode, CardName, CardType, Currency, GroupCode, Action, Telephone1, Telephone2, MobilePhone, PayTermsGrpCode, KRAPIN, Email, Fax, Active;
-                //Header Section 
+                //string CardCode, CardName, CardType, Currency, GroupCode, Action, Telephone1, Telephone2, MobilePhone, PayTermsGrpCode, KRAPIN, Email, Fax, Active;
+                ////Header Section 
 
-                CardCode = (string)json.SelectToken("BPInformation").SelectToken("CardCode");
-                CardName = (string)json.SelectToken("BPInformation").SelectToken("CardName");
-                CardType = (string)json.SelectToken("BPInformation").SelectToken("CardType").ToString().ToUpper();
-                Currency = (string)json.SelectToken("BPInformation").SelectToken("Currency");
-                GroupCode = (string)json.SelectToken("BPInformation").SelectToken("GroupCode");
-                Telephone1 = (string)json.SelectToken("BPInformation").SelectToken("Telephone1");
-                Telephone2 = (string)json.SelectToken("BPInformation").SelectToken("Telephone2");
-                Action = (string)json.SelectToken("BPInformation").SelectToken("Action");
-                MobilePhone = (string)json.SelectToken("BPInformation").SelectToken("MobilePhone");
-                PayTermsGrpCode = (string)json.SelectToken("BPInformation").SelectToken("PayTermsGrpCode");
-                KRAPIN = (string)json.SelectToken("BPInformation").SelectToken("KRAPIN");
-                Email = (string)json.SelectToken("BPInformation").SelectToken("Email");
-                Fax = (string)json.SelectToken("BPInformation").SelectToken("Fax");
-                Active = (string)json.SelectToken("BPInformation").SelectToken("Active");
+                //CardCode = request.BPInformation.CardCode (string)json.SelectToken("BPInformation").SelectToken("CardCode");
+                //CardName = (string)json.SelectToken("BPInformation").SelectToken("CardName");
+                //CardType = (string)json.SelectToken("BPInformation").SelectToken("CardType").ToString().ToUpper();
+                //Currency = (string)json.SelectToken("BPInformation").SelectToken("Currency");
+                //GroupCode = (string)json.SelectToken("BPInformation").SelectToken("GroupCode");
+                //Telephone1 = (string)json.SelectToken("BPInformation").SelectToken("Telephone1");
+                //Telephone2 = (string)json.SelectToken("BPInformation").SelectToken("Telephone2");
+                //Action = (string)json.SelectToken("BPInformation").SelectToken("Action");
+                //MobilePhone = (string)json.SelectToken("BPInformation").SelectToken("MobilePhone");
+                //PayTermsGrpCode = (string)json.SelectToken("BPInformation").SelectToken("PayTermsGrpCode");
+                //KRAPIN = (string)json.SelectToken("BPInformation").SelectToken("KRAPIN");
+                //Email = (string)json.SelectToken("BPInformation").SelectToken("Email");
+                //Fax = (string)json.SelectToken("BPInformation").SelectToken("Fax");
+                //Active = (string)json.SelectToken("BPInformation").SelectToken("Active");
 
-                //End of Header UDF  Declaration Section 
-                //Header Section 
+                ////End of Header UDF  Declaration Section 
+                ////Header Section 
 
 
-                string S_AddressName1, S_AddressName2, S_POBox, S_Code, S_City;
-                string B_AddressName1, B_AddressName2, B_POBox, B_Code, B_City;
+                //string S_AddressName1, S_AddressName2, S_POBox, S_Code, S_City;
+                //string B_AddressName1, B_AddressName2, B_POBox, B_Code, B_City;
 
-                B_AddressName1 = (string)json.SelectToken("BilltoAdress").SelectToken("AddressName1");
-                B_AddressName2 = (string)json.SelectToken("BilltoAdress").SelectToken("AddressName2");
-                B_POBox = (string)json.SelectToken("BilltoAdress").SelectToken("POBox");
-                B_Code = (string)json.SelectToken("BilltoAdress").SelectToken("Code");
-                B_City = (string)json.SelectToken("BilltoAdress").SelectToken("City");
+                //B_AddressName1 = (string)json.SelectToken("BilltoAdress").SelectToken("AddressName1");
+                //B_AddressName2 = (string)json.SelectToken("BilltoAdress").SelectToken("AddressName2");
+                //B_POBox = (string)json.SelectToken("BilltoAdress").SelectToken("POBox");
+                //B_Code = (string)json.SelectToken("BilltoAdress").SelectToken("Code");
+                //B_City = (string)json.SelectToken("BilltoAdress").SelectToken("City");
 
-                S_AddressName1 = (string)json.SelectToken("ShiptoAdress").SelectToken("AddressName1");
-                S_AddressName2 = (string)json.SelectToken("ShiptoAdress").SelectToken("AddressName2");
-                S_POBox = (string)json.SelectToken("ShiptoAdress").SelectToken("POBox");
-                S_Code = (string)json.SelectToken("ShiptoAdress").SelectToken("Code");
-                S_City = (string)json.SelectToken("ShiptoAdress").SelectToken("City");
+                //S_AddressName1 = (string)json.SelectToken("ShiptoAdress").SelectToken("AddressName1");
+                //S_AddressName2 = (string)json.SelectToken("ShiptoAdress").SelectToken("AddressName2");
+                //S_POBox = (string)json.SelectToken("ShiptoAdress").SelectToken("POBox");
+                //S_Code = (string)json.SelectToken("ShiptoAdress").SelectToken("Code");
+                //S_City = (string)json.SelectToken("ShiptoAdress").SelectToken("City");
 
                 //string BrokerCode, BrokerName, BrokerGroupCode;
                 //BrokerCode = (string)json.SelectToken("Accounting").SelectToken("BrokerCode");
                 //BrokerName = (stri;ng)json.SelectToken("Accounting").SelectToken("BrokerName");
                 //BrokerGroupCode = (string)json.SelectToken("Accounting").SelectToken("BrokerGroupCode");
                 string SAPUserName = userName;
-                string SAPPassword = section["Password"];
+                string SAPPassword =  Password;
 
                 Connect_To_SAP connect = new Connect_To_SAP();
                 oCompany = connect.ConnectSAPDB(DBName, SAPUserName, SAPPassword);
                 //oCompany = connect.ConnectSAPDB(DBName, SAPUserName, SAPPassword);
                 SAPbobsCOM.BusinessPartners sboBP = (SAPbobsCOM.BusinessPartners)oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oBusinessPartners);
-                bool check_card_code = CheckIfExists(DBName, CardCode, CardType);
-                if (check_card_code == false && Action == "ADD")
+                bool check_card_code = CheckIfExists(DBName, request.BPInformation.CardCode, request.BPInformation.CardType);
+                if (check_card_code == false && request.BPInformation.Action == "ADD")
                 {
 
-                    sboBP.CardCode = CardCode;
-                    sboBP.CardName = CardName;
-                    CardType = CardType.ToUpper();
-                    if (CardType == "CUSTOMER")
+                    sboBP.CardCode = request.BPInformation.CardCode;
+                    sboBP.CardName = request.BPInformation.CardName;
+                    request.BPInformation.CardType = request.BPInformation.CardType.ToUpper();
+                    if (request.BPInformation.CardType == "CUSTOMER")
                     {
                         sboBP.CardType = BoCardTypes.cCustomer;
                     }
-                    else if (CardType == "SUPPLIER")
+                    else if (request.BPInformation.CardType == "SUPPLIER")
                     {
                         sboBP.CardType = BoCardTypes.cSupplier;
-                        Insert_WithholdingTax(oCompany.CompanyDB, CardCode);
+                        Insert_WithholdingTax(oCompany.CompanyDB, request.BPInformation.CardCode);
                         sboBP.SubjectToWithholdingTax = SAPbobsCOM.BoYesNoNoneEnum.boYES;
 
 
                     }
-                    else if (CardType == "LEAD")
+                    else if (request.BPInformation.CardType == "LEAD")
                     {
                         sboBP.CardType = BoCardTypes.cLid;
                     }
-                    if (!string.IsNullOrEmpty(GroupCode))
+                    if (!string.IsNullOrEmpty(request.BPInformation.GroupCode))
                     {
-                        sboBP.GroupCode = Convert.ToInt32(GroupCode);
+                        sboBP.GroupCode = Convert.ToInt32(request.BPInformation.GroupCode);
                     }
 
 
 
 
-                    if (string.IsNullOrEmpty(Currency))
+                    if (string.IsNullOrEmpty(request.BPInformation.Currency))
                     {
-                        Currency = LocalCurrency(DBName, SAPUserName, SAPPassword);
-                        sboBP.Currency = Currency;
+                        request.BPInformation.Currency = LocalCurrency(DBName, SAPUserName, SAPPassword);
+                        sboBP.Currency = request.BPInformation.Currency;
                     }
                     else
                     {
-                        sboBP.Currency = Currency;
+                        sboBP.Currency = request.BPInformation.Currency;
                     }
-                    sboBP.Phone1 = Telephone1;
-                    sboBP.Phone2 = Telephone2;
-                    sboBP.Cellular = MobilePhone;
-                    sboBP.UnifiedFederalTaxID = KRAPIN;
+                    sboBP.Phone1 = request.BPInformation.Telephone1;
+                    sboBP.Phone2 = request.BPInformation.Telephone2;
+                    sboBP.Cellular = request.BPInformation.MobilePhone;
+                    sboBP.UnifiedFederalTaxID = request.BPInformation.KRAPIN;
                     // sboBP.FederalTaxID = KRAPIN;
-                    sboBP.EmailAddress = Email;
-                    sboBP.Fax = Fax;
+                    sboBP.EmailAddress = request.BPInformation.Email;
+                    sboBP.Fax = request.BPInformation.Fax;
 
-                    if (Active == "Y")
+                    if (request.BPInformation.Active == "Y")
                     {
 
 
@@ -3714,10 +3718,10 @@ namespace TokenBasedAPI.Controllers
                     sboBP.Addresses.TypeOfAddress = Convert.ToString(BoAddressType.bo_BillTo);
                     //sboBP.Addresses.TypeOfAddress = Convert.ToString(BoAddressType.bo_ShipTo);
                     sboBP.Addresses.AddressName = "Address1";
-                    sboBP.Addresses.AddressName2 = S_AddressName2;
-                    sboBP.Addresses.Street = S_POBox;
-                    sboBP.Addresses.ZipCode = S_POBox;
-                    sboBP.Addresses.City = S_City;
+                    sboBP.Addresses.AddressName2 = request.BilltoAdress.AddressName2;// S_AddressName2;
+                    sboBP.Addresses.Street = request.BilltoAdress.POBox;
+                    sboBP.Addresses.ZipCode = request.BilltoAdress.POBox;
+                    sboBP.Addresses.City = request.BilltoAdress.City;
                     sboBP.Addresses.Add();
 
 
@@ -3732,10 +3736,10 @@ namespace TokenBasedAPI.Controllers
 
 
                     // 
-                    if (!string.IsNullOrEmpty(PayTermsGrpCode))
+                    if (!string.IsNullOrEmpty(request.BPInformation.PayTermsGrpCode))
                     {
 
-                        sboBP.PayTermsGrpCode = Convert.ToInt32(PayTermsGrpCode); ;
+                        sboBP.PayTermsGrpCode = Convert.ToInt32(request.BPInformation.PayTermsGrpCode); ;
                     }
                     //if (string.IsNullOrEmpty(BrokerCode))
                     //{
@@ -3753,7 +3757,7 @@ namespace TokenBasedAPI.Controllers
                     {
                         string dqt = @"""";
                         oCompany.GetLastError(out nErr, out erMsg);
-                        message = "{\"Message\": {\"MessageType\": \"Error\",\"Description\": " + erMsg + ", \"Business Partner Number\": " + dqt + CardCode + dqt + ",\"Document Type\": \"Business Partner\"}}";
+                        message = "{\"Message\": {\"MessageType\": \"Error\",\"Description\": " + erMsg + ", \"Business Partner Number\": " + dqt + request.BPInformation.CardCode + dqt + ",\"Document Type\": \"Business Partner\"}}";
                         message_ = JsonConvert.DeserializeObject(message);
 
                         MarshallObject(sboBP);
@@ -3766,10 +3770,10 @@ namespace TokenBasedAPI.Controllers
                         // message = message.Replace(bsl, dqt);
                         // var json_response = JsonConvert.SerializeObject(message, Newtonsoft.Json.Formatting.Indented);
 
-                        message = "{\"Message\": {\"MessageType\": \"Success\",\"Description\": \"Successfully Created Business Partner\",\"Business Partner Number\": \"" + CardCode + "\",\"Document Type\": \"Business Partner\"}}";
+                        message = "{\"Message\": {\"MessageType\": \"Success\",\"Description\": \"Successfully Created Business Partner\",\"Business Partner Number\": \"" + request.BPInformation.CardCode + "\",\"Document Type\": \"Business Partner\"}}";
                         message_ = JsonConvert.DeserializeObject(message);
 
-                        SAP_SEND_MESSAGE("Customer Added", "Business Partner Added from API", "Business Partner Name", CardCode, "2", CardCode, "", "", "", "");
+                        SAP_SEND_MESSAGE("Customer Added", "Business Partner Added from API", "Business Partner Name", request.BPInformation.CardCode, "2", request.BPInformation.CardCode, "", "", "", "");
 
                         MarshallObject(sboBP);
                         MarshallObject(oCompany);
@@ -3778,46 +3782,46 @@ namespace TokenBasedAPI.Controllers
                     }
 
                 }
-                else if (check_card_code == true && Action == "UPDATE")
+                else if (check_card_code == true && request.BPInformation.Action == "UPDATE")
                 {
-                    sboBP.GetByKey(CardCode);
+                    sboBP.GetByKey(request.BPInformation.CardCode);
                     // sboBP.CardCode = CardCode;
-                    sboBP.CardName = CardName;
-                    CardType = CardType.ToUpper();
-                    if (CardType == "CUSTOMER")
+                    sboBP.CardName = request.BPInformation.CardName;
+                    request.BPInformation.CardType = request.BPInformation.CardType.ToUpper();
+                    if (request.BPInformation.CardType == "CUSTOMER")
                     {
                         sboBP.CardType = BoCardTypes.cCustomer;
                     }
-                    else if (CardType == "SUPPLIER")
+                    else if (request.BPInformation.CardType == "SUPPLIER")
                     {
                         sboBP.CardType = BoCardTypes.cSupplier;
-                        Insert_WithholdingTax(oCompany.CompanyDB, CardCode);
+                        Insert_WithholdingTax(oCompany.CompanyDB, request.BPInformation.CardCode);
 
 
                     }
-                    else if (CardType == "LEAD")
+                    else if (request.BPInformation.CardType == "LEAD")
                     {
                         sboBP.CardType = BoCardTypes.cLid;
                     }
-                    if (!string.IsNullOrEmpty(GroupCode))
+                    if (!string.IsNullOrEmpty(request.BPInformation.GroupCode))
                     {
-                        sboBP.GroupCode = Convert.ToInt32(GroupCode);
+                        sboBP.GroupCode = Convert.ToInt32(request.BPInformation.GroupCode);
                     }
 
 
 
 
-                    if (string.IsNullOrEmpty(Currency))
+                    if (string.IsNullOrEmpty(request.BPInformation.Currency))
                     {
-                        Currency = LocalCurrency(DBName, SAPUserName, SAPPassword);
-                        sboBP.Currency = Currency;
+                        request.BPInformation.Currency = LocalCurrency(DBName, SAPUserName, SAPPassword);
+                        sboBP.Currency = request.BPInformation.Currency;
                     }
                     else
                     {
-                        sboBP.Currency = Currency;
+                        sboBP.Currency = request.BPInformation.Currency;
                     }
 
-                    if (Active == "Y")
+                    if (request.BPInformation.Active == "Y")
                     {
 
 
@@ -3835,21 +3839,21 @@ namespace TokenBasedAPI.Controllers
                     }
 
 
-                    sboBP.Phone1 = Telephone1;
-                    sboBP.Phone2 = Telephone2;
-                    sboBP.Cellular = MobilePhone;
-                    sboBP.UnifiedFederalTaxID = KRAPIN;
+                    sboBP.Phone1 = request.BPInformation.Telephone1;
+                    sboBP.Phone2 = request.BPInformation.Telephone2;
+                    sboBP.Cellular = request.BPInformation.MobilePhone;
+                    sboBP.UnifiedFederalTaxID = request.BPInformation.KRAPIN;
                     // sboBP.FederalTaxID = KRAPIN;
-                    sboBP.EmailAddress = Email;
-                    sboBP.Fax = Fax;
+                    sboBP.EmailAddress = request.BPInformation.Email;
+                    sboBP.Fax = request.BPInformation.Fax;
 
                     sboBP.Addresses.TypeOfAddress = Convert.ToString(BoAddressType.bo_BillTo);
                     //sboBP.Addresses.TypeOfAddress = Convert.ToString(BoAddressType.bo_ShipTo);
-                    sboBP.Addresses.AddressName = "Address1";
-                    sboBP.Addresses.AddressName2 = S_AddressName2;
-                    sboBP.Addresses.Street = S_POBox;
-                    sboBP.Addresses.ZipCode = S_POBox;
-                    sboBP.Addresses.City = S_City;
+                    sboBP.Addresses.AddressName = request.BilltoAdress.AddressName1;
+                    sboBP.Addresses.AddressName2 = request.BilltoAdress.AddressName2;
+                    sboBP.Addresses.Street = request.BilltoAdress.POBox;
+                    sboBP.Addresses.ZipCode = request.BilltoAdress.POBox; 
+                    sboBP.Addresses.City = request.BilltoAdress.City;
                     sboBP.Addresses.Add();
 
 
@@ -3864,10 +3868,10 @@ namespace TokenBasedAPI.Controllers
 
                     //sboBP.SubjectToWithholdingTax = BoYesNoEnum.tYES;
                     // 
-                    if (!string.IsNullOrEmpty(PayTermsGrpCode))
+                    if (!string.IsNullOrEmpty(request.BPInformation.PayTermsGrpCode))
                     {
 
-                        sboBP.PayTermsGrpCode = Convert.ToInt32(PayTermsGrpCode); ;
+                        sboBP.PayTermsGrpCode = Convert.ToInt32(request.BPInformation.PayTermsGrpCode); ;
                     }
                     //if (string.IsNullOrEmpty(BrokerCode))
                     //{
@@ -3885,7 +3889,7 @@ namespace TokenBasedAPI.Controllers
                     {
                         string dqt = @"""";
                         oCompany.GetLastError(out nErr, out erMsg);
-                        message = "{\"Message\": {\"MessageType\": \"Error\",\"Description\": " + erMsg + ", \"Business Partner Number\": " + dqt + CardCode + dqt + ",\"Document Type\": \"Business Partner\"}}";
+                        message = "{\"Message\": {\"MessageType\": \"Error\",\"Description\": " + erMsg + ", \"Business Partner Number\": " + dqt + request.BPInformation.CardCode + dqt + ",\"Document Type\": \"Business Partner\"}}";
                         message_ = JsonConvert.DeserializeObject(message);
 
                         MarshallObject(sboBP);
@@ -3898,10 +3902,10 @@ namespace TokenBasedAPI.Controllers
                         // message = message.Replace(bsl, dqt);
                         // var json_response = JsonConvert.SerializeObject(message, Newtonsoft.Json.Formatting.Indented);
 
-                        message = "{\"Message\": {\"MessageType\": \"Success\",\"Description\": \"Successfully Updated Business Partner\",\"Business Partner Number\": \"" + CardCode + "\",\"Document Type\": \"Business Partner\"}}";
+                        message = "{\"Message\": {\"MessageType\": \"Success\",\"Description\": \"Successfully Updated Business Partner\",\"Business Partner Number\": \"" + request.BPInformation.CardCode + "\",\"Document Type\": \"Business Partner\"}}";
                         message_ = JsonConvert.DeserializeObject(message);
 
-                        SAP_SEND_MESSAGE("Customer Updated", "Business Partner Updated from API", "Business Partner Name", CardCode, "2", CardCode, "", "", "", "");
+                        SAP_SEND_MESSAGE("Customer Updated", "Business Partner Updated from API", "Business Partner Name", request.BPInformation.CardCode, "2", request.BPInformation.CardCode, "", "", "", "");
 
                         MarshallObject(sboBP);
                         MarshallObject(oCompany);
@@ -3911,7 +3915,7 @@ namespace TokenBasedAPI.Controllers
                 else
                 {
 
-                    message = "{\"Message\": {\"MessageType\": \"Error\",\"Description\": \"Business Partner  Already nt Exists \",\"Business Partner Number\": \"" + CardCode + "\" ,\"Document Type\": \"Business Partner\"}}";
+                    message = "{\"Message\": {\"MessageType\": \"Error\",\"Description\": \"Business Partner  Already nt Exists \",\"Business Partner Number\": \"" + request.BPInformation.CardCode + "\" ,\"Document Type\": \"Business Partner\"}}";
                     message_ = JsonConvert.DeserializeObject(message);
                 }
                 return Ok(message_);
@@ -3920,9 +3924,6 @@ namespace TokenBasedAPI.Controllers
             }
             catch (Exception ex)
             {
-
-                HttpResponseMessage exeption_response = null;
-                exeption_response.Content = new StringContent(ex.Message, Encoding.UTF8, "application/json");
                 return Problem(ex.Message);
             }
 

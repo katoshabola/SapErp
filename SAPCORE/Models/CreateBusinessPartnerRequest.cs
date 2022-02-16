@@ -46,6 +46,9 @@ namespace SAPCORE.Models
 
         [JsonPropertyName("CreateDateTime")]
         public string CreateDateTime { get; set; }
+        public string? Currency { get; internal set; }
+        public string Active { get; internal set; }
+        public string? PayTermsGrpCode { get; internal set; }
     }
 
     public class BilltoAdress
@@ -57,7 +60,7 @@ namespace SAPCORE.Models
         public string AddressName2 { get; set; }
 
         [JsonPropertyName("POBox")]
-        public int POBox { get; set; }
+        public string POBox { get; set; }
 
         [JsonPropertyName("Code")]
         public string Code { get; set; }
