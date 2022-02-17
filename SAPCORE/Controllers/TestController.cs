@@ -2709,7 +2709,7 @@ namespace TokenBasedAPI.Controllers
             {
                 querystring = "select ISNULL(T0.DocEntry,'')'DocEntry',ISNULL(T0.DocNum,'') 'DocNum',ISNULL(T0.DocCur,'') 'DocCur',ISNULL(T0.CardCode,'') 'CardCode', ISNULL(T0.CardName,'') 'CardName'," +
                    " ISNULL( T0.DocDate,'') 'DocDate', ISNULL( T0.DocDueDate,'') 'DocDueDate', ISNULL( T0.TaxDate,'') 'TaxDate',ISNULL(T0.DocType,'') 'DocType', ISNULL(T0.CANCELED,'') 'CANCELED', ISNULL(T0.DocStatus ,'') 'DocStatus'," +
-                   " ISNULL(T0.DocTotal,0)'DocTotal', ISNULL(T0.VatSum,0)'VatSum',ISNULL(T0.DiscSum,0) 'DiscSum' ,ISNULL( T0.Comments,'') 'Comments' from  " + Sanitize(DBName) + ".[dbo]." + HeaderTable + " t0 (nolock) ORDER BY T0.DocDate DESC OFFSET 10 ROWS FETCH NEXT 10 ROWS ONLY;";
+                   " ISNULL(T0.DocTotal,0)'DocTotal', ISNULL(T0.VatSum,0)'VatSum',ISNULL(T0.DiscSum,0) 'DiscSum' ,ISNULL( T0.Comments,'') 'Comments' from  " + Sanitize(DBName) + ".[dbo]." + HeaderTable + " t0 (nolock);";
                 // querystring = "select  T0.DocEntry,T0.DocNum,T0.CardCode, T0.CardName, T0.DocDate, T0.DocType, T0.CANCELED, T0.DocStatus, ISNULL(T0.DocTotal,0), T0.VatSum ,ISNULL(T0.DiscSum,0) from  "  + Sanitize(DBName) + ".[dbo]." + "OINV t0 (nolock) ";
 
 
@@ -3128,7 +3128,7 @@ namespace TokenBasedAPI.Controllers
             {
                 return NotFound();
             }
-            return Ok(invoices);
+            return Ok(invoice);
         }
 
         //  [Authorize(Roles = "SuperAdmin, Admin, User")]
@@ -3602,47 +3602,7 @@ namespace TokenBasedAPI.Controllers
                 var response = "";
                 dynamic message_ = null;
                 var message = "";
-                //string CardCode, CardName, CardType, Currency, GroupCode, Action, Telephone1, Telephone2, MobilePhone, PayTermsGrpCode, KRAPIN, Email, Fax, Active;
-                ////Header Section 
-
-                //CardCode = request.BPInformation.CardCode (string)json.SelectToken("BPInformation").SelectToken("CardCode");
-                //CardName = (string)json.SelectToken("BPInformation").SelectToken("CardName");
-                //CardType = (string)json.SelectToken("BPInformation").SelectToken("CardType").ToString().ToUpper();
-                //Currency = (string)json.SelectToken("BPInformation").SelectToken("Currency");
-                //GroupCode = (string)json.SelectToken("BPInformation").SelectToken("GroupCode");
-                //Telephone1 = (string)json.SelectToken("BPInformation").SelectToken("Telephone1");
-                //Telephone2 = (string)json.SelectToken("BPInformation").SelectToken("Telephone2");
-                //Action = (string)json.SelectToken("BPInformation").SelectToken("Action");
-                //MobilePhone = (string)json.SelectToken("BPInformation").SelectToken("MobilePhone");
-                //PayTermsGrpCode = (string)json.SelectToken("BPInformation").SelectToken("PayTermsGrpCode");
-                //KRAPIN = (string)json.SelectToken("BPInformation").SelectToken("KRAPIN");
-                //Email = (string)json.SelectToken("BPInformation").SelectToken("Email");
-                //Fax = (string)json.SelectToken("BPInformation").SelectToken("Fax");
-                //Active = (string)json.SelectToken("BPInformation").SelectToken("Active");
-
-                ////End of Header UDF  Declaration Section 
-                ////Header Section 
-
-
-                //string S_AddressName1, S_AddressName2, S_POBox, S_Code, S_City;
-                //string B_AddressName1, B_AddressName2, B_POBox, B_Code, B_City;
-
-                //B_AddressName1 = (string)json.SelectToken("BilltoAdress").SelectToken("AddressName1");
-                //B_AddressName2 = (string)json.SelectToken("BilltoAdress").SelectToken("AddressName2");
-                //B_POBox = (string)json.SelectToken("BilltoAdress").SelectToken("POBox");
-                //B_Code = (string)json.SelectToken("BilltoAdress").SelectToken("Code");
-                //B_City = (string)json.SelectToken("BilltoAdress").SelectToken("City");
-
-                //S_AddressName1 = (string)json.SelectToken("ShiptoAdress").SelectToken("AddressName1");
-                //S_AddressName2 = (string)json.SelectToken("ShiptoAdress").SelectToken("AddressName2");
-                //S_POBox = (string)json.SelectToken("ShiptoAdress").SelectToken("POBox");
-                //S_Code = (string)json.SelectToken("ShiptoAdress").SelectToken("Code");
-                //S_City = (string)json.SelectToken("ShiptoAdress").SelectToken("City");
-
-                //string BrokerCode, BrokerName, BrokerGroupCode;
-                //BrokerCode = (string)json.SelectToken("Accounting").SelectToken("BrokerCode");
-                //BrokerName = (stri;ng)json.SelectToken("Accounting").SelectToken("BrokerName");
-                //BrokerGroupCode = (string)json.SelectToken("Accounting").SelectToken("BrokerGroupCode");
+                
                 string SAPUserName = userName;
                 string SAPPassword =  Password;
 
@@ -4602,18 +4562,18 @@ namespace TokenBasedAPI.Controllers
         [Route("api/SAP/{DBName}/CreateMarketingDocument/")]
         //public IActionResult Post([FromBody]string value)
         //{
-        public async Task<IActionResult>  CreateMarketingDocument(HttpRequestMessage request, string DBName)
+        public async Task<IActionResult>  CreateMarketingDocument([FromBody]CreateInvoiceRequest request, string DBName)
         {
             try
             {
 
-                var jsonString = await request.Content.ReadAsStringAsync();
-                //context.Response.ContentType = "text/JSON";
-                string output = "";
-                string message = "";
+                //var jsonString = await request.Content.ReadAsStringAsync();
+                ////context.Response.ContentType = "text/JSON";
+                //string output = "";
+                //string message = "";
                 dynamic message_ = null;
 
-                JObject json = JObject.Parse(jsonString);
+                //JObject json = JObject.Parse(jsonString);
 
                 // string SourceNumber = "";
                 // string PaymentReference;
@@ -4642,27 +4602,27 @@ namespace TokenBasedAPI.Controllers
                 //AddUpdateAppSettings("manager", SAPUserName);
                 //AddUpdateAppSettings("Password", SAPPassword);
 
-                DocDate = (string)json.SelectToken("Header").SelectToken("DocDate");
-                PostingDate = (string)json.SelectToken("Header").SelectToken("PostingDate");
-                DocDueDate = (string)json.SelectToken("Header").SelectToken("DocDueDate");
-                DocCurrency = (string)json.SelectToken("Header").SelectToken("DocCurrency");
-                RequiredDate = (string)json.SelectToken("Header").SelectToken("RequiredDate");
-                ValidUntil = (string)json.SelectToken("Header").SelectToken("ValidUntil");
-                ObjectType = (string)json.SelectToken("Header").SelectToken("ObjectType");
-                CardCode = (string)json.SelectToken("Header").SelectToken("CardCode");
-                CardName = (string)json.SelectToken("Header").SelectToken("CardName");
-                Action = (string)json.SelectToken("Header").SelectToken("Action");
-                SalesPersonCode = (string)json.SelectToken("Header").SelectToken("SalesPersonCode");
-                DocumentOwnerCode = (string)json.SelectToken("Header").SelectToken("DocumentOwnerCode");
+                DocDate = request.Header.DocDate;// (string)json.SelectToken("Header").SelectToken("DocDate");
+                PostingDate = request.Header.PostingDate;// (string)json.SelectToken("Header").SelectToken("PostingDate");
+                DocDueDate = request.Header.DocDueDate;// (string)json.SelectToken("Header").SelectToken("DocDueDate");
+                DocCurrency = request.Header.DocCurrency;
+                RequiredDate = request.Header.RequiredDate;
+                ValidUntil = request.Header.ValidUntil;
+                ObjectType = request.Header.ObjectType;
+                CardCode = request.Header.CardCode;
+                CardName = request.Header.CardName;
+                Action = request.Header.Action;
+                SalesPersonCode = request.Header.SalesPersonCode;
+                DocumentOwnerCode = request.Header.DocumentOwnerCode;
 
 
 
-                DocType = (string)json.SelectToken("Header").SelectToken("DocType");
-                SourceNumber = (string)json.SelectToken("Header").SelectToken("SourceNumber");
-                Action = (string)json.SelectToken("Header").SelectToken("Action");
-                Rounding = (string)json.SelectToken("Header").SelectToken("Rounding");
-                Reference = (string)json.SelectToken("Header").SelectToken("Reference");
-                Remarks = (string)json.SelectToken("Header").SelectToken("Remarks");
+                DocType = request.Header.DocType;
+                SourceNumber = request.Header.SourceNumber;
+                Action = request.Header.Action;
+                Rounding = request.Header.Rounding;
+                Reference = request.Header.Reference;
+                Remarks = request.Header.Remarks;
                 string SAPUserName = userName;
                 string SAPPassword = section["Password"];
 
@@ -4983,19 +4943,18 @@ namespace TokenBasedAPI.Controllers
 
                 // oDoc.BPL_IDAssignedToDoc = Convert.ToInt32(Branch);
 
-                JArray jarr = (JArray)json["Rows"];
 
                 if (DocType == "S")
                 {
-                    foreach (var item in jarr)
+                    foreach (var item in request.Rows   )
                     {
                         string Description, AcctCode, VatGroup, UnitPrice, LineTotal;
 
-                        LineTotal = item.SelectToken("LineTotal").ToString();
-                        Description = item.SelectToken("Description").ToString();
-                        AcctCode = item.SelectToken("AcctCode").ToString();
-                        UnitPrice = item.SelectToken("UnitPrice").ToString();
-                        VatGroup = item.SelectToken("VatGroup").ToString();
+                        LineTotal = item.LineTotal;
+                        Description = item.Description;
+                        AcctCode = item.AcctCode;
+                        UnitPrice = item.UnitPrice;
+                        VatGroup = item.VatGroup;
 
                         oDoc.DocType = SAPbobsCOM.BoDocumentTypes.dDocument_Service;
                         oDoc.Lines.ItemDescription = Description;
@@ -5011,20 +4970,19 @@ namespace TokenBasedAPI.Controllers
                 else
                 {
 
-                    JToken token = JToken.Parse(jsonString);
 
 
-                    for (int i = 0; i <= jarr.Count() - 1; i++)
+                    foreach (var item in request.Rows)
                     {
                         string ItemCode, Description, Quantity, UnitPrice, VatGroup, LineTotal, WarehouseCode;
 
-                        ItemCode = token.SelectToken("Rows[" + i + "]").SelectToken("ItemCode").ToString();
-                        Description = token.SelectToken("Rows[" + i + "]").SelectToken("Description").ToString();
-                        Quantity = token.SelectToken("Rows[" + i + "]").SelectToken("Quantity").ToString();
-                        UnitPrice = token.SelectToken("Rows[" + i + "]").SelectToken("UnitPrice").ToString();
-                        VatGroup = token.SelectToken("Rows[" + i + "]").SelectToken("VatGroup").ToString();
-                        LineTotal = token.SelectToken("Rows[" + i + "]").SelectToken("LineTotal").ToString();
-                        WarehouseCode = token.SelectToken("Rows[" + i + "]").SelectToken("WarehouseCode").ToString();
+                        ItemCode = item.ItemCode;
+                        Description = item.Description;
+                        Quantity = item.Quantity;
+                        UnitPrice = item.UnitPrice;
+                        VatGroup = item.VatGroup;
+                        LineTotal = item.LineTotal;
+                        WarehouseCode = item.WarehouseCode;
 
                         oDoc.Lines.ItemCode = ItemCode;
                         oDoc.Lines.Quantity = Convert.ToDouble(Quantity);
@@ -5441,14 +5399,14 @@ namespace TokenBasedAPI.Controllers
 
         //public IActionResult Post([FromBody]string value)
         //{
-        public async Task<IActionResult>  CreatePayment(HttpRequestMessage request, string DBName)
+        public async Task<IActionResult>  CreatePayment([FromBody]CreatePaymentRequest request, string DBName)
         {
             try
             {
                 string message = "";
                 dynamic message_ = null;
-                var jsonString = await request.Content.ReadAsStringAsync();
-                JObject json = JObject.Parse(jsonString);
+                //var jsonString = await request.Content.ReadAsStringAsync();
+                //JObject json = JObject.Parse(jsonString);
 
 
                 string DocDate = "";
@@ -5465,17 +5423,17 @@ namespace TokenBasedAPI.Controllers
                 string DocCurrency = "";
 
 
-                DocDate = (string)json.SelectToken("Header").SelectToken("DocDate");
-                PostingDate = (string)json.SelectToken("Header").SelectToken("PostingDate");
-                CardCode = (string)json.SelectToken("Header").SelectToken("CardCode");
-                CardType = (string)json.SelectToken("Header").SelectToken("CardType");
-                Action = (string)json.SelectToken("Header").SelectToken("Action");
-                Rounding = (string)json.SelectToken("Header").SelectToken("Rounding");
-                SourceNumber = (string)json.SelectToken("Header").SelectToken("SourceNumber");
-                InvoiceDocEntry = (string)json.SelectToken("Header").SelectToken("InvoiceDocEntry");
-                ReceiptNo = (string)json.SelectToken("Header").SelectToken("ReceiptNo");
-                Type = (string)json.SelectToken("Header").SelectToken("Type");
-                DocCurrency = (string)json.SelectToken("Header").SelectToken("DocCurrency");
+                DocDate = request.Header.DocDate;
+                PostingDate = request.Header.PostingDate;
+                CardCode = request.Header.CardCode;
+                CardType = request.Header.CardType;
+                Action = request.Header.Action;
+                Rounding = request.Header.Rounding;
+                SourceNumber = request.Header.SourceNumber;
+                InvoiceDocEntry = request.Header.InvoiceDocEntry;
+                ReceiptNo = request.Header.ReceiptNo;
+                Type = request.Header.Type;
+                DocCurrency = request.Header.DocCurrency;
 
 
                 SAPbobsCOM.Payments oPayment = null;
@@ -5546,17 +5504,15 @@ namespace TokenBasedAPI.Controllers
 
 
 
-                JArray jPayments = (JArray)json["Payments"];
-                foreach (var Payment_item in jPayments)
+                foreach (var Payment_item in request.Payments)
                 {
                     string PaymentDate, PaymentReference, PaymentType, Account, Amount;
 
-                    PaymentDate = Payment_item.SelectToken("PaymentDate").ToString();
-                    PaymentReference = Payment_item.SelectToken("PaymentReference").ToString();
-                    PaymentType = Payment_item.SelectToken("PaymentType").ToString().ToUpper();
-                    Account = Payment_item.SelectToken("Account").ToString();
-                    Amount = Payment_item.SelectToken("Amount").ToString();
-
+                    PaymentDate = Payment_item.PaymentDate;
+                    PaymentReference = Payment_item.PaymentReference;
+                    PaymentType = Payment_item.PaymentType;
+                    Account = Payment_item.Account;
+                    Amount = Payment_item.Amount;
                     if (!string.IsNullOrEmpty(CardCode))
                     {
 
