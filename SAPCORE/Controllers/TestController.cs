@@ -119,6 +119,127 @@ namespace TokenBasedAPI.Controllers
             }
 
         }
+ [Authorize(Roles = "SuperAdmin, Admin, User")]
+        [HttpPost]
+        [Route("api/SAP/{DBName}/InternalReconciliation/")]
+        //public HttpResponseMessage Post([FromBody]string value)
+        //{
+        public async Task<HttpResponseMessage> InternalReconciliation(HttpRequestMessage request, string DBName)
+        {
+
+            var json_response = "";
+            try
+            {
+
+                var identity = (ClaimsIdentity)User.Identity;
+                var roles = identity.Claims
+                            .Where(c => c.Type == ClaimTypes.Role)
+                            .Select(c => c.Value);
+
+                var jsonString = await request.Content.ReadAsStringAsync();
+                //context.Response.ContentType = "text/JSON";
+
+                string message = "";
+                JObject json = JObject.Parse(jsonString);
+
+
+                string TransId = "";
+                string InvoiceAmount = "";
+                string InvoiceLineNum = "";
+
+
+
+                AddUpdateAppSettings("CompanyDB", DBName);
+                //AddUpdateAppSettings("manager", SAPUserName);
+                //AddUpdateAppSettings("Password", SAPPassword);
+
+                TransId = (string)json.SelectToken("Header").SelectToken("TransId");
+                InvoiceAmount = (string)json.SelectToken("Header").SelectToken("InvoiceAmount");
+                InvoiceLineNum = (string)json.SelectToken("Header").SelectToken("InvoiceLineNum");
+
+                string SAPPassword = Get_SAPUserPassword(DBName);
+                string SAPUserName = Get_SAPUserName(DBName);
+
+                oCompany = new Connect_To_SAP().ConnectSAPDB(DBName, SAPUserName, SAPPassword);
+                InternalReconciliationsService service = oCompany.GetCompanyService().GetBusinessService(ServiceTypes.InternalReconciliationsService);
+                InternalReconciliationOpenTrans openTrans = service.GetDataInterface(InternalReconciliationsServiceDataInterfaces.irsInternalReconciliationOpenTrans);
+                InternalReconciliationParams reconParams = service.GetDataInterface(InternalReconciliationsServiceDataInterfaces.irsInternalReconciliationParams);
+
+                openTrans.CardOrAccount = CardOrAccountEnum.coaCard;
+                openTrans.InternalReconciliationOpenTransRows.Add();
+                openTrans.InternalReconciliationOpenTransRows.Item(0).Selected = BoYesNoEnum.tYES;
+                openTrans.InternalReconciliationOpenTransRows.Item(0).TransId = Convert.ToInt32(TransId);
+                openTrans.InternalReconciliationOpenTransRows.Item(0).TransRowId = Convert.ToInt32(InvoiceLineNum);
+                openTrans.InternalReconciliationOpenTransRows.Item(0).ReconcileAmount = Convert.ToDouble(InvoiceAmount);
+
+
+
+
+
+
+                JArray jarr = (JArray)json["PaymentRows"];
+
+
+                foreach (var item in jarr)
+                {
+                    string PaymentTransId = "";
+                    string PaymentAmount = "";
+                    string LineNum = "";
+                    string Item = "";
+
+                    PaymentTransId = item.SelectToken("PaymentTransId").ToString();
+                    PaymentAmount = item.SelectToken("PaymentAmount").ToString();
+                    LineNum = item.SelectToken("LineNum").ToString();
+                    Item = item.SelectToken("Item").ToString();
+
+                    int ItemNumber = Convert.ToInt32(Item);
+
+                    openTrans.InternalReconciliationOpenTransRows.Add();
+                    openTrans.InternalReconciliationOpenTransRows.Item(ItemNumber).Selected = BoYesNoEnum.tYES;
+                    openTrans.InternalReconciliationOpenTransRows.Item(ItemNumber).TransId = Convert.ToInt32(PaymentTransId);
+                    openTrans.InternalReconciliationOpenTransRows.Item(ItemNumber).TransRowId = Convert.ToInt32(LineNum);
+                    openTrans.InternalReconciliationOpenTransRows.Item(ItemNumber).ReconcileAmount = Convert.ToDouble(PaymentAmount);
+                }
+
+
+
+
+                try
+                {
+                    reconParams = service.Add(openTrans);
+                    message = "{\"Message\": {\"MessageType\": \"Success\",\"Description\": \"Successfully reconciled Invoice and Payment(s)\",\"Transaction Type\": \"Reconciliation\"}}";
+
+                    json_response = JsonConvert.SerializeObject(message, Newtonsoft.Json.Formatting.Indented);
+                }
+
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    message = "{\"Message\": {\"MessageType\": \"Error\",\"Description\": " + ex.Message + "}}";
+                    json_response = JsonConvert.SerializeObject(message, Newtonsoft.Json.Formatting.Indented);
+                }
+
+
+
+                var response_invoice = Request.CreateResponse(HttpStatusCode.OK);
+                response_invoice.Content = new StringContent(json_response, Encoding.UTF8, "application/json");
+
+                return response_invoice;
+
+
+            }
+            catch (Exception ex)
+            {
+
+                HttpResponseMessage exeption_response = null;
+                exeption_response.Content = new StringContent(ex.Message, Encoding.UTF8, "application/json");
+                return exeption_response;
+            }
+
+
+
+
+        }
 
 
         //  [Authorize(Roles = "SuperAdmin, Admin, User")]
